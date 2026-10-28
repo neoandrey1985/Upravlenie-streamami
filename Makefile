@@ -43,6 +43,7 @@ test-java:
 
 test-python:
 	python analytics-python/tests/test_compute.py
+	python analytics-python/tests/test_org.py
 
 test-frontend:
 	python tests/frontend/run_e2e.py

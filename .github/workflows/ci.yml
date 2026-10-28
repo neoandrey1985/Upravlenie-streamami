@@ -39,6 +39,8 @@ jobs:
         run: python -m py_compile analytics-python/app/*.py analytics-python/tests/*.py
       - name: Functional tests (no DB)
         run: python analytics-python/tests/test_compute.py
+      - name: Team access rule (no DB)
+        run: python analytics-python/tests/test_org.py
       - name: DB integration test (testcontainers + PostgreSQL)
         run: python analytics-python/tests/test_db_integration.py
       - name: Migration is up to date with seed.json
@@ -102,6 +104,18 @@ jobs:
           curl -fs -H "$AUTH" http://localhost:8090/api/state | grep -q '"version"'
           curl -fs -H "$AUTH" http://localhost:8090/analytics/metrics | grep -q 'avgVelocity'
           curl -fs -H "$AUTH" http://localhost:8090/analytics/rice | grep -q 'F-02'
+          # streams & teams on real PostgreSQL: a new team gets its own Flyway-migrated schema
+          curl -fs -H "$AUTH" http://localhost:8090/api/org | grep -q '"defaultTeam":"t1"'
+          SID=$(curl -fs -X POST -H "$AUTH" -H 'Content-Type: application/json' http://localhost:8090/api/org/streams \
+            -d '{"name":"CI stream"}' | grep -oE '"id":"[^"]+"' | head -1 | cut -d'"' -f4)
+          TID=$(curl -fs -X POST -H "$AUTH" -H 'Content-Type: application/json' http://localhost:8090/api/org/teams \
+            -d "{\"name\":\"CI team\",\"streamId\":\"$SID\",\"template\":\"empty\"}" | grep -oE '"id":"[^"]+"' | head -1 | cut -d'"' -f4)
+          test -n "$TID"
+          curl -fs -H "$AUTH" -H "X-Team-Id: $TID" http://localhost:8090/api/state | grep -q '"name":"CI team"'
+          curl -fs -H "$AUTH" -H "X-Team-Id: $TID" http://localhost:8090/api/state | grep -q '"tasks":\[\]'
+          curl -fs -H "$AUTH" -H "X-Team-Id: $TID" http://localhost:8090/analytics/metrics | grep -q 'avgVelocity'
+          curl -fs -H "$AUTH" http://localhost:8090/api/state | grep -q '"T-01"'   # first team untouched
+          test "$(curl -s -o /dev/null -w '%{http_code}' -H "$AUTH" -H 'X-Team-Id: t404' http://localhost:8090/api/state)" = "404"
           # security headers present
           curl -sI http://localhost:8090/ | grep -qi 'X-Frame-Options: DENY'
           curl -sI http://localhost:8090/ | grep -qi 'Content-Security-Policy'

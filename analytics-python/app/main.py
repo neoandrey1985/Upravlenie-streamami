@@ -3,6 +3,8 @@
 Data endpoints require the SAME bearer session token as the Java API (validated against the
 shared app_sessions table), so analytics does not silently bypass application authentication.
 Set ANALYTICS_AUTH_ENABLED=false only for local dev/tests. /analytics/health stays public.
+Metrics are computed for ONE team: the X-Team-Id header (default — the first team), with the same
+per-team / per-stream access rule as the Java API (app/org.py).
 """
 import os
 from datetime import datetime, timezone
@@ -24,7 +26,7 @@ app.add_middleware(
 
 
 def require_auth(authorization: str = Header(default=None), x_auth_token: str = Header(default=None)):
-    """Validate a bearer session token against the shared app_sessions table."""
+    """Validate a bearer session token against the shared app_sessions table -> (username, role)."""
     if not AUTH_ENABLED:
         return None
     token = None
@@ -36,7 +38,7 @@ def require_auth(authorization: str = Header(default=None), x_auth_token: str = 
         raise HTTPException(status_code=401, detail="unauthorized")
     try:
         with db.engine.connect() as c:
-            row = c.execute(text("SELECT expires_at FROM app_sessions WHERE token = :t"),
+            row = c.execute(text("SELECT expires_at, username, role FROM app_sessions WHERE token = :t"),
                             {"t": token}).fetchone()
     except Exception:
         raise HTTPException(status_code=503, detail="auth_unavailable")
@@ -48,7 +50,19 @@ def require_auth(authorization: str = Header(default=None), x_auth_token: str = 
             exp = exp.replace(tzinfo=timezone.utc)
         if exp < datetime.now(timezone.utc):
             raise HTTPException(status_code=401, detail="session_expired")
-    return token
+    return (row[1], row[2])
+
+
+def team_schema(x_team_id: str = Header(default=None), user=Depends(require_auth)):
+    """Schema of the requested team after the access check (None = default schema)."""
+    username, role = user if user else (None, None)
+    try:
+        schema, _ = db.team_context(x_team_id, username, role)
+    except LookupError:
+        raise HTTPException(status_code=404, detail="team_not_found")
+    except PermissionError:
+        raise HTTPException(status_code=403, detail="forbidden")
+    return schema
 
 
 @app.get("/analytics/health")
@@ -60,21 +74,21 @@ def health():
         return {"status": "degraded", "service": "python-analytics", "db": "down", "error": str(e)}
 
 
-@app.get("/analytics/metrics", dependencies=[Depends(require_auth)])
-def metrics():
-    return C.compute(db.load_state())
+@app.get("/analytics/metrics")
+def metrics(schema=Depends(team_schema)):
+    return C.compute(db.load_state(schema))
 
 
-@app.get("/analytics/rice", dependencies=[Depends(require_auth)])
-def rice():
-    return {"items": C.rice_ranked(db.load_state())}
+@app.get("/analytics/rice")
+def rice(schema=Depends(team_schema)):
+    return {"items": C.rice_ranked(db.load_state(schema))}
 
 
-@app.get("/analytics/burndown", dependencies=[Depends(require_auth)])
-def burndown():
-    return C.burndown(db.load_state())
+@app.get("/analytics/burndown")
+def burndown(schema=Depends(team_schema)):
+    return C.burndown(db.load_state(schema))
 
 
-@app.get("/analytics/dependencies", dependencies=[Depends(require_auth)])
-def dependencies():
-    return C.deps_summary(db.load_state())
+@app.get("/analytics/dependencies")
+def dependencies(schema=Depends(team_schema)):
+    return C.deps_summary(db.load_state(schema))

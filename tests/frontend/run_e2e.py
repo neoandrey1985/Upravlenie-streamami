@@ -366,16 +366,16 @@ def main():
               const b=migrate(JSON.parse(JSON.stringify(a)));
               return Array.isArray(a.tasks) && a.tasks.length===b.tasks.length;}""")
             assert ok, 'migrate() not idempotent on task count'
-            saved = page.evaluate("""()=>{localStorage.removeItem('streamapp');
-              setPerm('editor');applyPerms();save();const v=!!localStorage.getItem('streamapp');
+            saved = page.evaluate("""()=>{localStorage.removeItem(stKey());
+              setPerm('editor');applyPerms();save();const v=!!localStorage.getItem(stKey());
               setPerm('viewer');applyPerms();return v;}""")
             assert saved, 'save() did not persist to localStorage for an editor'
         case('data: migrate() idempotent and save() persists', t_migrate)
 
         # ---- 9b. save() is gated by permission (viewer cannot persist) ----
         def t_perm_gate():
-            blocked = page.evaluate("""()=>{setPerm('viewer');applyPerms();localStorage.removeItem('streamapp');
-              save();return localStorage.getItem('streamapp')===null;}""")
+            blocked = page.evaluate("""()=>{setPerm('viewer');applyPerms();localStorage.removeItem(stKey());
+              save();return localStorage.getItem(stKey())===null;}""")
             assert blocked, 'viewer must not be able to persist via save()'
         case('security: save() is gated by edit permission', t_perm_gate)
 
@@ -869,6 +869,84 @@ def main():
             assert r['groups'] >= 8, 'unexpectedly few nav groups'
             assert 'Обзор' in r['names'] and 'Команда' in r['names'], 'expected regrouped blocks missing'
         case('nav: unique ids, containers, regrouped blocks', t_nav)
+
+        # ---- 32. Streams & teams (local mode): isolation, templates, switching, request context ----
+        def t_org_local():
+            r = page.evaluate("""async()=>{try{
+              setPerm('admin');applyPerms();if(curTeam()!=='t1')await switchTeam('t1');
+              const t1Tasks=ST.tasks.length, t1Dod=(ST.dod||[]).length;
+              const sid=await orgAddStream('Платежи'), tid=await orgAddTeam('Касса',sid,'empty');
+              const fresh=JSON.parse(localStorage.getItem(stKey(tid)));
+              const blankOk=fresh.tasks.length===0&&(fresh.dod||[]).length===t1Dod&&fresh.params.name==='Касса';
+              await switchTeam(tid);
+              const switched=curTeam()===tid&&ST.tasks.length===0&&/Платежи › Касса/.test(document.getElementById('teamsw_l').textContent);
+              ST.tasks.push({id:'T-K1',title:'Задача кассы',role:'Backend',type:'Задача',est:3,status:'В работе',sprint:1});save();
+              const isolated=JSON.parse(localStorage.getItem(stKey(tid))).tasks.length===1&&JSON.parse(localStorage.getItem(stKey('t1'))).tasks.length===t1Tasks;
+              const ctx=hdrs(false)['X-Team-Id']===tid&&brdWSUrl().includes('team='+tid);
+              const cid=await orgAddTeam('Клон','s1','copy');
+              const copyOk=JSON.parse(localStorage.getItem(stKey(cid))).tasks.length===1;
+              await switchTeam('t1');const back=ST.tasks.length===t1Tasks;
+              activate('org');const rows=document.querySelectorAll('#org_root tr[data-team]').length;
+              let t1Locked=false;try{await orgDelTeam('t1');}catch(e){t1Locked=true;}
+              await orgDelTeam(cid);await orgDelTeam(tid);await orgDelStream(sid);
+              const cleaned=ORG.teams.length===1&&ORG.streams.length===1&&localStorage.getItem(stKey(tid))===null;
+              activate('dash');
+              return {blankOk,switched,isolated,ctx,copyOk,back,rows,t1Locked,cleaned};
+            }catch(e){return 'ERR:'+e.message;}}""")
+            assert isinstance(r, dict), 'org flow failed: ' + str(r)
+            for k in ('blankOk', 'switched', 'isolated', 'ctx', 'copyOk', 'back', 't1Locked', 'cleaned'):
+                assert r[k], k + ' failed: ' + str(r)
+            assert r['rows'] == 3, 'org section should list 3 teams, got ' + str(r['rows'])
+        case('org: streams & teams — isolation, templates, switching, context', t_org_local)
+
+        # ---- 33. Import a team from a JSON export (e.g. from the base app) ----
+        def t_org_import():
+            r = page.evaluate("""async()=>{try{
+              setPerm('admin');applyPerms();
+              const data=JSON.parse(JSON.stringify(SEED));data.params.name='Импортированная команда';
+              const want=migrate(JSON.parse(JSON.stringify(data))).tasks.length;
+              const id=await orgImportTeam(data,null,null);
+              const ok=curTeam()===id&&ST.tasks.length===want&&ST.params.name==='Импортированная команда'
+                &&JSON.parse(localStorage.getItem(stKey(id))).tasks.length===want;
+              let bad=false;try{await orgImportTeam([1,2],null,null);}catch(e){bad=true;}
+              await switchTeam('t1');await orgDelTeam(id);
+              return {ok,bad,teams:ORG.teams.length};
+            }catch(e){return 'ERR:'+e.message;}}""")
+            assert isinstance(r, dict), 'import failed: ' + str(r)
+            assert r['ok'], 'imported team has wrong data'
+            assert r['bad'], 'non-object JSON must be rejected'
+            assert r['teams'] == 1, 'cleanup failed'
+        case('org: import a team from JSON export', t_org_import)
+
+        # ---- 34. Header switcher UI ----
+        def t_org_switcher():
+            page.evaluate("""async()=>{setPerm('admin');applyPerms();await orgAddTeam('Вторая','s1','empty');}""")
+            page.click('#teamsw')
+            n = page.evaluate("()=>document.querySelectorAll('#teampop [data-team]').length")
+            assert n == 2, 'switcher should list 2 teams, got ' + str(n)
+            page.click('#teampop [data-team="t2"]')
+            page.wait_for_function("()=>curTeam()==='t2'")
+            opened = page.evaluate("()=>document.getElementById('teamdm').classList.contains('open')")
+            assert not opened, 'switcher should close after choosing a team'
+            page.evaluate("""async()=>{await switchTeam('t1');await orgDelTeam('t2');}""")
+            assert page.evaluate("()=>curTeam()==='t1'&&ORG.teams.length===1")
+        case('org: header switcher lists teams and switches', t_org_switcher)
+
+        # ---- 35. An empty team renders every section without errors ----
+        def t_org_blank_sections():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));
+              window.addEventListener('error',h);window.addEventListener('unhandledrejection',h);
+              try{setPerm('admin');applyPerms();const id=await orgAddTeam('Пустая','s1','empty');await switchTeam(id);
+                const blank=ST.tasks.length===0;
+                for(const g of NAV)for(const it of g.items){try{activate(it[0]);}catch(e){errs.push(it[0]+': '+e.message);}}
+                await new Promise(r=>setTimeout(r,500));
+                await switchTeam('t1');await orgDelTeam(id);activate('dash');
+                return {blank,errs};
+              }catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);window.removeEventListener('unhandledrejection',h);}}""")
+            assert isinstance(r, dict), 'blank-team run failed: ' + str(r)
+            assert r['blank'], 'empty team should have no tasks'
+            assert not r['errs'], 'sections failed on an empty team: ' + str(r['errs'][:5])
+        case('org: empty team renders every section', t_org_blank_sections)
 
         br.close()
     httpd.shutdown()

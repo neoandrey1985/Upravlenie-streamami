@@ -520,10 +520,36 @@ body.noadmin #rst,body.noadmin #imp{display:none}
 .brd-linkmodal .lm-url{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%}
 .brd-linkmodal iframe{flex:1;border:0;width:100%;background:#fff}
 .brd-linkmodal .lm-fallback{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:14px;text-align:center;padding:20px}
+/* ---- стримы и команды ---- */
+.teamdm .dmenu-pop{left:0;right:auto;min-width:260px;max-height:70vh;overflow:auto}
+#teamsw{max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.org-pop-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px 4px}
+.org-pop-t{justify-content:flex-start;text-align:left}
+.org-pop-t.on{font-weight:700;color:var(--accent)}
+.org-wrap{display:flex;flex-direction:column;gap:14px}
+.org-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.org-sum{margin-right:auto;color:var(--muted)}
+.org-note{color:var(--muted);font-size:13px;margin:0}
+.org-stream,.org-members{display:flex;flex-direction:column;gap:10px}
+.org-sh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.org-sn{font-weight:700;font-size:16px}
+.org-sd{color:var(--muted);font-size:13px}
+.org-sa,.org-ta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.org-ta{justify-content:flex-end;flex-wrap:nowrap;white-space:nowrap}
+.org-ta select{width:auto;max-width:170px}
+@media (max-width:640px){.org-ta{flex-wrap:wrap;white-space:normal}.org-scroll{overflow-x:visible}}
+.org-scroll{overflow-x:auto}
+.org-tt th.num,.org-tt td.num{text-align:right;font-variant-numeric:tabular-nums}
+.org-cur td{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.org-add{display:flex;flex-wrap:wrap;gap:8px}
+.org-add input,.org-add select{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;padding:8px 9px;font-family:inherit;font-size:13px;max-width:100%}
+.org-add input{flex:1 1 200px;min-width:0}
+.org-empty{color:var(--muted);text-align:center}
 </style>
 <header class="top"><div class="inner">
  <button class="btn iconbtn" id="menubtn" aria-label="Меню" title="Свернуть / развернуть меню">☰</button>
  <div class="brand"><span class="dot"></span>Управление стримами и командами</div>
+ <div class="dmenu teamdm" id="teamdm"><button class="btn" id="teamsw" title="Стрим и команда: переключение" aria-haspopup="true" aria-expanded="false">🏢 <span id="teamsw_l">Команда</span> <span class="cv">▾</span></button><div class="dmenu-pop" id="teampop" role="menu"></div></div>
  <button class="btn iconbtn" id="palettebtn" title="Поиск и переход (Ctrl+K)">🔎</button>
  <div class="tools">
   <div class="dmenu" id="dmenu">
@@ -547,7 +573,7 @@ body.noadmin #rst,body.noadmin #imp{display:none}
  </div>
 </div></header>
 <div class="shell"><aside class="side" id="side"><nav id="nav"></nav><div class="side-foot" id="sidefoot"></div></aside><div class="scrim" id="scrim"></div>
-<main id="main"><section class="view" id="v_dash"></section><section class="view" id="v_board"></section><section class="view" id="v_kanban"></section><section class="view" id="v_backlog"></section><section class="view" id="v_team"></section><section class="view" id="v_starmap"></section><section class="view" id="v_roadmap"></section><section class="view" id="v_quarters"></section><section class="view" id="v_rice"></section><section class="view" id="v_wsjf"></section><section class="view" id="v_moscow"></section><section class="view" id="v_sprintGoals"></section><section class="view" id="v_gantt"></section><section class="view" id="v_deps"></section><section class="view" id="v_piboard"></section><section class="view" id="v_releases"></section><section class="view" id="v_milestones"></section><section class="view" id="v_debt"></section><section class="view" id="v_okr"></section><section class="view" id="v_budget"></section><section class="view" id="v_analytics"></section><section class="view" id="v_risks"></section><section class="view" id="v_bugs"></section><section class="view" id="v_daily"></section><section class="view" id="v_grooming"></section><section class="view" id="v_demo"></section><section class="view" id="v_vacation"></section><section class="view" id="v_birthdays"></section><section class="view" id="v_retro"></section><section class="view" id="v_agile"></section><section class="view" id="v_calendar"></section><section class="view" id="v_scope"></section><section class="view" id="v_checks"></section><section class="view" id="v_eda"></section><section class="view" id="v_integrations"></section><section class="view" id="v_params"></section><section class="view" id="v_faq"></section><section class="view" id="v_support"></section><section class="view" id="v_audit"></section><section class="view" id="v_evm"></section><section class="view" id="v_changes"></section><section class="view" id="v_issues"></section><section class="view" id="v_stakeholders"></section><section class="view" id="v_statusreport"></section><section class="view" id="v_decisions"></section><section class="view" id="v_wbs"></section><section class="view" id="v_storymap"></section><section class="view" id="v_impediments"></section><section class="view" id="v_poker"></section><section class="view" id="v_lessons"></section><section class="view" id="v_raci"></section><section class="view" id="v_portfolio"></section><section class="view" id="v_busfactor"></section><section class="view" id="v_healthcheck"></section><section class="view" id="v_dora"></section><section class="view" id="v_incidents"></section></main></div>
+<main id="main"><section class="view" id="v_org"></section><section class="view" id="v_dash"></section><section class="view" id="v_board"></section><section class="view" id="v_kanban"></section><section class="view" id="v_backlog"></section><section class="view" id="v_team"></section><section class="view" id="v_starmap"></section><section class="view" id="v_roadmap"></section><section class="view" id="v_quarters"></section><section class="view" id="v_rice"></section><section class="view" id="v_wsjf"></section><section class="view" id="v_moscow"></section><section class="view" id="v_sprintGoals"></section><section class="view" id="v_gantt"></section><section class="view" id="v_deps"></section><section class="view" id="v_piboard"></section><section class="view" id="v_releases"></section><section class="view" id="v_milestones"></section><section class="view" id="v_debt"></section><section class="view" id="v_okr"></section><section class="view" id="v_budget"></section><section class="view" id="v_analytics"></section><section class="view" id="v_risks"></section><section class="view" id="v_bugs"></section><section class="view" id="v_daily"></section><section class="view" id="v_grooming"></section><section class="view" id="v_demo"></section><section class="view" id="v_vacation"></section><section class="view" id="v_birthdays"></section><section class="view" id="v_retro"></section><section class="view" id="v_agile"></section><section class="view" id="v_calendar"></section><section class="view" id="v_scope"></section><section class="view" id="v_checks"></section><section class="view" id="v_eda"></section><section class="view" id="v_integrations"></section><section class="view" id="v_params"></section><section class="view" id="v_faq"></section><section class="view" id="v_support"></section><section class="view" id="v_audit"></section><section class="view" id="v_evm"></section><section class="view" id="v_changes"></section><section class="view" id="v_issues"></section><section class="view" id="v_stakeholders"></section><section class="view" id="v_statusreport"></section><section class="view" id="v_decisions"></section><section class="view" id="v_wbs"></section><section class="view" id="v_storymap"></section><section class="view" id="v_impediments"></section><section class="view" id="v_poker"></section><section class="view" id="v_lessons"></section><section class="view" id="v_raci"></section><section class="view" id="v_portfolio"></section><section class="view" id="v_busfactor"></section><section class="view" id="v_healthcheck"></section><section class="view" id="v_dora"></section><section class="view" id="v_incidents"></section></main></div>
 <div class="palette" id="palette"><div class="pbox"><input class="pin" id="pin" placeholder="Поиск раздела или действия…" autocomplete="off"><div class="plist" id="plist"></div></div></div>
 <div class="role-pop" id="rolepop"></div>
 <div class="modal" id="accmodal"><div class="mbox">
@@ -602,6 +628,7 @@ body.noadmin #rst,body.noadmin #imp{display:none}
 </div>
 <div class="toast" id="toast"></div>
 <input type="file" id="file" accept=".json" style="display:none">
+<input type="file" id="orgfile" accept=".json" style="display:none">
 <input type="file" id="filecsv" accept=".csv,.tsv,text/csv" style="display:none">
 <script>
 const SEED={
@@ -1435,9 +1462,28 @@ function buildAgile(){const rows=[];let seq=0;Object.keys(AGILE_FW).forEach(fw=>
 /* Ensure ST.agile covers every framework × dimension; keeps existing levels. Returns #added. */
 function syncAgile(){if(!Array.isArray(ST.agile))ST.agile=[];const have=new Set(ST.agile.map(a=>a.framework+'|'+a.dimension));let seq=ST.agile.length,added=0;
  Object.keys(AGILE_FW).forEach(fw=>AGILE_FW[fw].forEach(dim=>{const k=fw+'|'+dim;if(!have.has(k)){ST.agile.push({id:'AM-'+String(++seq).padStart(2,'0'),framework:fw,dimension:dim,level:seedAgileLevel(fw,dim),note:''});have.add(k);added++;}}));return added;}
+/* ================= Стримы и команды: контекст текущей команды =================
+   Данные каждой команды хранятся отдельно: в браузере — под ключом streamapp:<id команды>,
+   на сервере — в своей схеме БД (запросы несут заголовок X-Team-Id). ORG — структура «Стрим → Команда»
+   (локально — в браузере, с сервером — GET /api/org с учётом прав пользователя). */
+const ORG_KEY='streamapp:org';
+function orgDefault(){return {streams:[{id:'s1',name:'Стрим 1',descr:''}],teams:[{id:'t1',name:'Команда 1',streamId:'s1'}],cur:'t1',canManage:false,server:false};}
+function loadOrg(){let o=null;try{o=JSON.parse(localStorage.getItem(ORG_KEY)||'null');}catch(e){}
+ if(!o||!Array.isArray(o.streams)||!Array.isArray(o.teams)||!o.teams.length)o=orgDefault();
+ if(!o.teams.some(t=>t.id===o.cur))o.cur=o.teams[0].id;
+ // v2.0.0 хранила единственную команду под ключом streamapp — переносим её данные в первую команду
+ try{const old=localStorage.getItem('streamapp');if(old){if(!localStorage.getItem('streamapp:t1'))localStorage.setItem('streamapp:t1',old);localStorage.removeItem('streamapp');}}catch(e){}
+ return o;}
+var ORG=loadOrg();
+function saveOrg(){try{localStorage.setItem(ORG_KEY,JSON.stringify(ORG));}catch(e){}if(typeof orgSwUpdate==='function')orgSwUpdate();}
+function curTeam(){return ORG.cur||'t1';}
+function stKey(id){return 'streamapp:'+(id||curTeam());}
+function tkey(k){return k+':'+curTeam();}
+function orgTeam(id){const k=id||curTeam();return ORG.teams.find(t=>t.id===k)||null;}
+function orgStream(id){return ORG.streams.find(s=>s.id===id)||null;}
 let ST=load();
 
-function load(){let d;try{const s=localStorage.getItem('streamapp');d=s?JSON.parse(s):JSON.parse(JSON.stringify(SEED));}catch(e){d=JSON.parse(JSON.stringify(SEED));}return migrate(d);}
+function load(){let d;try{const s=localStorage.getItem(stKey());d=s?JSON.parse(s):JSON.parse(JSON.stringify(SEED));}catch(e){d=JSON.parse(JSON.stringify(SEED));}return migrate(d);}
 /* Recover text that was corrupted by decoding UTF-8 bytes as latin1 (mojibake like "Ð¿Ñ€Ð¾..."). */
 function fixMojibake(s){if(typeof s!=='string'||!/[\u00C0-\u00FF][\u0080-\u00BF]/.test(s))return s;
  try{const b=Uint8Array.from(s,c=>c.charCodeAt(0)&255);const dec=new TextDecoder('utf-8',{fatal:false}).decode(b);
@@ -1551,6 +1597,7 @@ function migrate(d){
   setK('T-01',krOf(0));setK('T-02',krOf(0));setK('T-03',krOf(1));setK('T-12',krOf(2));})();
  // v1.42: иерархия работ (эпики + связи «родитель»)
  (function(){const T=d.tasks||[];const have=id=>T.some(t=>t.id===id);
+  if(!have('T-01'))return;   // демо-эпики — только для демо-данных, не для пустых/импортированных команд
   if(!have('E-1'))T.push({id:'E-1',title:'Эпик: Оформление и оплата заказа',assignee:'',role:'',type:'Эпик',est:0,status:'В работе',sprint:'',dep:'',started:'',done:'',priority:'Must'});
   if(!have('E-2'))T.push({id:'E-2',title:'Эпик: Каталог и личный кабинет',assignee:'',role:'',type:'Эпик',est:0,status:'To Do',sprint:'',dep:'',started:'',done:'',priority:'Should'});
   const setP=(tid,pid)=>{const t=T.find(x=>x.id===tid);if(t&&t.parent==null)t.parent=pid;};
@@ -1737,7 +1784,7 @@ function cpm(tasks){const dur={},pred={},ids=tasks.map(t=>t.id),idset=new Set(id
  const LF={},LS={};ids.forEach(i=>{LF[i]=proj;LS[i]=proj-dur[i];});
  for(let k=0;k<ids.length+2;k++)ids.forEach(i=>{const ss=succ[i];LF[i]=ss.length?Math.min.apply(null,ss.map(s=>LS[s])):proj;LS[i]=LF[i]-dur[i];});
  const crit=new Set();ids.forEach(i=>{if(Math.abs(LS[i]-ES[i])<1e-9&&dur[i]>0)crit.add(i);});return crit;}
-function save(){if(typeof PERM!=='undefined'&&!PERM.canEdit)return;localStorage.setItem('streamapp',JSON.stringify(ST));if(typeof syncSchedule==='function')syncSchedule();}
+function save(){if(typeof PERM!=='undefined'&&!PERM.canEdit)return;localStorage.setItem(stKey(),JSON.stringify(ST));if(typeof syncSchedule==='function')syncSchedule();}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600);}
 let toastT=null;
 function toastAction(text,label,cb){const e=document.getElementById('toast');e.innerHTML=esc(text)+' <a id="toastact">'+esc(label)+'</a>';e.classList.add('show');
@@ -3311,7 +3358,7 @@ BRD_TPL.swim={icon:'🏊',name:'Дорожки ответственности',
 /* ================= Доска: совместная работа в реальном времени (WebSocket) + интеграции ================= */
 var BWS={ws:null,id:null,peers:{},cursors:{},_els:{},lastCur:0};
 function brdServerMode(){return typeof SYNC!=='undefined'&&SYNC.on&&typeof AUTH!=='undefined'&&!!AUTH.token;}
-function brdWSUrl(){const proto=location.protocol==='https:'?'wss:':'ws:';const nm=encodeURIComponent(brdAuthor());const tk=(AUTH&&AUTH.token)?('&token='+encodeURIComponent(AUTH.token)):'';return proto+'//'+location.host+'/ws/board?name='+nm+tk;}
+function brdWSUrl(){const proto=location.protocol==='https:'?'wss:':'ws:';const nm=encodeURIComponent(brdAuthor());const tk=(AUTH&&AUTH.token)?('&token='+encodeURIComponent(AUTH.token)):'';return proto+'//'+location.host+'/ws/board?name='+nm+tk+'&team='+encodeURIComponent(curTeam());}
 function brdWSConnect(){if(!brdServerMode())return;if(BWS.ws&&(BWS.ws.readyState===0||BWS.ws.readyState===1))return;
  try{const ws=new WebSocket(brdWSUrl());BWS.ws=ws;
   ws.onopen=()=>{brdWSSend({type:'hello',name:brdAuthor()});brdPresence();};
@@ -3328,12 +3375,12 @@ function brdWSRecv(data){let m;try{m=JSON.parse(data);}catch(e){return;}
  if(m.from&&m.from===BWS.id)return;
  if(m.type==='cursor'){brdPeerCursor(m.from,m.name||((BWS.peers[m.from]||{}).name)||'Гость',m.color||'#2D5BE3',m.x,m.y);return;}
  if(m.type==='op'){brdApplyRemote(m);return;}
- if(m.type==='session'&&m.session){brdEnsure().session=m.session;try{localStorage.setItem('streamapp',JSON.stringify(ST));}catch(e){}if(typeof CURV!=='undefined'&&CURV==='board'){brdRender();brdSessRefresh();}return;}
+ if(m.type==='session'&&m.session){brdEnsure().session=m.session;try{localStorage.setItem(stKey(),JSON.stringify(ST));}catch(e){}if(typeof CURV!=='undefined'&&CURV==='board'){brdRender();brdSessRefresh();}return;}
  if(m.type==='present'){brdPresRemote(m);return;}}
 function brdApplyRemote(m){brdEnsure();
  if(m.op==='upsert'&&m.item&&m.item.id){const arr=brdItems();const i=arr.findIndex(x=>x.id===m.item.id);if(i>=0)arr[i]=m.item;else arr.push(m.item);}
  else if(m.op==='delete'&&m.ids){ST.board.items=brdItems().filter(x=>m.ids.indexOf(x.id)<0);BW.sel=(BW.sel||[]).filter(id=>m.ids.indexOf(id)<0);}
- try{localStorage.setItem('streamapp',JSON.stringify(ST));}catch(e){}
+ try{localStorage.setItem(stKey(),JSON.stringify(ST));}catch(e){}
  if(BW.hist)brdHistReset(); // правки соавторов: локальную историю начинаем заново, чтобы отмена их не откатила
  if(typeof CURV!=='undefined'&&CURV==='board')brdRender();}
 function brdCurLayer(){if(!BW.wrap)return null;let l=BW.wrap.querySelector('.brd-curlayer');if(!l){l=document.createElement('div');l.className='brd-curlayer';l.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:9;overflow:hidden';BW.wrap.appendChild(l);}return l;}
@@ -3449,6 +3496,7 @@ function views(){
  setView('poker','Planning Poker','Совместная оценка в Story Points: голоса участников, медиана, разброс и консенсус по Фибоначчи с применением оценки к задаче.',pokerView());
  setView('lessons','Уроки','Реестр извлечённых уроков (lessons learned): ситуация, урок и рекомендация; пополняется из ретроспектив.',lessonsView());
  setView('raci','RACI','Матрица ответственности: для каждой активности — Responsible / Accountable / Consulted / Informed.',raciView());
+ setView('org','Стримы и команды','Оргструктура «Стрим → Команда»: у каждой команды свои данные (бэклог, спринты, доска, метрики). Переключение — в шапке; создание команд пустыми или копией, импорт команды из JSON и роли по стримам и командам.',orgView());
  setView('portfolio','Портфель','Портфельный обзор нескольких проектов: статус RAG, health, velocity, бюджет и прогресс; снимок текущего проекта одной кнопкой.',portfolioView());
  setView('busfactor','Bus factor / покрытие компетенций','Риск ключевого человека: сколько людей владеют каждым навыком (из Star Map), одиночные точки отказа и непокрытые навыки.',busFactorView());
  setView('healthcheck','Team Health Check','Периодическая самооценка здоровья команды (модель Spotify Squad): светофор и тренд по измерениям.',healthCheckView());
@@ -4101,7 +4149,7 @@ function scopeView(){const w=document.createElement('div');
   const b1=document.createElement('button');b1.className='btn';b1.textContent='📌 Зафиксировать базовый состав';b1.title='Сохранить текущее распределение задач по спринтам как базовый срез';b1.onclick=scopeBaseline;
   const b2=document.createElement('button');b2.className='btn primary';b2.textContent='🔍 Сравнить с базовым';b2.title='Записать в лог отличия текущего состава от базового';b2.onclick=scopeDiff;
   const c=document.createElement('span');c.style.cssText='font-size:12.5px;color:var(--muted);align-self:center;margin-left:auto';
-  let base=null;try{base=JSON.parse(localStorage.getItem('scopeBase')||'null');}catch(e){}
+  let base=null;try{base=JSON.parse(localStorage.getItem(tkey('scopeBase'))||'null');}catch(e){}
   c.textContent=base?('Базовый срез: '+Object.keys(base.map||{}).length+' задач от '+(base.date||'—')):'Базовый срез не зафиксирован';
   bar.appendChild(b1);bar.appendChild(b2);bar.appendChild(c);w.appendChild(bar);})();
  w.appendChild(editable('scopeLog',[{k:'id',label:'ID'},{k:'date',label:'Дата',type:'date'},{k:'sprint',label:'Спринт',type:'num'},
@@ -4131,10 +4179,10 @@ function scopeView(){const w=document.createElement('div');
  w.appendChild(lg);return w;}
 function scopeBaseline(){if(!PERM.canEdit){toast('Только для редактора/администратора');return;}
  const map={};(ST.tasks||[]).forEach(t=>{if(t.sprint!=null&&t.sprint!=='')map[t.id]=+t.sprint;});
- try{localStorage.setItem('scopeBase',JSON.stringify({date:todayISO(),map:map}));}catch(e){}
+ try{localStorage.setItem(tkey('scopeBase'),JSON.stringify({date:todayISO(),map:map}));}catch(e){}
  views();activate('scope');toast('Базовый состав зафиксирован: '+Object.keys(map).length+' задач');}
 function scopeDiff(){if(!PERM.canEdit){toast('Только для редактора/администратора');return;}
- let base=null;try{base=JSON.parse(localStorage.getItem('scopeBase')||'null');}catch(e){}
+ let base=null;try{base=JSON.parse(localStorage.getItem(tkey('scopeBase'))||'null');}catch(e){}
  if(!base||!base.map){toast('Сначала зафиксируйте базовый состав');return;}
  const now={};(ST.tasks||[]).forEach(t=>{if(t.sprint!=null&&t.sprint!=='')now[t.id]=+t.sprint;});
  let n=0;const seen=x=>({});
@@ -4159,7 +4207,7 @@ function evm(C){const sp=C.sp;const scope=(ST.tasks||[]).reduce((a,t)=>a+num(t.e
  return {rows,BAC,scope,cur,CPI,SPI,EAC,ETC,VAC,CV:cur.EV-cur.AC,SV:cur.EV-cur.PV};}
 function scheduleBaseline(){if(!PERM.canEdit){toast('Только для редактора/администратора');return;}
  const C=compute();const base={date:todayISO(),sp:C.sp.map(x=>({s:x.s,end:fmtd(x.b),plan:x.plan}))};
- try{localStorage.setItem('schedBase',JSON.stringify(base));}catch(e){}views();activate('evm');toast('Базовый план зафиксирован: '+base.sp.length+' спринтов');}
+ try{localStorage.setItem(tkey('schedBase'),JSON.stringify(base));}catch(e){}views();activate('evm');toast('Базовый план зафиксирован: '+base.sp.length+' спринтов');}
 function evmView(){const w=document.createElement('div');const C=compute();const E=evm(C);
  const money=v=>v==null?'—':fmt(v,0)+' ₽';
  const kp=document.createElement('div');kp.className='grid kpis';
@@ -4179,7 +4227,7 @@ function evmView(){const w=document.createElement('div');const C=compute();const
  w.appendChild(cc);
  const bbar=document.createElement('div');bbar.className='grm-pick';bbar.style.marginTop='14px';
  const bb=document.createElement('button');bb.className='btn';bb.textContent='📌 Зафиксировать базовый план';bb.onclick=scheduleBaseline;
- let sb=null;try{sb=JSON.parse(localStorage.getItem('schedBase')||'null');}catch(e){}
+ let sb=null;try{sb=JSON.parse(localStorage.getItem(tkey('schedBase'))||'null');}catch(e){}
  const bc=document.createElement('span');bc.style.cssText='font-size:12.5px;color:var(--muted);align-self:center;margin-left:auto';bc.textContent=sb?('Базовый план от '+(sb.date||'—')):'Базовый план не зафиксирован';
  bbar.appendChild(bb);bbar.appendChild(bc);w.appendChild(bbar);
  if(sb){const vc=document.createElement('div');vc.className='card';vc.style.marginTop='14px';
@@ -5369,7 +5417,7 @@ function commit(){save();views();activate(CURV);toast('Сохранено');}
 function recomputeSoft(){/* light: refresh dashboard only, keep edit focus */ renderDash(compute());const ik=document.getElementById('ishk');if(ik)drawIshikawa(ik);}
 /* ---------- sidebar navigation ---------- */
 const NAV=[
- {g:'Обзор',items:[['dash','Дашборд','📋'],['statusreport','Статус-отчёт','📰'],['portfolio','Портфель','🗂']]},
+ {g:'Обзор',items:[['org','Стримы и команды','🏢'],['dash','Дашборд','📋'],['statusreport','Статус-отчёт','📰'],['portfolio','Портфель','🗂']]},
  {g:'Планирование',items:[['roadmap','Дорожная карта','🗺️'],['quarters','Кварталы','🗓️'],['sprintGoals','Цели спринтов','🎯'],['kanban','Kanban-доска','🗃️'],['board','Доска','🧩'],['okr','OKR','🧭']]},
  {g:'Бэклог и приоритизация',items:[['backlog','Бэклог','🗂️'],['wbs','Иерархия работ','🌳'],['storymap','Story Map','🗺'],['rice','RICE','📊'],['wsjf','WSJF','⚖️'],['moscow','MoSCoW','📌']]},
  {g:'Расписание и зависимости',items:[['gantt','Гант','📊'],['deps','Зависимости','🔗'],['piboard','Программная доска','🧭'],['milestones','Вехи','🏁']]},
@@ -5381,9 +5429,15 @@ const NAV=[
  {g:'Система',items:[['params','Параметры','⚙️'],['integrations','Интеграции','🔌'],['calendar','Календарь','📅'],['budget','Бюджет','💰'],['checks','Проверки данных','🧪'],['eda','EDA отчёт','🔬'],['audit','Журнал событий','🧾']]},
  {g:'Справка',items:[['faq','FAQ','❓'],['support','Support','🛟']]},
 ];
-const APP_VERSION='2.0.0';const APP_DATE='2026-10-28';
+const APP_VERSION='2.1.0';const APP_DATE='2026-10-28';
 const APP_ABOUT='Кросс-функциональная команда — это группа специалистов из разных областей (разработчиков, дизайнеров, маркетологов, аналитиков, менеджеров и других), которые объединяются для работы над одним конкретным проектом или задачей. Ключевая идея в том, чтобы собрать внутри команды всех необходимых экспертов, чтобы она могла самостоятельно пройти путь от идеи до результата, не передавая задачу последовательно из одного отдела в другой.';
 const CHANGELOG=[
+ {v:'2.1.0',date:'2026-10-28',items:[
+   'Стримы и команды: оргструктура «Стрим → Команда», у каждой команды свои данные (бэклог, спринты, доска, риски, метрики) — на сервере в отдельной схеме БД, в браузере под своим ключом.',
+   'Переключатель «Стрим › Команда» в шапке; новый раздел «Стримы и команды»: создание, переименование и удаление стримов и команд, перенос команды в другой стрим, сводка по командам.',
+   'Новая команда создаётся пустой (со справочниками DoD, DoR, календарём, FAQ) или копией текущей; команда импортируется из JSON-выгрузки, в том числе из «Управления кросс-функциональной командой».',
+   'Роли по стримам и командам: назначение на стрим действует на все его команды, на команду — только на неё; без назначений действует общая роль. Права проверяются в API, аналитике и на доске.',
+   'Совместная доска — отдельная комната у каждой команды; аналитика (Python) считает метрики выбранной команды.']},
  {v:'2.0.0',date:'2026-10-28',items:[
    'Новый продукт «Управление стримами и командами» — отдельный проект на основе «Управления кросс-функциональной командой» v1.49.0 (форк с общей историей: исправления базового проекта переносятся через git upstream).',
    'Изоляция от базового проекта: свой порт (:8090), своя база streams, свой compose-проект и свой ключ данных в браузере — оба приложения можно запускать одновременно.']},
@@ -5719,7 +5773,7 @@ views();activate('dash');
 /* ---------- server authentication + multi-user sync ---------- */
 const API='api/state';const AUTHAPI='api/auth';const AUDITAPI='api/audit';
 var SYNC={on:false,ver:0,editAt:0};
-function hdrs(json){const h={};if(json)h['Content-Type']='application/json';if(AUTH.token)h['Authorization']='Bearer '+AUTH.token;return h;}
+function hdrs(json){const h={'X-Team-Id':curTeam()};if(json)h['Content-Type']='application/json';if(AUTH.token)h['Authorization']='Bearer '+AUTH.token;return h;}
 /* record a client-side UI event to the server audit log (best-effort, non-blocking) */
 function auditClient(action,detail){if(!(AUTH.mode==='server'&&AUTH.token))return;
  try{fetch(AUDITAPI+'/client',{method:'POST',headers:hdrs(true),body:JSON.stringify({action:action,detail:detail==null?null:String(detail).slice(0,480)})}).catch(()=>{});}catch(e){}}
@@ -5749,7 +5803,7 @@ async function serverLogout(){
 document.getElementById('lg_submit').onclick=async()=>{
  const u=document.getElementById('lg_user').value.trim(),p=document.getElementById('lg_pass').value;
  if(!u||!p){return;}
- try{await serverLogin(u,p);closeLogin();SYNC.on=true;setSt('🟢 онлайн','p-good');toast('Добро пожаловать, '+AUTH.user);syncPull(true);}
+ try{await serverLogin(u,p);closeLogin();SYNC.on=true;setSt('🟢 онлайн','p-good');toast('Добро пожаловать, '+AUTH.user);await orgFetch();syncPull(true);}
  catch(err){const e=document.getElementById('lg_err');e.textContent=err;e.style.display='block';}
 };
 document.getElementById('lg_pass').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('lg_submit').click();});
@@ -5805,13 +5859,14 @@ document.getElementById('usersmodal').addEventListener('click',e=>{if(e.target.i
 /* ---- sync ---- */
 async function syncPull(initial){
  if(AUTH.mode==='server'&&!AUTH.token)return;
+ const team=curTeam();
  try{const r=await fetch(API,{headers:hdrs(false),cache:'no-store'});
   if(r.status===401){sessionLost();return;}
-  if(!r.ok)throw 0;const d=await r.json();SYNC.on=true;
+  if(!r.ok)throw 0;const d=await r.json();if(team!==curTeam())return;SYNC.on=true;
   const busy=(!initial)&&(Date.now()-SYNC.editAt<4000);
   if((initial||d.version>SYNC.ver)&&!busy){
     ST=migrate(d.state||JSON.parse(JSON.stringify(SEED)));SYNC.ver=d.version;
-    localStorage.setItem('streamapp',JSON.stringify(ST));views();activate(CURV);
+    localStorage.setItem(stKey(),JSON.stringify(ST));views();activate(CURV);
     if(!initial)toast('Обновлено (другой пользователь)');
   }
   setSt('🟢 онлайн','p-good');
@@ -5821,12 +5876,14 @@ let pushT=null;
 function syncSchedule(){SYNC.editAt=Date.now();if(!SYNC.on)return;clearTimeout(pushT);pushT=setTimeout(syncPush,700);}
 async function syncPush(){
  if(!SYNC.on)return;
+ const team=curTeam();
  try{const r=await fetch(API,{method:'PUT',headers:hdrs(true),body:JSON.stringify({state:ST,baseVersion:SYNC.ver})});
   if(r.status===401){sessionLost();return;}
+  if(team!==curTeam())return;
   if(r.status===403){setSt('🔒 только чтение','p-warn');toast('Недостаточно прав для сохранения на сервере');return;}
   if(r.status===409){ // another user saved first — adopt their version, never silently overwrite
     const d=await r.json();ST=migrate(d.state||JSON.parse(JSON.stringify(SEED)));SYNC.ver=d.version;
-    localStorage.setItem('streamapp',JSON.stringify(ST));views();activate(CURV);
+    localStorage.setItem(stKey(),JSON.stringify(ST));views();activate(CURV);
     setSt('🟢 онлайн','p-good');toast('Изменено другим пользователем — загружена свежая версия');return;}
   if(!r.ok)throw 0;const d=await r.json();SYNC.ver=d.version;SYNC.on=true;setSt('🟢 сохранено','p-good');
  }catch(e){SYNC.on=false;setSt('⚪ офлайн','p-neut');}
@@ -5835,12 +5892,134 @@ function startSync(){
  fetch(API,{method:'HEAD'}).then(async r=>{ // probe: backend present?
   if(!r.ok&&r.status!==401&&r.status!==405){setSt('⚪ локально','p-neut');return;}
   AUTH.mode='server';AUTH.token=lsGet('auth_tk');updateRoleBtn();
-  if(AUTH.token&&await serverMe()){SYNC.on=true;syncPull(true);}
+  if(AUTH.token&&await serverMe()){SYNC.on=true;await orgFetch();syncPull(true);}
   else{AUTH.token='';lsSet('auth_tk','');updateRoleBtn();setSt('🔒 нужен вход','p-warn');openLogin();}
   setInterval(()=>{if(AUTH.mode==='server'&&AUTH.token)syncPull(false);},5000);
  }).catch(()=>{setSt('⚪ локально','p-neut');});
 }
 startSync();
+/* ---------- Стримы и команды: переключение, управление, роли ---------- */
+function orgServer(){return ORG.server&&typeof AUTH!=='undefined'&&AUTH.mode==='server'&&!!AUTH.token;}
+function orgCanManage(){return orgServer()?!!ORG.canManage:PERM.canAdmin;}
+function orgNextId(prefix,list){let mx=0;list.forEach(x=>{const m=String(x.id||'').match(new RegExp('^'+prefix+'(\\d+)$'));if(m)mx=Math.max(mx,+m[1]);});return prefix+(mx+1);}
+function orgLabel(id){const t=orgTeam(id);if(!t)return '—';const s=orgStream(t.streamId);return (s?s.name+' › ':'')+t.name;}
+/* Пустая команда: справочники (DoD, DoR, календарь, FAQ, категории Исикавы) из шаблона, без рабочих элементов. */
+function orgBlankState(src){const s=JSON.parse(JSON.stringify(src));const KEEP=['dod','dorItems','calendar','faq','ishikawaCats'];
+ Object.keys(s).forEach(k=>{if(Array.isArray(s[k])&&!KEEP.includes(k))s[k]=[];});s.board={cam:{x:80,y:80,z:1},items:[]};if(s.params)s.params.goal='';return s;}
+/* Права в UI следуют роли пользователя в текущей команде (с сервером). */
+function orgApplyRole(){if(!orgServer())return;const t=orgTeam();if(t&&t.role&&AUTH.role!=='ADMIN'){setPerm(t.role);updateRoleBtn();applyPerms();}}
+async function orgFetch(){if(!(typeof AUTH!=='undefined'&&AUTH.mode==='server'&&AUTH.token))return false;
+ try{const r=await fetch('api/org',{headers:hdrs(false),cache:'no-store'});if(!r.ok)return false;const d=await r.json();
+  ORG.streams=d.streams||[];ORG.teams=d.teams||[];ORG.canManage=!!d.canManage;ORG.server=true;
+  if(!ORG.teams.length){saveOrg();orgSwUpdate();setSt('🔒 нет доступа к командам','p-warn');return true;}
+  if(!ORG.teams.some(t=>t.id===ORG.cur)){ORG.cur=d.defaultTeam||ORG.teams[0].id;ST=load();SYNC.ver=0;views();activate(CURV);}
+  saveOrg();orgApplyRole();orgSwUpdate();if(typeof CURV!=='undefined'&&CURV==='org')orgRefresh();return true;
+ }catch(e){return false;}}
+async function switchTeam(id){if(!orgTeam(id)||id===curTeam())return false;
+ if(typeof SYNC!=='undefined'&&SYNC.on&&pushT){clearTimeout(pushT);pushT=null;await syncPush();}
+ try{localStorage.setItem(stKey(),JSON.stringify(ST));}catch(e){}   // текущая команда — в кэш до переключения
+ ORG.cur=id;saveOrg();ST=load();if(typeof SYNC!=='undefined')SYNC.ver=0;
+ if(typeof BW!=='undefined')BW.sel=[];if(typeof brdHistReset==='function')brdHistReset();
+ if(typeof BWS!=='undefined'&&BWS.ws){try{BWS.ws.close();}catch(e){}}   // комната доски — своя у каждой команды
+ orgApplyRole();orgSwUpdate();views();activate(CURV);
+ if(orgServer()){await syncPull(true);if(typeof startAnalytics==='function')startAnalytics();}
+ toast('Команда: '+orgLabel(id));auditClient('switch_team',id);return true;}
+/* ---- переключатель в шапке ---- */
+function orgSwUpdate(){const l=document.getElementById('teamsw_l');if(l)l.textContent=orgLabel();}
+function orgSwRender(){const pop=document.getElementById('teampop');if(!pop)return;
+ let h='';ORG.streams.forEach(s=>{const ts=ORG.teams.filter(t=>t.streamId===s.id);if(!ts.length)return;
+  h+=`<div class="org-pop-h">${esc(s.name)}</div>`;
+  ts.forEach(t=>{h+=`<button class="btn org-pop-t${t.id===curTeam()?' on':''}" data-team="${esc(t.id)}">${t.id===curTeam()?'● ':''}${esc(t.name)}</button>`;});});
+ h+=`<div class="dmenu-sep"></div><button class="btn" data-goorg="1">🏢 Стримы и команды…</button>`;pop.innerHTML=h;}
+(function(){const dm=document.getElementById('teamdm'),btn=document.getElementById('teamsw'),pop=document.getElementById('teampop');if(!dm)return;
+ const setOpen=o=>{dm.classList.toggle('open',o);btn.setAttribute('aria-expanded',o?'true':'false');if(o)orgSwRender();};
+ btn.addEventListener('click',e=>{e.stopPropagation();setOpen(!dm.classList.contains('open'));});
+ pop.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setOpen(false);
+  if(b.dataset.team)switchTeam(b.dataset.team);else if(b.dataset.goorg)activate('org');});
+ document.addEventListener('click',e=>{if(!dm.contains(e.target))setOpen(false);});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+ orgSwUpdate();})();
+/* ---- раздел «Стримы и команды» ---- */
+function orgTeamStats(id){let s=null;if(id===curTeam())s=ST;else if(!orgServer()){try{s=JSON.parse(localStorage.getItem(stKey(id))||'null');}catch(e){}}
+ if(!s)return null;const tasks=s.tasks||[];return {people:(s.team||[]).length,tasks:tasks.length,open:tasks.filter(x=>x.status!=='Готово').length};}
+function orgView(){const w=document.createElement('div');w.className='org-wrap';w.id='org_root';orgFill(w);return w;}
+function orgRefresh(){const w=document.getElementById('org_root');if(w)orgFill(w);}
+function orgFill(w){const man=orgCanManage(),srv=orgServer();
+ let h=`<div class="org-bar"><span class="org-sum">Стримов: <b>${ORG.streams.length}</b> · команд: <b>${ORG.teams.length}</b> · текущая: <b>${esc(orgLabel())}</b></span>`;
+ if(man)h+=`<button class="btn primary" data-act="addStream">＋ Стрим</button><button class="btn" data-act="importTeam" title="Создать команду из JSON-выгрузки (в т.ч. из «Управления кросс-функциональной командой»)">📥 Команда из JSON</button>`;
+ h+=`</div>`;
+ h+=srv?'':`<p class="org-note">Локальный режим: стримы и команды хранятся в этом браузере. Роли по командам и совместная работа доступны при подключении к серверу.</p>`;
+ ORG.streams.forEach(s=>{const ts=ORG.teams.filter(t=>t.streamId===s.id);
+  h+=`<div class="card org-stream" data-stream="${esc(s.id)}"><div class="org-sh"><div><div class="org-sn">${esc(s.name)}</div>${s.descr?`<div class="org-sd">${esc(s.descr)}</div>`:''}</div><div class="org-sa">`;
+  if(man)h+=`<button class="btn" data-act="renStream" title="Переименовать стрим">✏️</button><button class="btn" data-act="delStream" title="Удалить пустой стрим"${ts.length?' disabled':''}>🗑</button>`;
+  h+=`</div></div><div class="org-scroll"><table class="cardt org-tt"><thead><tr><th>Команда</th><th class="num">Участников</th><th class="num">Задач</th><th class="num">Открыто</th>${srv?'<th>Ваша роль</th>':''}<th></th></tr></thead><tbody>`;
+  if(!ts.length)h+=`<tr><td colspan="${srv?6:5}" class="org-empty" data-label="">В стриме пока нет команд</td></tr>`;
+  ts.forEach(t=>{const st=orgTeamStats(t.id),cur=t.id===curTeam(),f=v=>st?v:'—';
+   h+=`<tr data-team="${esc(t.id)}"${cur?' class="org-cur"':''}><td data-label="Команда"><b>${esc(t.name)}</b>${cur?' <span class="pill p-good">текущая</span>':''}</td><td class="num" data-label="Участников">${f(st&&st.people)}</td><td class="num" data-label="Задач">${f(st&&st.tasks)}</td><td class="num" data-label="Открыто">${f(st&&st.open)}</td>`
+    +(srv?`<td data-label="Ваша роль">${esc({ADMIN:'Администратор',EDITOR:'Редактор',VIEWER:'Просмотр'}[t.role]||t.role||'')}</td>`:'')
+    +`<td class="org-ta" data-label="">${cur?'':`<button class="btn" data-act="open">Открыть</button>`}`;
+   if(man){h+=`<button class="btn" data-act="renTeam" title="Переименовать">✏️</button><select data-act="moveTeam" title="Перенести в стрим">${ORG.streams.map(x=>`<option value="${esc(x.id)}"${x.id===t.streamId?' selected':''}>${esc(x.name)}</option>`).join('')}</select>`
+    +(t.id==='t1'?'':`<button class="rowdel" data-act="delTeam" title="Удалить команду и её данные">✕</button>`);}
+   h+=`</td></tr>`;});
+  h+=`</tbody></table></div>`;
+  if(man)h+=`<div class="org-add"><input data-f="name" placeholder="Название новой команды" maxlength="120"><select data-f="tpl"><option value="empty">Пустая (справочники текущей команды)</option><option value="copy">Копия текущей команды</option></select><button class="btn" data-act="addTeam">＋ Команда</button></div>`;
+  h+=`</div>`;});
+ if(srv&&man)h+=`<div class="card org-members"><div class="org-sn">Роли в стримах и командах</div><p class="org-note">Пользователь без назначений работает со всеми командами по своей общей роли. Назначение сужает доступ: роль в стриме действует на все его команды, роль в команде — только на неё.</p><div id="org_mtable">Загрузка…</div>
+  <div class="org-add"><input data-f="muser" placeholder="Логин пользователя"><select data-f="mscope">${ORG.streams.map(s=>`<option value="STREAM:${esc(s.id)}">Стрим: ${esc(s.name)}</option>`).join('')}${ORG.teams.map(t=>`<option value="TEAM:${esc(t.id)}">Команда: ${esc(orgLabel(t.id))}</option>`).join('')}</select><select data-f="mrole"><option value="EDITOR">Редактор</option><option value="VIEWER">Просмотр</option></select><button class="btn" data-act="grant">Назначить</button></div></div>`;
+ w.innerHTML=h;if(srv&&man)orgLoadMembers();}
+async function orgLoadMembers(){const box=document.getElementById('org_mtable');if(!box)return;
+ try{const r=await fetch('api/org/memberships',{headers:hdrs(false),cache:'no-store'});if(!r.ok)throw 0;const list=await r.json();
+  if(!list.length){box.innerHTML='<p class="org-empty">Назначений нет — все пользователи работают по общей роли.</p>';return;}
+  box.innerHTML=`<table class="cardt"><thead><tr><th>Пользователь</th><th>Область</th><th>Роль</th><th></th></tr></thead><tbody>${list.map(m=>`<tr><td>${esc(m.username)}</td><td>${m.scopeType==='STREAM'?'Стрим: '+esc((orgStream(m.scopeId)||{name:m.scopeId}).name):'Команда: '+esc(orgLabel(m.scopeId))}</td><td>${m.role==='EDITOR'?'Редактор':'Просмотр'}</td><td><button class="rowdel" data-act="revoke" data-pk="${esc(m.pk)}" title="Снять назначение">✕</button></td></tr>`).join('')}</tbody></table>`;
+ }catch(e){box.innerHTML='<p class="org-empty">Не удалось загрузить назначения</p>';}}
+async function orgApi(method,url,body){const r=await fetch(url,{method:method,headers:hdrs(!!body),body:body?JSON.stringify(body):undefined});
+ let d=null;try{d=await r.json();}catch(e){}if(!r.ok){const er=d&&d.error;throw ({stream_not_empty:'В стриме есть команды',default_team:'Первую команду удалить нельзя'}[er]||('Ошибка '+r.status));}return d;}
+async function orgAddStream(name){name=String(name||'').trim();if(!name)return null;
+ if(orgServer()){const s=await orgApi('POST','api/org/streams',{name:name});await orgFetch();return s.id;}
+ const id=orgNextId('s',ORG.streams);ORG.streams.push({id:id,name:name,descr:''});saveOrg();return id;}
+async function orgAddTeam(name,streamId,tpl){name=String(name||'').trim();if(!name)return null;
+ if(orgServer()){const t=await orgApi('POST','api/org/teams',{name:name,streamId:streamId,template:tpl,source:curTeam()});await orgFetch();return t.id;}
+ const id=orgNextId('t',ORG.teams);const st=tpl==='copy'?JSON.parse(JSON.stringify(ST)):orgBlankState(ST);if(st.params)st.params.name=name;
+ localStorage.setItem(stKey(id),JSON.stringify(st));ORG.teams.push({id:id,name:name,streamId:streamId});saveOrg();return id;}
+async function orgRename(kind,id,name){name=String(name||'').trim();if(!name)return;
+ if(orgServer()){await orgApi('PUT','api/org/'+kind+'/'+encodeURIComponent(id),{name:name});await orgFetch();return;}
+ const x=(kind==='streams'?ORG.streams:ORG.teams).find(o=>o.id===id);if(x){x.name=name;saveOrg();}}
+async function orgMoveTeam(id,streamId){if(orgServer()){await orgApi('PUT','api/org/teams/'+encodeURIComponent(id),{streamId:streamId});await orgFetch();return;}
+ const t=orgTeam(id);if(t){t.streamId=streamId;saveOrg();}}
+async function orgDelTeam(id){if(id==='t1')throw 'Первую команду удалить нельзя';
+ if(curTeam()===id)await switchTeam((ORG.teams.find(t=>t.id!==id)||{}).id);
+ if(orgServer()){await orgApi('DELETE','api/org/teams/'+encodeURIComponent(id));await orgFetch();return;}
+ ORG.teams=ORG.teams.filter(t=>t.id!==id);['streamapp:'+id,'scopeBase:'+id,'schedBase:'+id].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});saveOrg();}
+async function orgDelStream(id){if(ORG.teams.some(t=>t.streamId===id))throw 'В стриме есть команды';
+ if(orgServer()){await orgApi('DELETE','api/org/streams/'+encodeURIComponent(id));await orgFetch();return;}
+ ORG.streams=ORG.streams.filter(s=>s.id!==id);saveOrg();}
+/* Новая команда из JSON-выгрузки: создаётся пустая команда, затем её данные заменяются содержимым файла. */
+async function orgImportTeam(data,name,streamId){if(!data||typeof data!=='object'||Array.isArray(data))throw 'Неверный файл';
+ const nm=String(name||(data.params&&data.params.name)||'Импортированная команда').trim();
+ const id=await orgAddTeam(nm,streamId||(orgTeam()||{}).streamId||ORG.streams[0].id,'empty');if(!id)throw 'Не удалось создать команду';
+ await switchTeam(id);ST=migrate(data);if(ST.params)ST.params.name=nm;save();views();activate(CURV);return id;}
+document.addEventListener('click',async e=>{const b=e.target.closest('#org_root button[data-act]');if(!b)return;
+ const act=b.dataset.act,sEl=b.closest('[data-stream]'),tEl=b.closest('tr[data-team]'),sid=sEl&&sEl.dataset.stream,tid=tEl&&tEl.dataset.team;
+ try{
+  if(act==='open'){await switchTeam(tid);return;}
+  if(act==='addStream'){const n=prompt('Название стрима:');if(n&&await orgAddStream(n))toast('Стрим создан');}
+  else if(act==='renStream'){const n=prompt('Новое название стрима:',(orgStream(sid)||{}).name||'');if(n)await orgRename('streams',sid,n);}
+  else if(act==='delStream'){if(confirm('Удалить пустой стрим «'+((orgStream(sid)||{}).name||sid)+'»?')){await orgDelStream(sid);toast('Стрим удалён');}}
+  else if(act==='addTeam'){const box=b.closest('.org-add'),nm=box.querySelector('[data-f=name]').value,tpl=box.querySelector('[data-f=tpl]').value;
+   if(!nm.trim()){toast('Введите название команды');return;}const id=await orgAddTeam(nm,sid,tpl);if(id)toast('Команда «'+nm.trim()+'» создана');}
+  else if(act==='renTeam'){const n=prompt('Новое название команды:',(orgTeam(tid)||{}).name||'');if(n){await orgRename('teams',tid,n);orgSwUpdate();}}
+  else if(act==='delTeam'){if(confirm('Удалить команду «'+orgLabel(tid)+'» вместе со всеми её данными? Действие необратимо.')){await orgDelTeam(tid);toast('Команда удалена');}}
+  else if(act==='importTeam'){document.getElementById('orgfile').click();return;}
+  else if(act==='grant'){const box=b.closest('.org-add'),u=box.querySelector('[data-f=muser]').value.trim(),sc=box.querySelector('[data-f=mscope]').value.split(':'),role=box.querySelector('[data-f=mrole]').value;
+   if(!u){toast('Укажите логин');return;}await orgApi('POST','api/org/memberships',{username:u,scopeType:sc[0],scopeId:sc[1],role:role});toast('Роль назначена');orgLoadMembers();return;}
+  else if(act==='revoke'){await orgApi('DELETE','api/org/memberships/'+encodeURIComponent(b.dataset.pk));toast('Назначение снято');orgLoadMembers();return;}
+  orgSwUpdate();orgRefresh();
+ }catch(err){toast(typeof err==='string'?err:'Ошибка');}});
+document.addEventListener('change',async e=>{const s=e.target.closest('#org_root select[data-act=moveTeam]');if(!s)return;
+ try{await orgMoveTeam(s.closest('tr[data-team]').dataset.team,s.value);toast('Команда перенесена');orgSwUpdate();orgRefresh();}catch(err){toast(typeof err==='string'?err:'Ошибка');}});
+document.getElementById('orgfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=async()=>{try{const d=JSON.parse(r.result);const id=await orgImportTeam(d,null,null);toast('Команда «'+orgLabel(id)+'» создана из файла');auditClient('import_team',f.name);}
+  catch(err){toast(typeof err==='string'?err:'Ошибка файла');}e.target.value='';};r.readAsText(f);};
 /* ---------- Python analytics service integration ---------- */
 async function startAnalytics(){
  const set=(t,c)=>{const e=document.getElementById('anst');if(e){e.textContent=t;e.className='pill '+c;}};
@@ -5848,7 +6027,7 @@ async function startAnalytics(){
   const h=await fetch('analytics/health',{cache:'no-store'});
   if(!h.ok)throw 0;const hd=await h.json();
   if(hd.status!=='ok'){set('🐍 аналитика: БД','p-warn');return;}
-  const ah=(typeof AUTH!=='undefined'&&AUTH.token)?{'Authorization':'Bearer '+AUTH.token}:{};
+  const ah=(typeof AUTH!=='undefined'&&AUTH.token)?{'Authorization':'Bearer '+AUTH.token,'X-Team-Id':curTeam()}:{'X-Team-Id':curTeam()};
   const mr=await fetch('analytics/metrics',{cache:'no-store',headers:ah});
   if(mr.status===401){set('🐍 аналитика: вход','p-warn');return;}
   const m=await mr.json();
@@ -5880,7 +6059,7 @@ startAnalytics();setInterval(startAnalytics,30000);
     Пересобирается на каждой загрузке из NAV + DOM (h1/.lede каждого раздела) + TOUR + CHANGELOG,
     поэтому «обучение» помощника происходит само после каждого обновления приложения:
     новый или переименованный раздел, изменённое описание и новая версия подхватываются без правок. */
- const AKA={dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
+ const AKA={org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
   roadmap:'дорожная карта план спринтов график спринтов',quarters:'кварталы квартальный план',sprintGoals:'цель спринта обязательство ценность',
   kanban:'канбан доска статусы колонки карточки',board:'холст схемы стикеры мозговой штурм whiteboard рисование шаблоны ретро swot lean canvas карточки задач виджеты метрики отмена группировка мини-карта голосование презентация показ комментарии упоминания блок-схема майнд-карта mind map таблица дорожки swimlane',okr:'цели ключевые результаты objectives key results',
   backlog:'бэклог задачи список работ',wbs:'иерархия работ декомпозиция эпик фича история роллап',storymap:'карта историй активности',
@@ -6110,6 +6289,7 @@ startAnalytics();setInterval(startAnalytics,30000);
 /* ---------- guided tour (video-style walkthrough) ---------- */
 const TOUR=[
  {v:'dash',h:'Управление стримами и командами — обзор',p:'Веб-приложение для планирования работы кросс-функциональной команды по двухнедельным спринтам: данные, метрики и диаграммы в одном месте. Пройдёмся по всем разделам.',d:8000},
+ {v:'org',h:'Стримы и команды',p:'Оргструктура «Стрим → Команда»: у каждой команды свои бэклог, спринты, доска и метрики. Команда переключается в шапке; новые команды создаются пустыми или копией, импортируются из JSON; роли назначаются на стрим или команду.',d:10000},
  {v:'dash',h:'Дашборд',p:'Сводка проекта: KPI с RAG-подсветкой, блок «Что требует внимания», кликабельные карточки и sparkline-тренды. Ниже — графики ёмкости, velocity, багов и Time to Market.',d:10000},
  {v:'roadmap',h:'Дорожная карта',p:'Спринты рассчитываются автоматически из параметров и состава команды: даты, рабочие дни, ёмкость, план, velocity и процент выполнения.',d:9000},
  {v:'quarters',h:'Кварталы',p:'Агрегация спринтов по кварталам и квартальный roadmap на шкале дат.',d:7000},

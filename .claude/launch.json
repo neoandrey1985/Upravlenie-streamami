@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "frontend",
+      "name": "streams-frontend",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4180", "--directory", "frontend"],
-      "port": 4180
+      "runtimeArgs": ["-m", "http.server", "4190", "--directory", "frontend"],
+      "port": 4190
     }
   ]
 }

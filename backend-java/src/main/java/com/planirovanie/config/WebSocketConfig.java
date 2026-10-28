@@ -1,6 +1,8 @@
 package com.planirovanie.config;
 
 import com.planirovanie.entity.UserSession;
+import com.planirovanie.org.OrgService;
+import com.planirovanie.org.OrgTeam;
 import com.planirovanie.service.AuthService;
 import com.planirovanie.web.BoardSocketHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +24,14 @@ import java.util.Optional;
 /** Registers the whiteboard collaboration WebSocket at /ws/board.
  *  When auth is enabled, the handshake REQUIRES a valid bearer session token (?token=),
  *  so anonymous clients cannot read or inject board operations. Allowed origins are
- *  configurable (app.ws.allowed-origins). */
+ *  configurable (app.ws.allowed-origins). Each team has its own room (?team=<id>, default — the first
+ *  team); joining requires access to that team. */
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
     private final BoardSocketHandler handler;
     private final AuthService auth;
+    private final OrgService org;
 
     @Value("${app.auth.enabled:true}")
     private boolean authEnabled;
@@ -35,8 +39,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Value("${app.ws.allowed-origins:*}")
     private String allowedOrigins;
 
-    public WebSocketConfig(BoardSocketHandler handler, AuthService auth) {
-        this.handler = handler; this.auth = auth;
+    public WebSocketConfig(BoardSocketHandler handler, AuthService auth, OrgService org) {
+        this.handler = handler; this.auth = auth; this.org = org;
     }
 
     @Override
@@ -47,10 +51,17 @@ public class WebSocketConfig implements WebSocketConfigurer {
             public boolean beforeHandshake(ServerHttpRequest req, ServerHttpResponse res, WebSocketHandler h, Map<String, Object> attrs) {
                 String q = req.getURI().getQuery();
                 String token = param(q, "token"), name = param(q, "name");
+                Optional<OrgTeam> team = org.team(param(q, "team"));
+                if (team.isEmpty()) { res.setStatusCode(HttpStatus.NOT_FOUND); return false; }
+                attrs.put("team", team.get().id);
                 if (authEnabled) {
                     Optional<UserSession> us = (token == null || token.isBlank()) ? Optional.empty() : auth.resolve(token);
                     if (us.isEmpty()) {                 // reject unauthenticated / expired handshakes
                         res.setStatusCode(HttpStatus.UNAUTHORIZED);
+                        return false;
+                    }
+                    if (org.effectiveRole(us.get(), team.get()) == null) {   // no access to this team's board
+                        res.setStatusCode(HttpStatus.FORBIDDEN);
                         return false;
                     }
                     attrs.put("name", us.get().username);

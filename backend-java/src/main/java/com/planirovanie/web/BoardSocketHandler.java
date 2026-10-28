@@ -15,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Real-time collaboration relay for the whiteboard: a single shared room that broadcasts
- * every message (board operations + live cursors) to all other connected clients, and
+ * Real-time collaboration relay for the whiteboard: one room per team (handshake attribute "team")
+ * that broadcasts every message (board operations + live cursors) to all other connected clients, and
  * announces join/leave for presence. Authoritative data is still persisted via /api/state.
  */
 @Component
@@ -39,11 +39,12 @@ public class BoardSocketHandler extends TextWebSocketHandler {
         ObjectNode w = M.createObjectNode();
         w.put("type", "welcome"); w.put("id", id); w.put("color", color);
         ArrayNode arr = w.putArray("peers");
-        peers.forEach((k, p) -> { if (!k.equals(id)) { ObjectNode o = arr.addObject(); o.put("id", k); o.put("name", p[0]); o.put("color", p[1]); } });
+        String room = room(s);
+        peers.forEach((k, p) -> { if (!k.equals(id) && room.equals(room(sessions.get(k)))) { ObjectNode o = arr.addObject(); o.put("id", k); o.put("name", p[0]); o.put("color", p[1]); } });
         send(s, w.toString());
         ObjectNode j = M.createObjectNode();
         j.put("type", "join"); j.put("id", id); j.put("name", name); j.put("color", color);
-        broadcast(j.toString(), id);
+        broadcast(j.toString(), s);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class BoardSocketHandler extends TextWebSocketHandler {
             if ("hello".equals(type) && o.hasNonNull("name") && p != null) p[0] = o.get("name").asText();
             o.put("from", cid);
             if (p != null) { o.put("color", p[1]); if (!o.hasNonNull("name")) o.put("name", p[0]); }
-            broadcast(o.toString(), cid);
+            broadcast(o.toString(), s);
         } catch (Exception ignore) {}
     }
 
@@ -71,11 +72,19 @@ public class BoardSocketHandler extends TextWebSocketHandler {
         peers.remove(cid);
         ObjectNode l = M.createObjectNode();
         l.put("type", "leave"); l.put("id", cid);
-        broadcast(l.toString(), cid);
+        broadcast(l.toString(), s);
     }
 
-    private void broadcast(String msg, String exceptId) {
-        sessions.forEach((id, sess) -> { if (!id.equals(exceptId)) send(sess, msg); });
+    /** Sends to everyone in the sender's room except the sender (the sender may already be unregistered). */
+    private void broadcast(String msg, WebSocketSession from) {
+        String exceptId = (String) from.getAttributes().get("cid");
+        String room = room(from);
+        sessions.forEach((id, sess) -> { if (!id.equals(exceptId) && room.equals(room(sess))) send(sess, msg); });
+    }
+
+    private static String room(WebSocketSession s) {
+        Object t = s == null ? null : s.getAttributes().get("team");
+        return t == null ? "" : t.toString();
     }
 
     private void send(WebSocketSession s, String msg) {

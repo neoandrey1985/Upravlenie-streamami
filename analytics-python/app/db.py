@@ -2,6 +2,8 @@
 import os
 from sqlalchemy import create_engine, text
 
+from . import org
+
 DB_URL = os.getenv(
     "DB_URL_PY",
     "postgresql+psycopg2://streams:streams@localhost:5432/streams",
@@ -9,13 +11,20 @@ DB_URL = os.getenv(
 engine = create_engine(DB_URL, pool_pre_ping=True, future=True)
 
 
-def _rows(sql):
+def load_state(schema=None):
+    """Assemble a dict shaped like the front-end ST object from the relational tables of one team.
+    schema: the team's schema (None = default schema, i.e. the first team)."""
     with engine.connect() as c:
-        return [dict(r._mapping) for r in c.execute(text(sql))]
+        if schema:
+            c.execute(text('SET search_path TO "%s"' % org.safe_schema(schema)))
+        try:
+            return _assemble(lambda sql: [dict(r._mapping) for r in c.execute(text(sql))])
+        finally:
+            if schema:
+                c.execute(text("SET search_path TO DEFAULT"))   # pooled connection: never leak a team schema
 
 
-def load_state():
-    """Assemble a dict shaped like the front-end ST object from the relational tables."""
+def _assemble(_rows):
     pr = _rows("SELECT * FROM params WHERE id = 1")
     p = pr[0] if pr else {}
     st = {
@@ -64,6 +73,27 @@ def load_state():
         "dod": [{"crit": r["crit"], "done": r["done"]} for r in _rows("SELECT * FROM dod ORDER BY ord")],
     }
     return st
+
+
+def team_context(team_id, username, global_role):
+    """Resolve a team for a user: returns (schema, role) or raises LookupError/PermissionError."""
+    with engine.connect() as c:
+        try:
+            row = c.execute(text("SELECT id, stream_id, schema_name FROM org_teams WHERE id = :i"),
+                            {"i": team_id or org.DEFAULT_TEAM}).fetchone()
+        except Exception:   # platform tables not created yet (old database): only the default team exists
+            c.rollback()
+            if team_id in (None, "", org.DEFAULT_TEAM):
+                return None, global_role
+            raise LookupError("team_not_found")
+        if row is None:
+            raise LookupError("team_not_found")
+        mem = [] if username is None else [dict(r._mapping) for r in c.execute(
+            text("SELECT scope_type, scope_id, role FROM org_memberships WHERE username = :u"), {"u": username})]
+    role = "EDITOR" if username is None else org.effective_role(global_role, mem, {"id": row[0], "stream_id": row[1]})
+    if role is None:
+        raise PermissionError("forbidden")
+    return row[2], role
 
 
 def ping():

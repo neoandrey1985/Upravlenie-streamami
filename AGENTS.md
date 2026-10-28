@@ -6,6 +6,34 @@
 `analytics-python/` (FastAPI — движок метрик), `nginx` (reverse-proxy),
 всё поднимается через `docker-compose.yml`.
 
+Это **форк** «Управления кросс-функциональной командой» (`upstream` = github.com/neoandrey1985/Planirovanie,
+точка ветвления — тег `fork-base`) с уровнем «Стрим → Команда»: у каждой команды свои данные.
+
+## Стримы и команды — устройство и правила
+
+- **Схема БД на команду.** Первая команда (`t1`) живёт в `public`, остальные — в `team_<id>`; их миграции —
+  те же `db/migration` из базового проекта. Платформенные таблицы (`org_streams`, `org_teams`, `org_memberships`)
+  — только в `public`, миграции в `db/platform` (своя история `platform_schema_history`). **Не клади платформенные
+  таблицы в `db/migration`** и не занимай там номера версий — они приходят из upstream.
+- **Контекст команды:** заголовок `X-Team-Id` (или `?team=`) у `/api/state`, `/api/tasks`, `/analytics/*`;
+  доска — `/ws/board?team=`. `AuthInterceptor` проверяет доступ и ставит `TenantContext`.
+- **Доступ:** ADMIN — всё; пользователь без назначений — общая роль на всех командах; иначе — максимум из роли
+  в команде и роли в её стриме (`OrgService.effectiveRole`, то же в `analytics-python/app/org.py`).
+- **Код форка** держи отдельно: `com.planirovanie.org`, `db/platform`, блок «Стримы и команды» в `index.html`.
+  Общий код меняй минимально — так `git merge upstream/main` проходит без конфликтов.
+- **Фронтенд:** данные команды — ключ `stKey()` (`streamapp:<id>`), данные-«базы» команды — `tkey()`;
+  не пиши `localStorage('streamapp…')` напрямую. Смена команды — только `switchTeam()`.
+
+Подводные камни:
+- Hibernate выбирает схему при **открытии** сессии: не переключай `TenantContext` внутри `@Transactional`
+  (`OrgService` специально без транзакции; используй `TenantContext.callAs`).
+- Тесты (H2, без Flyway) создают схему команды копией `public` (`SCRIPT NODATA`); путь PostgreSQL+Flyway
+  проверяет только CI-шаг «Stack smoke test» (создание команды на живом стеке).
+- `migrate()` добавляет демо-эпики только при наличии демо-задачи `T-01` — пустые команды остаются пустыми.
+
+Перенос исправлений из базового проекта: `git fetch upstream && git merge upstream/main`
+(или `git cherry-pick <sha>`), затем `make test`.
+
 ## Build / run
 
 ```bash
@@ -14,7 +42,7 @@ make build         # только собрать образы
 docker compose down
 ```
 
-Локальный предпросмотр только фронтенда: `python -m http.server 4180 --directory frontend`.
+Локальный предпросмотр только фронтенда: `python -m http.server 4190 --directory frontend`.
 
 ## Test — регрессия по всему функционалу
 

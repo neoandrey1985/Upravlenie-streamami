@@ -81,6 +81,12 @@ docker compose up --build
 | HEAD | `/api/state` | проба доступности / авторизации |
 | GET/POST/PUT/DELETE | `/api/tasks[/{id}]` | пример полноценного REST-ресурса поверх JPA |
 | GET | `/api/health` | статус сервиса |
+| GET | `/api/org` | стримы и доступные пользователю команды (с его ролью в каждой) |
+| POST/PUT/DELETE | `/api/org/streams[/{id}]`, `/api/org/teams[/{id}]` | управление стримами и командами (ADMIN); команда создаётся `template: empty|copy` |
+| GET/POST/DELETE | `/api/org/memberships[/{pk}]` | роли пользователей в стримах и командах (ADMIN) |
+
+Данные команды: `/api/state`, `/api/tasks` и `/analytics/*` работают с командой из заголовка `X-Team-Id`
+(по умолчанию — первая команда `t1`); у каждой команды своя схема БД.
 
 **Python аналитика (`/analytics`)**
 | Метод | Путь | Назначение |

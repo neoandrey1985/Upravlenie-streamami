@@ -50,6 +50,32 @@ def main():
         m = C.compute(st)
         assert m["avgVelocity"] == 19.0 and m["closedSprints"] == 2, m
 
+        # schema-per-team: a second team lives in its own schema; load_state(schema) reads only it
+        raw = eng.raw_connection()
+        try:
+            cur = raw.cursor()
+            cur.execute('CREATE SCHEMA team_t2; SET search_path TO team_t2;')
+            cur.execute(sql)
+            cur.execute("DELETE FROM tasks WHERE task_id <> 'T-01'; UPDATE tasks SET title = 'Задача команды 2';")
+            cur.execute("SET search_path TO DEFAULT; CREATE TABLE org_teams (id TEXT PRIMARY KEY, stream_id TEXT, schema_name TEXT);"
+                        "CREATE TABLE org_memberships (pk SERIAL, username TEXT, scope_type TEXT, scope_id TEXT, role TEXT);"
+                        "INSERT INTO org_teams VALUES ('t1','s1',NULL), ('t2','s2','team_t2');"
+                        "INSERT INTO org_memberships (username, scope_type, scope_id, role) VALUES ('anna','TEAM','t2','EDITOR');")
+            raw.commit()
+        finally:
+            raw.close()
+        t2 = dbmod.load_state("team_t2")
+        assert len(t2["tasks"]) == 1 and t2["tasks"][0]["title"] == "Задача команды 2", t2["tasks"]
+        assert len(dbmod.load_state()["tasks"]) == 20, "default team must be untouched and search_path reset"
+        assert dbmod.team_context("t2", "anna", "VIEWER") == ("team_t2", "EDITOR")
+        assert dbmod.team_context(None, "admin", "ADMIN") == (None, "ADMIN")
+        for bad, exc in ((("t1", "anna", "VIEWER"), PermissionError), (("t9", "admin", "ADMIN"), LookupError)):
+            try:
+                dbmod.team_context(*bad)
+                raise AssertionError(f"expected {exc.__name__} for {bad}")
+            except exc:
+                pass
+
         print("db.py integration test OK "
               f"(tasks={len(st['tasks'])}, team={len(st['team'])}, deps={len(st['deps'])}, "
               f"velocity={m['avgVelocity']})")
