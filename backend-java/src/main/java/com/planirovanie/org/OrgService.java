@@ -32,11 +32,13 @@ public class OrgService {
     private final OrgMembershipRepo members;
     private final TeamSchemaManager schemas;
     private final StateService state;
+    private final StreamDocService streamDocs;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public OrgService(OrgStreamRepo streams, OrgTeamRepo teams, OrgMembershipRepo members,
-                      TeamSchemaManager schemas, StateService state) {
+                      TeamSchemaManager schemas, StateService state, StreamDocService streamDocs) {
         this.streams = streams; this.teams = teams; this.members = members; this.schemas = schemas; this.state = state;
+        this.streamDocs = streamDocs;
     }
 
     /** First start: one stream with one team that owns the existing (default-schema) data. */
@@ -74,6 +76,29 @@ public class OrgService {
         }
         return best;
     }
+
+    /**
+     * Effective role on the STREAM level (stream document: features, PI, ROAM, Scrum of Scrums):
+     * ADMIN → ADMIN; no memberships → global role; a STREAM membership → its role;
+     * otherwise any TEAM membership inside the stream → VIEWER (team members see their stream); else null.
+     */
+    public String streamRole(UserSession s, String streamId) {
+        if (s == null) return "EDITOR";
+        if ("ADMIN".equals(s.role)) return "ADMIN";
+        List<OrgMembership> mine = members.findByUsername(s.username);
+        if (mine.isEmpty()) return s.role;
+        String best = null;
+        for (OrgMembership m : mine) {
+            if ("STREAM".equals(m.scopeType) && m.scopeId.equals(streamId)) best = max(best, m.role);
+        }
+        if (best != null) return best;
+        for (OrgMembership m : mine) {
+            if ("TEAM".equals(m.scopeType) && teams.findById(m.scopeId).map(t -> streamId.equals(t.streamId)).orElse(false)) return "VIEWER";
+        }
+        return null;
+    }
+
+    public boolean streamExists(String id) { return id != null && streams.existsById(id); }
 
     public static boolean canWrite(String role) { return "EDITOR".equals(role) || "ADMIN".equals(role); }
 
@@ -133,6 +158,7 @@ public class OrgService {
         if (streams.findById(id).isEmpty()) return "not_found";
         if (!teams.findByStreamId(id).isEmpty()) return "stream_not_empty";
         members.deleteAll(members.findByScopeTypeAndScopeId("STREAM", id));
+        streamDocs.delete(id);
         streams.deleteById(id);
         return null;
     }

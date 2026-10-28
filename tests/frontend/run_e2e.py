@@ -948,6 +948,69 @@ def main():
             assert not r['errs'], 'sections failed on an empty team: ' + str(r['errs'][:5])
         case('org: empty team renders every section', t_org_blank_sections)
 
+        # ---- 36. Stream level: aggregation, feature → team story, PI board, predictability, conflicts ----
+        def t_stream_level():
+            r = page.evaluate("""async()=>{try{
+              setPerm('admin');applyPerms();if(curTeam()!=='t1')await switchTeam('t1');
+              localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;STC.at=0;
+              const a=await orgAddTeam('Альфа','s1','copy'),b=await orgAddTeam('Бета','s1','empty');
+              const states=await streamTeamStates(true);
+              const people=states.reduce((s,x)=>s+((x.st&&x.st.team)||[]).length,0);
+              activate('stream');await sdocLoad(true);await streamFill('stream',true);
+              const kpis=[...document.querySelectorAll('#str_stream .kpi .k-val')].map(e=>e.textContent.trim());
+              const rows=document.querySelectorAll('#str_stream tbody tr').length;
+              // фича и её история в бэклоге ДРУГОЙ команды, во 2-й итерации PI
+              activate('features');await streamFill('features',true);
+              document.querySelector('#str_features [data-sact=add][data-coll=features]').click();
+              const F=()=>SDOC.data.features[0],D=()=>SDOC.data;F().name='Оплата картой';sdocSave();await streamFill('features',true);
+              document.querySelector('#str_features [data-sact=split]').click();
+              const box=document.getElementById('str_split');box.querySelector('[data-f=team]').value=a;
+              box.querySelector('[data-f=title]').value='Платёжный шлюз';box.querySelector('[data-f=est]').value='5';box.querySelector('[data-f=iter]').value='2';
+              document.querySelector('#str_features [data-sact=splitGo]').click();
+              for(let k=0;k<40&&!F().links.length;k++)await new Promise(r=>setTimeout(r,50));
+              const teamA=JSON.parse(localStorage.getItem(stKey(a)));const f=F();const story=teamA.tasks.find(t=>t.id===(f.links[0]||{}).task);
+              const storyOk=!!story&&story.title==='['+f.id+'] Платёжный шлюз'&&story.type==='История'&&+story.sprint===2;
+              const notInT1=!ST.tasks.some(t=>/Платёжный шлюз/.test(t.title));
+              // программная доска: фича — в строке команды «Альфа», итерация 2
+              activate('streampi');await streamFill('streampi',true);
+              const boardRow=[...document.querySelectorAll('#str_streampi .str-board tbody tr')].find(tr=>tr.querySelector('th').textContent==='Альфа');
+              const chipOk=!!boardRow&&boardRow.children[2].textContent.includes(f.id);
+              // предсказуемость PI и конфликт зависимостей
+              let d=SDOC.data;const pi=piCur();
+              d.objectives.push({id:'O-01',pi:pi.id,team:a,text:'x',bv:10,actual:8,committed:true},{id:'O-02',pi:pi.id,team:b,text:'y',bv:5,actual:5,committed:true},{id:'O-03',pi:pi.id,team:b,text:'z',bv:9,actual:'',committed:false});
+              d.deps.push({id:'XD-01',from:b,to:a,feature:f.id,item:'API',need:2,plan:3,status:'Принята'},{id:'XD-02',from:a,to:b,feature:'',item:'UI',need:3,plan:2,status:'Открыта'});
+              sdocSave();await streamFill('streampi',true);
+              const pred=piPredict(pi),bad=document.querySelectorAll('#str_streampi .str-chip.bad').length;
+              // ROAM: перенос высокого риска команды; Scrum of Scrums: строка на каждую команду
+              activate('roam');await streamFill('roam',true);const before=D().roam.length;
+              const tr=document.querySelector('#str_roam [data-sact=toRoam]');if(tr)tr.click();
+              for(let k=0;k<20&&D().roam.length===before;k++)await new Promise(r=>setTimeout(r,50));
+              activate('sos');await streamFill('sos',true);document.querySelector('#str_sos [data-sact=sosNew]').click();
+              for(let k=0;k<40&&!D().sos.length;k++)await new Promise(r=>setTimeout(r,50));
+              d=D();const sosOk=d.sos.length===3&&d.sos.every(s=>s.date)&&/Спринт #/.test((d.sos.find(s=>s.team==='t1')||{}).done||'');
+              // сохранено в документе стрима
+              const saved=JSON.parse(localStorage.getItem(sdocKey('s1')));
+              // просмотр: нет кнопок изменения, sdocSave() запрещён
+              setPerm('viewer');applyPerms();await streamFill('features',true);
+              const roNoAdd=!document.querySelector('#str_features [data-sact=add]')&&sdocSave()===false;
+              setPerm('admin');applyPerms();
+              await orgDelTeam(a);await orgDelTeam(b);localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;activate('dash');
+              return {kpiTeams:kpis[0],kpiPeople:kpis[1],people,rows,storyOk,notInT1,chipOk,pred,bad,roam:D().roam.length-before,sosOk,
+                      saved:!!saved&&saved.features.length===1&&saved.features[0].links.length===1,roNoAdd};
+            }catch(e){return 'ERR:'+e.message+' '+(e.stack||'').split('\\n')[1];}}""")
+            assert isinstance(r, dict), 'stream flow failed: ' + str(r)
+            assert r['kpiTeams'] == '3' and r['rows'] == 3, 'stream should aggregate 3 teams: ' + str(r)
+            assert r['kpiPeople'] == str(r['people']), 'people KPI must be the sum over teams: ' + str(r)
+            assert r['storyOk'] and r['notInT1'], 'feature story must land in the chosen team backlog: ' + str(r)
+            assert r['chipOk'], 'program board should show the feature in team row / iteration 2'
+            assert abs(r['pred'] - 13 / 15) < 1e-9, 'PI predictability = actual/plan BV of committed objectives: ' + str(r['pred'])
+            assert r['bad'] == 1, 'exactly one dependency conflict expected, got ' + str(r['bad'])
+            assert r['roam'] == 1, 'high team risk should move into ROAM'
+            assert r['sosOk'], 'Scrum of Scrums agenda should have a row per team with sprint progress'
+            assert r['saved'], 'stream document not persisted'
+            assert r['roNoAdd'], 'viewer must not edit stream data'
+        case('stream: aggregation, feature stories, PI board, predictability, ROAM, SoS', t_stream_level)
+
         br.close()
     httpd.shutdown()
 

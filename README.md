@@ -84,6 +84,7 @@ docker compose up --build
 | GET | `/api/org` | стримы и доступные пользователю команды (с его ролью в каждой) |
 | POST/PUT/DELETE | `/api/org/streams[/{id}]`, `/api/org/teams[/{id}]` | управление стримами и командами (ADMIN); команда создаётся `template: empty|copy` |
 | GET/POST/DELETE | `/api/org/memberships[/{pk}]` | роли пользователей в стримах и командах (ADMIN) |
+| GET/PUT | `/api/org/streams/{id}/doc` | документ стрима: фичи, PI и цели, межкомандные зависимости, ROAM, Scrum of Scrums (`{data, baseVersion}`, 409 при конфликте; права — роль в стриме) |
 
 Данные команды: `/api/state`, `/api/tasks` и `/analytics/*` работают с командой из заголовка `X-Team-Id`
 (по умолчанию — первая команда `t1`); у каждой команды своя схема БД.

@@ -22,7 +22,7 @@ import java.util.Optional;
  *   - reads (GET): any authenticated user (VIEWER+);
  *   - writes (POST/PUT/DELETE/PATCH): EDITOR or ADMIN;
  *   - /api/auth/users**: ADMIN only;
- *   - /api/org: reads — any signed-in user, mutations — ADMIN only;
+ *   - /api/org: reads — any signed-in user, mutations — ADMIN only (stream documents: stream role);
  *   - team-scoped data (/api/state, /api/tasks): the team comes from the X-Team-Id header (or ?team=),
  *     access and write rights follow the user's EFFECTIVE role on that team (see {@link OrgService}),
  *     and the request runs in that team's schema ({@link TenantContext}).
@@ -81,6 +81,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (path.contains("/api/audit/client")) return true;
         // Organisation structure: everyone reads (filtered by access), only ADMIN changes it.
         if (path.contains("/api/org")) {
+            if (path.endsWith("/doc")) return true;                      // stream document: stream role checked in OrgController
             return !writing || "ADMIN".equals(role) ? true : deny(res, 403, "forbidden");
         }
         // Reading the audit log is ADMIN-only.

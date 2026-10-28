@@ -21,6 +21,10 @@
   в команде и роли в её стриме (`OrgService.effectiveRole`, то же в `analytics-python/app/org.py`).
 - **Код форка** держи отдельно: `com.planirovanie.org`, `db/platform`, блок «Стримы и команды» в `index.html`.
   Общий код меняй минимально — так `git merge upstream/main` проходит без конфликтов.
+- **Уровень стрима** (меню «Стрим»): свои данные — документ стрима (`/api/org/streams/{id}/doc`, локально
+  `streamapp:stream:<id>`, в коде `SDOC`, `sdocSave()`); сводки считаются функциями команды (`compute`,
+  `sprintRisk`, `sayDo`) по данным каждой команды через `withState()`. Истории фич пишутся в бэклог команды
+  (`teamAddTask`), связь — `feature.links`. Роль в стриме: STREAM-назначение; участник команды — только просмотр.
 - **Фронтенд:** данные команды — ключ `stKey()` (`streamapp:<id>`), данные-«базы» команды — `tkey()`;
   не пиши `localStorage('streamapp…')` напрямую. Смена команды — только `switchTeam()`.
 

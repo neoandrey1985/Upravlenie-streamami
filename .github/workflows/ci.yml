@@ -116,6 +116,10 @@ jobs:
           curl -fs -H "$AUTH" -H "X-Team-Id: $TID" http://localhost:8090/analytics/metrics | grep -q 'avgVelocity'
           curl -fs -H "$AUTH" http://localhost:8090/api/state | grep -q '"T-01"'   # first team untouched
           test "$(curl -s -o /dev/null -w '%{http_code}' -H "$AUTH" -H 'X-Team-Id: t404' http://localhost:8090/api/state)" = "404"
+          # stream document (platform migration V2): versioned save + stale write rejected
+          curl -fs -X PUT -H "$AUTH" -H 'Content-Type: application/json' http://localhost:8090/api/org/streams/$SID/doc             -d '{"baseVersion":0,"data":{"features":[{"id":"F-01","name":"CI feature"}]}}' | grep -q '"version":1'
+          curl -fs -H "$AUTH" http://localhost:8090/api/org/streams/$SID/doc | grep -q 'CI feature'
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H "$AUTH" -H 'Content-Type: application/json'             http://localhost:8090/api/org/streams/$SID/doc -d '{"baseVersion":0,"data":{}}')" = "409"
           # security headers present
           curl -sI http://localhost:8090/ | grep -qi 'X-Frame-Options: DENY'
           curl -sI http://localhost:8090/ | grep -qi 'Content-Security-Policy'

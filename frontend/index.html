@@ -545,6 +545,32 @@ body.noadmin #rst,body.noadmin #imp{display:none}
 .org-add input,.org-add select{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;padding:8px 9px;font-family:inherit;font-size:13px;max-width:100%}
 .org-add input{flex:1 1 200px;min-width:0}
 .org-empty{color:var(--muted);text-align:center}
+/* ---- уровень стрима ---- */
+.str-wrap{display:flex;flex-direction:column;gap:14px}
+.str-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.str-head select,.str-wrap .org-bar select,.str-wrap .org-bar input{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;padding:6px 8px;font-family:inherit;font-size:13px}
+.str-wrap .org-bar label,.str-head label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.str-bar{display:inline-block;width:72px;height:6px;border-radius:3px;background:var(--line);vertical-align:middle;overflow:hidden}
+.str-bar i{display:block;height:100%;background:var(--good)}
+.str-flist{display:flex;flex-direction:column}
+.str-frow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid var(--line)}
+.str-frow:last-child{border-bottom:none}
+.str-frow>span:first-child{flex:1 1 240px}
+.str-board{border-collapse:collapse;width:100%;min-width:640px}
+.str-board th,.str-board td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left;font-size:12.5px}
+.str-board td{min-width:110px}
+.str-board tbody th{white-space:nowrap}
+.str-chip{display:inline-block;margin:2px;padding:2px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:11.5px;font-weight:600}
+.str-chip.done{background:var(--good-bg);color:var(--good);border-color:transparent}
+.str-chip.dep{border-style:dashed}
+.str-chip.bad{background:var(--crit-bg);color:var(--crit);border-color:var(--crit)}
+.str-det summary{cursor:pointer;color:var(--muted);font-size:12px}
+.str-det div{font-size:12px;color:var(--muted);padding:2px 0}
+.str-t td input[type=checkbox]{width:auto;min-width:0}
+.str-t td select{min-width:100px}
+.str-t td.num input{min-width:52px;max-width:72px}
+.str-t td.wide input{min-width:190px}
+.str-board tbody th{text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink)}
 </style>
 <header class="top"><div class="inner">
  <button class="btn iconbtn" id="menubtn" aria-label="Меню" title="Свернуть / развернуть меню">☰</button>
@@ -573,7 +599,7 @@ body.noadmin #rst,body.noadmin #imp{display:none}
  </div>
 </div></header>
 <div class="shell"><aside class="side" id="side"><nav id="nav"></nav><div class="side-foot" id="sidefoot"></div></aside><div class="scrim" id="scrim"></div>
-<main id="main"><section class="view" id="v_org"></section><section class="view" id="v_dash"></section><section class="view" id="v_board"></section><section class="view" id="v_kanban"></section><section class="view" id="v_backlog"></section><section class="view" id="v_team"></section><section class="view" id="v_starmap"></section><section class="view" id="v_roadmap"></section><section class="view" id="v_quarters"></section><section class="view" id="v_rice"></section><section class="view" id="v_wsjf"></section><section class="view" id="v_moscow"></section><section class="view" id="v_sprintGoals"></section><section class="view" id="v_gantt"></section><section class="view" id="v_deps"></section><section class="view" id="v_piboard"></section><section class="view" id="v_releases"></section><section class="view" id="v_milestones"></section><section class="view" id="v_debt"></section><section class="view" id="v_okr"></section><section class="view" id="v_budget"></section><section class="view" id="v_analytics"></section><section class="view" id="v_risks"></section><section class="view" id="v_bugs"></section><section class="view" id="v_daily"></section><section class="view" id="v_grooming"></section><section class="view" id="v_demo"></section><section class="view" id="v_vacation"></section><section class="view" id="v_birthdays"></section><section class="view" id="v_retro"></section><section class="view" id="v_agile"></section><section class="view" id="v_calendar"></section><section class="view" id="v_scope"></section><section class="view" id="v_checks"></section><section class="view" id="v_eda"></section><section class="view" id="v_integrations"></section><section class="view" id="v_params"></section><section class="view" id="v_faq"></section><section class="view" id="v_support"></section><section class="view" id="v_audit"></section><section class="view" id="v_evm"></section><section class="view" id="v_changes"></section><section class="view" id="v_issues"></section><section class="view" id="v_stakeholders"></section><section class="view" id="v_statusreport"></section><section class="view" id="v_decisions"></section><section class="view" id="v_wbs"></section><section class="view" id="v_storymap"></section><section class="view" id="v_impediments"></section><section class="view" id="v_poker"></section><section class="view" id="v_lessons"></section><section class="view" id="v_raci"></section><section class="view" id="v_portfolio"></section><section class="view" id="v_busfactor"></section><section class="view" id="v_healthcheck"></section><section class="view" id="v_dora"></section><section class="view" id="v_incidents"></section></main></div>
+<main id="main"><section class="view" id="v_org"></section><section class="view" id="v_stream"></section><section class="view" id="v_features"></section><section class="view" id="v_streampi"></section><section class="view" id="v_roam"></section><section class="view" id="v_sos"></section><section class="view" id="v_dash"></section><section class="view" id="v_board"></section><section class="view" id="v_kanban"></section><section class="view" id="v_backlog"></section><section class="view" id="v_team"></section><section class="view" id="v_starmap"></section><section class="view" id="v_roadmap"></section><section class="view" id="v_quarters"></section><section class="view" id="v_rice"></section><section class="view" id="v_wsjf"></section><section class="view" id="v_moscow"></section><section class="view" id="v_sprintGoals"></section><section class="view" id="v_gantt"></section><section class="view" id="v_deps"></section><section class="view" id="v_piboard"></section><section class="view" id="v_releases"></section><section class="view" id="v_milestones"></section><section class="view" id="v_debt"></section><section class="view" id="v_okr"></section><section class="view" id="v_budget"></section><section class="view" id="v_analytics"></section><section class="view" id="v_risks"></section><section class="view" id="v_bugs"></section><section class="view" id="v_daily"></section><section class="view" id="v_grooming"></section><section class="view" id="v_demo"></section><section class="view" id="v_vacation"></section><section class="view" id="v_birthdays"></section><section class="view" id="v_retro"></section><section class="view" id="v_agile"></section><section class="view" id="v_calendar"></section><section class="view" id="v_scope"></section><section class="view" id="v_checks"></section><section class="view" id="v_eda"></section><section class="view" id="v_integrations"></section><section class="view" id="v_params"></section><section class="view" id="v_faq"></section><section class="view" id="v_support"></section><section class="view" id="v_audit"></section><section class="view" id="v_evm"></section><section class="view" id="v_changes"></section><section class="view" id="v_issues"></section><section class="view" id="v_stakeholders"></section><section class="view" id="v_statusreport"></section><section class="view" id="v_decisions"></section><section class="view" id="v_wbs"></section><section class="view" id="v_storymap"></section><section class="view" id="v_impediments"></section><section class="view" id="v_poker"></section><section class="view" id="v_lessons"></section><section class="view" id="v_raci"></section><section class="view" id="v_portfolio"></section><section class="view" id="v_busfactor"></section><section class="view" id="v_healthcheck"></section><section class="view" id="v_dora"></section><section class="view" id="v_incidents"></section></main></div>
 <div class="palette" id="palette"><div class="pbox"><input class="pin" id="pin" placeholder="Поиск раздела или действия…" autocomplete="off"><div class="plist" id="plist"></div></div></div>
 <div class="role-pop" id="rolepop"></div>
 <div class="modal" id="accmodal"><div class="mbox">
@@ -3497,6 +3523,11 @@ function views(){
  setView('lessons','Уроки','Реестр извлечённых уроков (lessons learned): ситуация, урок и рекомендация; пополняется из ретроспектив.',lessonsView());
  setView('raci','RACI','Матрица ответственности: для каждой активности — Responsible / Accountable / Consulted / Informed.',raciView());
  setView('org','Стримы и команды','Оргструктура «Стрим → Команда»: у каждой команды свои данные (бэклог, спринты, доска, метрики). Переключение — в шапке; создание команд пустыми или копией, импорт команды из JSON и роли по стримам и командам.',orgView());
+ setView('stream','Обзор стрима','Сводка по всем командам стрима: velocity, health, риск срыва текущего спринта, say/do, баги, блокеры и предсказуемость PI; фичи текущего PI по WSJF.',streamShell('stream'));
+ setView('features','Фичи стрима','Бэклог фич стрима с приоритетом WSJF; фича разбивается на истории прямо в бэклогах команд, прогресс считается по их статусам.',streamShell('features'));
+ setView('streampi','PI стрима','Планирование инкремента: программная доска «команды × итерации», цели команд с бизнес-ценностью и предсказуемостью, межкомандные зависимости с контролем сроков.',streamShell('streampi'));
+ setView('roam','Риски ROAM','Риски уровня стрима по модели ROAM (Resolved, Owned, Accepted, Mitigated) с переносом высоких рисков из реестров команд.',streamShell('roam'));
+ setView('sos','Scrum of Scrums','Синхронизация команд стрима: повестка формируется из данных команд — прогресс спринта, импедименты, блокеры и кому нужна помощь.',streamShell('sos'));
  setView('portfolio','Портфель','Портфельный обзор нескольких проектов: статус RAG, health, velocity, бюджет и прогресс; снимок текущего проекта одной кнопкой.',portfolioView());
  setView('busfactor','Bus factor / покрытие компетенций','Риск ключевого человека: сколько людей владеют каждым навыком (из Star Map), одиночные точки отказа и непокрытые навыки.',busFactorView());
  setView('healthcheck','Team Health Check','Периодическая самооценка здоровья команды (модель Spotify Squad): светофор и тренд по измерениям.',healthCheckView());
@@ -5418,6 +5449,7 @@ function recomputeSoft(){/* light: refresh dashboard only, keep edit focus */ re
 /* ---------- sidebar navigation ---------- */
 const NAV=[
  {g:'Обзор',items:[['org','Стримы и команды','🏢'],['dash','Дашборд','📋'],['statusreport','Статус-отчёт','📰'],['portfolio','Портфель','🗂']]},
+ {g:'Стрим',items:[['stream','Обзор стрима','🛰️'],['features','Фичи стрима','🎁'],['streampi','PI стрима','🗓️'],['roam','Риски ROAM','🛡️'],['sos','Scrum of Scrums','🔄']]},
  {g:'Планирование',items:[['roadmap','Дорожная карта','🗺️'],['quarters','Кварталы','🗓️'],['sprintGoals','Цели спринтов','🎯'],['kanban','Kanban-доска','🗃️'],['board','Доска','🧩'],['okr','OKR','🧭']]},
  {g:'Бэклог и приоритизация',items:[['backlog','Бэклог','🗂️'],['wbs','Иерархия работ','🌳'],['storymap','Story Map','🗺'],['rice','RICE','📊'],['wsjf','WSJF','⚖️'],['moscow','MoSCoW','📌']]},
  {g:'Расписание и зависимости',items:[['gantt','Гант','📊'],['deps','Зависимости','🔗'],['piboard','Программная доска','🧭'],['milestones','Вехи','🏁']]},
@@ -5429,9 +5461,15 @@ const NAV=[
  {g:'Система',items:[['params','Параметры','⚙️'],['integrations','Интеграции','🔌'],['calendar','Календарь','📅'],['budget','Бюджет','💰'],['checks','Проверки данных','🧪'],['eda','EDA отчёт','🔬'],['audit','Журнал событий','🧾']]},
  {g:'Справка',items:[['faq','FAQ','❓'],['support','Support','🛟']]},
 ];
-const APP_VERSION='2.1.0';const APP_DATE='2026-10-28';
+const APP_VERSION='2.2.0';const APP_DATE='2026-10-28';
 const APP_ABOUT='Кросс-функциональная команда — это группа специалистов из разных областей (разработчиков, дизайнеров, маркетологов, аналитиков, менеджеров и других), которые объединяются для работы над одним конкретным проектом или задачей. Ключевая идея в том, чтобы собрать внутри команды всех необходимых экспертов, чтобы она могла самостоятельно пройти путь от идеи до результата, не передавая задачу последовательно из одного отдела в другой.';
 const CHANGELOG=[
+ {v:'2.2.0',date:'2026-10-28',items:[
+   'Уровень стрима — новый блок меню «Стрим»: обзор стрима, фичи, PI, риски ROAM и Scrum of Scrums. Данные стрима хранятся отдельно от данных команд (на сервере — с версиями и правами уровня стрима).',
+   'Обзор стрима: сводка по всем командам — velocity, health, риск срыва текущего спринта, say/do, баги, блокеры, предсказуемость PI; фичи текущего PI по WSJF с прогрессом.',
+   'Фичи стрима: бэклог с WSJF, статусом и PI; «＋ История» создаёт историю фичи прямо в бэклоге выбранной команды (в нужном спринте), прогресс фичи считается по статусам этих историй.',
+   'PI стрима: программная доска «команды × итерации» из историй фич, цели команд с плановой и фактической бизнес-ценностью (предсказуемость PI), межкомандные зависимости с подсветкой конфликтов сроков.',
+   'Риски ROAM с переносом высоких рисков из реестров команд; Scrum of Scrums — повестка формируется автоматически из прогресса спринтов, импедиментов и блокеров команд.']},
  {v:'2.1.0',date:'2026-10-28',items:[
    'Стримы и команды: оргструктура «Стрим → Команда», у каждой команды свои данные (бэклог, спринты, доска, риски, метрики) — на сервере в отдельной схеме БД, в браузере под своим ключом.',
    'Переключатель «Стрим › Команда» в шапке; новый раздел «Стримы и команды»: создание, переименование и удаление стримов и команд, перенос команды в другой стрим, сводка по командам.',
@@ -6020,6 +6058,270 @@ document.addEventListener('change',async e=>{const s=e.target.closest('#org_root
 document.getElementById('orgfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
  r.onload=async()=>{try{const d=JSON.parse(r.result);const id=await orgImportTeam(d,null,null);toast('Команда «'+orgLabel(id)+'» создана из файла');auditClient('import_team',f.name);}
   catch(err){toast(typeof err==='string'?err:'Ошибка файла');}e.target.value='';};r.readAsText(f);};
+/* ================= Уровень стрима: обзор, фичи, PI, ROAM, Scrum of Scrums =================
+   Данные стрима (фичи, PI и цели, межкомандные зависимости, ROAM, Scrum of Scrums) — один документ на стрим:
+   на сервере /api/org/streams/{id}/doc (версии, права уровня стрима), локально — streamapp:stream:<id>.
+   Сводные метрики считаются теми же функциями, что и для команды (compute, sprintRisk, sayDo), по данным каждой команды. */
+var SDOC={sid:null,ver:0,data:null,role:null,loaded:false};
+var STC={sid:null,at:0,list:null};
+const SVIEWS=['stream','features','streampi','roam','sos'];
+const FEAT_ST=['Воронка','Анализ','Бэклог','В работе','Готово'];
+const ROAM_ST=['—','Resolved','Owned','Accepted','Mitigated'];
+const SDEP_ST=['Открыта','Принята','Выполнена','Заблокирована'];
+function curStream(){const t=orgTeam();return (t&&t.streamId)||(ORG.streams[0]&&ORG.streams[0].id)||'s1';}
+function streamTeamsList(sid){return ORG.teams.filter(t=>t.streamId===(sid||curStream()));}
+function sdocKey(sid){return 'streamapp:stream:'+(sid||curStream());}
+function sdocDefault(){return {pis:[{id:'PI-1',name:'PI 1',start:(ST.params&&ST.params.start)||todayISO(),iters:5}],curPi:'PI-1',features:[],objectives:[],roam:[],deps:[],sos:[]};}
+function sdocNorm(d){const D=sdocDefault();d=(d&&typeof d==='object'&&!Array.isArray(d))?d:{};
+ Object.keys(D).forEach(k=>{if(Array.isArray(D[k])){if(!Array.isArray(d[k]))d[k]=D[k];}else if(d[k]==null)d[k]=D[k];});
+ if(!d.pis.length)d.pis=D.pis;if(!d.pis.some(p=>p.id===d.curPi))d.curPi=d.pis[0].id;
+ d.features.forEach(f=>{if(!Array.isArray(f.links))f.links=[];});return d;}
+function sdocCanEdit(){return orgServer()?(SDOC.role==='EDITOR'||SDOC.role==='ADMIN'):PERM.canEdit;}
+let sdocT=null;
+async function sdocLoad(force){const sid=curStream();
+ if(sdocT&&SDOC.sid!==sid){clearTimeout(sdocT);sdocT=null;await sdocPush();}
+ // с сервером документ перечитывается не чаще раза в 15 с и никогда — поверх несохранённых правок
+ if(!force&&SDOC.loaded&&SDOC.sid===sid&&(sdocT||!orgServer()||Date.now()-(SDOC.at||0)<15000))return SDOC;
+ if(orgServer()){let n={sid:sid,ver:0,data:sdocNorm(null),role:null,loaded:true};
+  try{const r=await fetch('api/org/streams/'+encodeURIComponent(sid)+'/doc',{headers:hdrs(false),cache:'no-store'});
+   if(r.ok){const d=await r.json();n={sid:sid,ver:d.version||0,data:sdocNorm(d.data),role:d.role,loaded:true,at:Date.now()};}else n.denied=(r.status===403);}catch(e){}
+  if(sid===curStream())SDOC=n;}
+ else{let d=null;try{d=JSON.parse(localStorage.getItem(sdocKey(sid))||'null');}catch(e){}SDOC={sid:sid,ver:0,data:sdocNorm(d),role:null,loaded:true};}
+ return SDOC;}
+function sdocSave(){if(!sdocCanEdit()){toast('Нет прав на изменение данных стрима');return false;}
+ if(!orgServer()){try{localStorage.setItem(sdocKey(SDOC.sid),JSON.stringify(SDOC.data));}catch(e){}return true;}
+ clearTimeout(sdocT);sdocT=setTimeout(sdocPush,600);return true;}
+async function sdocPush(){sdocT=null;const sid=SDOC.sid,data=SDOC.data,ver=SDOC.ver;if(!sid||!orgServer())return;
+ try{const r=await fetch('api/org/streams/'+encodeURIComponent(sid)+'/doc',{method:'PUT',headers:hdrs(true),body:JSON.stringify({data:data,baseVersion:ver})});
+  if(r.status===409){const d=await r.json();if(SDOC.sid===sid){SDOC.ver=d.version;SDOC.data=sdocNorm(d.data);streamRerender();}toast('Данные стрима изменены другим пользователем — загружена свежая версия');return;}
+  if(!r.ok){toast(r.status===403?'Нет прав на изменение данных стрима':'Не удалось сохранить данные стрима');return;}
+  const d=await r.json();if(SDOC.sid===sid)SDOC.ver=d.version;
+ }catch(e){toast('Нет сети: данные стрима не сохранены');}}
+/* Данные всех команд стрима: текущая — живой ST, остальные — из браузера или с сервера (с проверкой прав). */
+async function streamTeamStates(force){const sid=curStream();
+ if(!force&&STC.sid===sid&&STC.list&&Date.now()-STC.at<20000)return STC.list.map(x=>x.team.id===curTeam()?{team:x.team,st:ST}:x);
+ const out=[];
+ for(const t of streamTeamsList(sid)){let st=null,err=null;
+  if(t.id===curTeam())st=ST;
+  else if(orgServer()){try{const r=await fetch(API,{headers:Object.assign(hdrs(false),{'X-Team-Id':t.id}),cache:'no-store'});
+    if(r.ok){const d=await r.json();st=migrate(d.state||JSON.parse(JSON.stringify(SEED)));}else err=r.status;}catch(e){err='net';}}
+  else{try{const raw=localStorage.getItem(stKey(t.id));st=raw?migrate(JSON.parse(raw)):(t.id==='t1'?migrate(JSON.parse(JSON.stringify(SEED))):null);}catch(e){}}
+  out.push({team:t,st:st,err:err});}
+ STC={sid:sid,at:Date.now(),list:out};return out;}
+function withState(st,fn){const keep=ST;ST=st;try{return fn();}finally{ST=keep;}}
+function teamMetrics(st){if(!st||!st.params)return null;
+ return withState(st,()=>{const C=compute(),R=sprintRisk(C),SD=sayDo(C),tasks=ST.tasks||[];
+  return {people:(ST.team||[]).length,avgVel:C.avgVel,cur:C.cur,health:C.health,risk:R,sayDo:SD.avg,
+   open:tasks.filter(t=>t.status!=='Готово'&&t.type!=='Эпик').length,
+   bugsOpen:(ST.bugs||[]).filter(b=>b.status!=='Закрыт').length,
+   blocked:(ST.deps||[]).filter(d=>d.status==='Заблокировано').length,
+   impOpen:(ST.impediments||[]).filter(i=>i.status!=='Снят').length,
+   highRisks:(ST.risks||[]).filter(r=>num(r.p)*num(r.i)>=15&&r.status!=='Закрыт').length};});}
+/* PI и итерации (по 14 дней, как спринты команд) */
+function piCur(){const d=SDOC.data;return d.pis.find(p=>p.id===d.curPi)||d.pis[0];}
+function piIters(pi){const s=pd(pi.start)||pd(todayISO()),n=Math.max(1,Math.min(12,parseInt(pi.iters,10)||5));
+ return Array.from({length:n},(_,i)=>({n:i+1,a:addD(s,i*14),b:addD(s,i*14+11)}));}
+function iterOfSprint(st,s,pi){s=+s;if(!s||!st||!st.params)return 0;const ts=pd(st.params.start);if(!ts)return 0;
+ const k=Math.floor((addD(ts,(s-1)*14)-pd(pi.start))/(14*MS))+1;return k>=1&&k<=(parseInt(pi.iters,10)||5)?k:0;}
+function sprintOfIter(st,k,pi){const ts=st&&st.params&&pd(st.params.start);if(!ts||!k)return '';
+ const s=Math.round((addD(pd(pi.start),(k-1)*14)-ts)/(14*MS))+1;return s>=1?s:'';}
+function piPredict(pi,teamId){const ob=SDOC.data.objectives.filter(o=>o.pi===pi.id&&(!teamId||o.team===teamId)&&o.committed!==false&&num(o.bv)>0);
+ const plan=ob.reduce((a,o)=>a+num(o.bv),0),fact=ob.filter(o=>o.actual!==''&&o.actual!=null).reduce((a,o)=>a+num(o.actual),0);
+ return plan&&ob.some(o=>o.actual!==''&&o.actual!=null)?fact/plan:null;}
+function featWsjf(f){const js=num(f.size);return js>0?(num(f.bv)+num(f.tc)+num(f.rr))/js:0;}
+function featProgress(f,states){let tot=0,done=0,n=0,missing=0;const items=[];
+ (f.links||[]).forEach(l=>{const x=states.find(s=>s.team.id===l.team);const t=x&&x.st&&(x.st.tasks||[]).find(y=>y.id===l.task);
+  if(!t){missing++;return;}n++;tot+=num(t.est);if(t.status==='Готово')done+=num(t.est);items.push({team:x.team,t:t});});
+ return {n:n,tot:tot,done:done,pct:tot?done/tot:null,missing:missing,items:items};}
+/* История фичи в бэклоге команды: текущая — через save(), другая — в её данных (с сервером — с проверкой версии). */
+async function teamAddTask(teamId,task){
+ const add=st=>{st.tasks=st.tasks||[];task.id=genId(st.tasks.filter(t=>/^T-\d+$/.test(t.id)),'id','T-');st.tasks.push(task);return task.id;};
+ if(teamId===curTeam()){if(!PERM.canEdit)throw 'Нет прав на изменение бэклога команды';const id=add(ST);save();STC.at=0;return id;}
+ if(orgServer()){for(let a=0;a<2;a++){
+   const r=await fetch(API,{headers:Object.assign(hdrs(false),{'X-Team-Id':teamId}),cache:'no-store'});if(!r.ok)throw 'Нет доступа к команде';
+   const d=await r.json(),st=d.state||{},id=add(st);
+   const p=await fetch(API,{method:'PUT',headers:Object.assign(hdrs(true),{'X-Team-Id':teamId}),body:JSON.stringify({state:st,baseVersion:d.version})});
+   if(p.ok){STC.at=0;return id;}if(p.status===403)throw 'Нет прав на изменение бэклога команды';if(p.status!==409)throw 'Ошибка сохранения';}
+  throw 'Бэклог команды изменён другим пользователем — повторите';}
+ if(!PERM.canEdit)throw 'Нет прав на изменение бэклога команды';
+ const raw=localStorage.getItem(stKey(teamId));const st=migrate(raw?JSON.parse(raw):JSON.parse(JSON.stringify(SEED)));const id=add(st);
+ localStorage.setItem(stKey(teamId),JSON.stringify(st));STC.at=0;return id;}
+/* ---- общий каркас разделов стрима ---- */
+function streamShell(id){const w=document.createElement('div');w.className='str-wrap';w.id='str_'+id;w.innerHTML='<p class="org-note">Загрузка данных стрима…</p>';
+ setTimeout(()=>streamFill(id),0);return w;}
+async function streamFill(id,force){const w=document.getElementById('str_'+id);if(!w)return;
+ await sdocLoad(force);const states=await streamTeamStates(force);const w2=document.getElementById('str_'+id);if(!w2)return;
+ const R={stream:sDash,features:sFeatures,streampi:sPi,roam:sRoam,sos:sSos}[id];
+ try{w2.innerHTML=sHead()+R(states);}catch(e){w2.innerHTML='<p class="org-empty">Ошибка отображения: '+esc(e.message)+'</p>';}}
+function streamRerender(){SVIEWS.forEach(id=>{if(document.getElementById('str_'+id))streamFill(id);});}
+function sHead(){const sid=curStream(),n=streamTeamsList(sid).length,ed=sdocCanEdit();
+ return `<div class="str-head"><label>Стрим <select data-sact="pickStream">${ORG.streams.map(s=>`<option value="${esc(s.id)}"${s.id===sid?' selected':''}>${esc(s.name)}</option>`).join('')}</select></label>`
+  +`<span class="org-note">Команд: <b>${n}</b></span>${SDOC.denied?'<span class="pill p-crit">нет доступа к данным стрима</span>':ed?'':'<span class="pill p-neut">только просмотр</span>'}`
+  +`<button class="btn" data-sact="refresh" title="Перечитать данные команд">⟳ Обновить</button></div>`;}
+function sOpts(list,cur){return list.map(o=>{const v=typeof o==='object'?o.v:o,l=typeof o==='object'?o.l:o;return `<option value="${esc(v)}"${String(v)===String(cur==null?'':cur)?' selected':''}>${esc(l)}</option>`;}).join('');}
+function teamOpts(withStream){const l=streamTeamsList().map(t=>({v:t.id,l:t.name}));return withStream?[{v:'',l:'Стрим'}].concat(l):l;}
+/* Редактируемая таблица коллекции документа стрима: cols {k,label,type:text|num|select|date|check,opts,w}; extra(row,i) — HTML последних ячеек. */
+function sTable(coll,cols,idx,extra,head){const ed=sdocCanEdit(),rows=SDOC.data[coll];
+ let h=`<div class="org-scroll"><table class="cardt str-t"><thead><tr>${cols.map(c=>`<th${c.type==='num'?' class="num"':''}>${esc(c.label)}</th>`).join('')}${head||''}${ed?'<th></th>':''}</tr></thead><tbody>`;
+ if(!idx.length)h+=`<tr><td colspan="${cols.length+2}" class="org-empty" data-label="">Пока пусто</td></tr>`;
+ idx.forEach(i=>{const r=rows[i];h+=`<tr data-coll="${coll}" data-i="${i}">`;
+  cols.forEach(c=>{const v=r[c.k];let cell;
+   if(!ed||c.ro)cell=c.type==='check'?(v===false?'—':'✓'):esc(c.fmt?c.fmt(v,r):(c.type==='select'&&typeof (c.opts||[])[0]==='object'?((c.opts.find(o=>o.v===v)||{}).l||v):v));
+   else if(c.type==='select')cell=`<select data-k="${c.k}">${sOpts(typeof c.opts==='function'?c.opts(r):c.opts,v)}</select>`;
+   else if(c.type==='check')cell=`<input type="checkbox" data-k="${c.k}"${v===false?'':' checked'}>`;
+   else cell=`<input type="${c.type==='num'?'number':c.type==='date'?'date':'text'}" data-k="${c.k}" value="${esc(v==null?'':v)}"${c.type==='num'?' step="any"':''}>`;
+   h+=`<td class="${c.type==='num'?'num':''}${c.w?' wide':''}" data-label="${esc(c.label)}">${cell}</td>`;});
+  h+=(extra?extra(r,i):'')+(ed?`<td data-label=""><button class="rowdel" data-sact="del" title="Удалить">✕</button></td>`:'')+`</tr>`;});
+ return h+`</tbody></table></div>`;}
+function sAddBtn(coll,label){return sdocCanEdit()?`<button class="btn" data-sact="add" data-coll="${coll}">＋ ${esc(label)}</button>`:'';}
+function sBar(p){p=p==null?0:Math.max(0,Math.min(1,p));return `<span class="str-bar"><i style="width:${Math.round(p*100)}%"></i></span>`;}
+function sRag(v,g,w){return v==null?'neut':v>=g?'good':v>=w?'warn':'crit';}
+/* ---- Обзор стрима ---- */
+function sDash(states){const pi=piCur(),M=states.map(x=>({x:x,m:teamMetrics(x.st)}));const ok=M.filter(y=>y.m);
+ const sum=k=>ok.reduce((a,y)=>a+num(y.m[k]),0);
+ const roamOpen=SDOC.data.roam.filter(r=>r.roam!=='Resolved'&&r.impact==='Высокое').length;
+ const depBl=SDOC.data.deps.filter(d=>d.status==='Заблокирована').length;
+ const pp=piPredict(pi),hAvg=ok.length?sum('health')/ok.length:null;
+ let h=`<div class="grid kpis">`+kpiCard('Команд',states.length,ok.length<states.length?'данные доступны: '+ok.length:'в стриме','neut')
+  +kpiCard('Людей',sum('people'),'в командах стрима','neut')
+  +kpiCard('Velocity стрима',fmt(sum('avgVel'),1),'SP за спринт (сумма средних)','neut')
+  +kpiCard('Health стрима',hAvg==null?'—':pctf(hAvg),'среднее по командам',sRag(hAvg,0.7,0.5))
+  +kpiCard('Предсказуемость '+esc(pi.name),pp==null?'—':pctf(pp),'факт / план бизнес-ценности целей',sRag(pp,0.8,0.6))
+  +kpiCard('Открытые баги',sum('bugsOpen'),'во всех командах',sum('bugsOpen')?'warn':'good')
+  +kpiCard('Блокеры',sum('blocked')+depBl,'зависимости команд + межкомандные',(sum('blocked')+depBl)?'crit':'good')
+  +kpiCard('Высокие риски ROAM',roamOpen,'не решены',roamOpen?'crit':'good')+`</div>`;
+ h+=`<div class="card"><div class="org-sn">Команды стрима</div><div class="org-scroll"><table class="cardt str-t"><thead><tr><th>Команда</th><th class="num">Людей</th><th class="num">Velocity</th><th>Текущий спринт</th><th>Риск срыва</th><th class="num">Health</th><th class="num">Say/Do</th><th class="num">Баги</th><th class="num">Блокеры</th><th class="num">Предсказ. PI</th><th></th></tr></thead><tbody>`;
+ M.forEach(({x,m})=>{const cur=x.team.id===curTeam();
+  if(!m){h+=`<tr><td data-label="Команда"><b>${esc(x.team.name)}</b></td><td colspan="9" class="org-empty" data-label="">${x.err===403?'нет доступа':'нет данных'}</td><td data-label=""></td></tr>`;return;}
+  const r=m.risk,tp=piPredict(pi,x.team.id);
+  h+=`<tr${cur?' class="org-cur"':''}><td data-label="Команда"><b>${esc(x.team.name)}</b>${cur?' <span class="pill p-good">текущая</span>':''}</td><td class="num" data-label="Людей">${m.people}</td><td class="num" data-label="Velocity">${fmt(m.avgVel,1)}</td>`
+   +`<td data-label="Текущий спринт">#${m.cur}${r?` · ${sBar(r.plan?r.done/r.plan:0)} ${fmt(r.done)}/${fmt(r.plan)} SP`:''}</td>`
+   +`<td data-label="Риск срыва">${r?`<span class="pill p-${r.score>=60?'crit':r.score>=30?'warn':'good'}" title="${esc(r.reasons.join('; '))}">${esc(r.level)}</span>`:'—'}</td>`
+   +`<td class="num" data-label="Health"><span class="pill p-${sRag(m.health,0.7,0.5)}">${pctf(m.health)}</span></td><td class="num" data-label="Say/Do">${pctf(m.sayDo)}</td>`
+   +`<td class="num" data-label="Баги">${m.bugsOpen}</td><td class="num" data-label="Блокеры">${m.blocked}</td><td class="num" data-label="Предсказ. PI">${pctf(tp)}</td>`
+   +`<td data-label="">${cur?'':`<button class="btn" data-sact="openTeam" data-team="${esc(x.team.id)}">Открыть</button>`}</td></tr>`;});
+ h+=`</tbody></table></div></div>`;
+ const fs=SDOC.data.features.filter(f=>f.pi===pi.id).sort((a,b)=>featWsjf(b)-featWsjf(a)).slice(0,8);
+ h+=`<div class="card"><div class="org-sn">Фичи ${esc(pi.name)} по WSJF</div>`+(fs.length?`<div class="str-flist">${fs.map(f=>{const p=featProgress(f,states);
+   return `<div class="str-frow"><span><b>${esc(f.id)}</b> ${esc(f.name||'')}</span><span class="pill p-neut">${esc(f.status||'')}</span>${sBar(p.pct)}<span class="org-note">${p.pct==null?'нет историй':pctf(p.pct)+' · '+p.n+' ист.'}</span></div>`;}).join('')}</div>`
+   :`<p class="org-empty">Нет фич в ${esc(pi.name)} — добавьте их в разделе «Фичи стрима».</p>`)+`</div>`;
+ return h;}
+/* ---- Фичи стрима ---- */
+function sFeatures(states){const d=SDOC.data,ed=sdocCanEdit();
+ const idx=d.features.map((f,i)=>i).sort((a,b)=>featWsjf(d.features[b])-featWsjf(d.features[a]));
+ let h=`<div class="org-bar"><span class="org-sum">Фич: <b>${d.features.length}</b> · отсортированы по WSJF = (BV + TC + RR) / размер</span>${sAddBtn('features','Фича')}</div>`;
+ h+=sTable('features',[{k:'id',label:'ID',ro:true},{k:'name',label:'Фича',w:1},{k:'status',label:'Статус',type:'select',opts:FEAT_ST},
+   {k:'pi',label:'PI',type:'select',opts:()=>d.pis.map(p=>({v:p.id,l:p.name}))},{k:'owner',label:'Владелец'},
+   {k:'bv',label:'BV',type:'num'},{k:'tc',label:'TC',type:'num'},{k:'rr',label:'RR',type:'num'},{k:'size',label:'Размер',type:'num'}],idx,
+  (f)=>{const p=featProgress(f,states);
+   return `<td class="num" data-label="WSJF"><b>${fmt(featWsjf(f),1)}</b></td><td data-label="Прогресс">${sBar(p.pct)} ${p.pct==null?'—':pctf(p.pct)}`
+    +(p.items.length||p.missing?`<details class="str-det"><summary>${p.n} ист.${p.missing?' · '+p.missing+' не найдено':''}</summary>${p.items.map(it=>`<div>${esc(it.team.name)} · ${esc(it.t.id)} · ${esc(it.t.title)} · <i>${esc(it.t.status)}</i></div>`).join('')}</details>`:'')
+    +`</td><td data-label="">${ed?`<button class="btn" data-sact="split" title="Создать историю фичи в бэклоге команды">＋ История</button>`:''}</td>`;},
+  `<th class="num">WSJF</th><th>Прогресс</th><th></th>`);
+ if(ed)h+=`<div class="card str-split" id="str_split" hidden><div class="org-sn">Новая история фичи <span id="str_split_f"></span></div><div class="org-add">`
+  +`<select data-f="team">${sOpts(teamOpts())}</select><input data-f="title" placeholder="Название истории"><input data-f="est" type="number" min="0" step="1" placeholder="SP" style="max-width:90px">`
+  +`<select data-f="iter"><option value="">Итерация PI — без спринта</option>${piIters(piCur()).map(it=>`<option value="${it.n}">Итерация ${it.n} (${fmtd(it.a)})</option>`).join('')}</select>`
+  +`<button class="btn primary" data-sact="splitGo">Создать в бэклоге команды</button><button class="btn" data-sact="splitClose">Отмена</button></div></div>`;
+ return h;}
+/* ---- PI стрима: программная доска, цели, межкомандные зависимости ---- */
+function sPi(states){const d=SDOC.data,pi=piCur(),its=piIters(pi),ed=sdocCanEdit();
+ let h=`<div class="org-bar"><label>PI <select data-sact="pickPi">${sOpts(d.pis.map(p=>({v:p.id,l:p.name})),pi.id)}</select></label>`;
+ if(ed)h+=`<label>Название <input data-pi="name" value="${esc(pi.name)}" style="max-width:140px"></label><label>Старт <input type="date" data-pi="start" value="${esc(pi.start)}"></label><label>Итераций <input type="number" min="1" max="12" data-pi="iters" value="${esc(pi.iters)}" style="max-width:70px"></label><button class="btn" data-sact="addPi">＋ PI</button>`;
+ else h+=`<span class="org-note">${fmtd(its[0].a)} — ${fmtd(its[its.length-1].b)}, итераций: ${its.length}</span>`;
+ h+=`</div>`;
+ // программная доска
+ const cell={};states.forEach(x=>{cell[x.team.id]={};});
+ d.features.forEach(f=>(f.links||[]).forEach(l=>{const x=states.find(s=>s.team.id===l.team);const t=x&&x.st&&(x.st.tasks||[]).find(y=>y.id===l.task);if(!t)return;
+  const k=iterOfSprint(x.st,t.sprint,pi);if(!k)return;const c=cell[l.team][k]||(cell[l.team][k]={});c[f.id]=c[f.id]||{f:f,n:0,done:0};c[f.id].n++;if(t.status==='Готово')c[f.id].done++;}));
+ const conf=dp=>dp.status==='Заблокирована'||(num(dp.plan)&&num(dp.need)&&num(dp.plan)>num(dp.need));
+ h+=`<div class="card"><div class="org-sn">Программная доска ${esc(pi.name)}</div><p class="org-note">Фичи по командам и итерациям — из историй, созданных в бэклогах команд; 🔗 — межкомандные зависимости (красные — конфликт срока или блокировка).</p>`
+  +`<div class="org-scroll"><table class="str-board"><thead><tr><th>Команда</th>${its.map(it=>`<th>Итерация ${it.n}<div class="org-note">${fmtd(it.a)}</div></th>`).join('')}</tr></thead><tbody>`;
+ states.forEach(x=>{h+=`<tr><th>${esc(x.team.name)}</th>`;its.forEach(it=>{const c=cell[x.team.id][it.n]||{};
+   const deps=d.deps.filter(dp=>dp.to===x.team.id&&+dp.plan===it.n);
+   h+=`<td>${Object.values(c).map(v=>`<span class="str-chip${v.done===v.n?' done':''}" title="${esc(v.f.name||'')} — историй: ${v.n}, готово: ${v.done}">${esc(v.f.id)}</span>`).join('')}`
+    +deps.map(dp=>`<span class="str-chip dep${conf(dp)?' bad':''}" title="${esc(dp.item||'')} — нужно к итерации ${esc(dp.need||'?')}">🔗 ${esc(dp.id)} → ${esc((orgTeam(dp.from)||{name:'?'}).name)}</span>`).join('')+`</td>`;});
+  h+=`</tr>`;});
+ h+=`</tbody></table></div></div>`;
+ // цели PI
+ const oIdx=d.objectives.map((o,i)=>i).filter(i=>d.objectives[i].pi===pi.id);const pp=piPredict(pi);
+ h+=`<div class="card"><div class="org-bar"><span class="org-sn">Цели команд на ${esc(pi.name)}</span><span class="org-note">Предсказуемость стрима: <b>${pctf(pp)}</b> (факт / план BV по обязательным целям)</span>${sAddBtn('objectives','Цель')}</div>`
+  +sTable('objectives',[{k:'team',label:'Команда',type:'select',opts:teamOpts()},{k:'text',label:'Цель',w:1},{k:'bv',label:'BV план',type:'num'},{k:'actual',label:'BV факт',type:'num'},{k:'committed',label:'Обязательная',type:'check'}],oIdx)+`</div>`;
+ // межкомандные зависимости
+ const dIdx=d.deps.map((x,i)=>i);
+ h+=`<div class="card"><div class="org-bar"><span class="org-sn">Межкомандные зависимости</span><span class="org-note">Конфликтов: <b>${d.deps.filter(conf).length}</b></span>${sAddBtn('deps','Зависимость')}</div>`
+  +sTable('deps',[{k:'id',label:'ID',ro:true},{k:'from',label:'Кто ждёт',type:'select',opts:teamOpts()},{k:'to',label:'Кто делает',type:'select',opts:teamOpts()},
+   {k:'feature',label:'Фича',type:'select',opts:()=>[{v:'',l:'—'}].concat(d.features.map(f=>({v:f.id,l:f.id+' '+(f.name||'')})))},{k:'item',label:'Что нужно',w:1},
+   {k:'need',label:'Нужно к итер.',type:'num'},{k:'plan',label:'План итер.',type:'num'},{k:'status',label:'Статус',type:'select',opts:SDEP_ST}],dIdx,
+   dp=>`<td data-label="Конфликт">${conf(dp)?'<span class="pill p-crit">⚠ конфликт</span>':'<span class="pill p-good">ок</span>'}</td>`,'<th>Конфликт</th>')+`</div>`;
+ return h;}
+/* ---- ROAM ---- */
+function sRoam(states){const d=SDOC.data,cnt={};ROAM_ST.forEach(s=>cnt[s]=0);d.roam.forEach(r=>{cnt[r.roam||'—']=(cnt[r.roam||'—']||0)+1;});
+ let h=`<div class="org-bar"><span class="org-sum">${ROAM_ST.map(s=>`${s==='—'?'Не разобраны':s}: <b>${cnt[s]||0}</b>`).join(' · ')}</span>${sAddBtn('roam','Риск')}</div>`;
+ h+=sTable('roam',[{k:'id',label:'ID',ro:true},{k:'title',label:'Риск',w:1},{k:'team',label:'Команда',type:'select',opts:teamOpts(true)},{k:'impact',label:'Влияние',type:'select',opts:['Высокое','Среднее','Низкое']},
+  {k:'roam',label:'ROAM',type:'select',opts:ROAM_ST},{k:'owner',label:'Владелец'},{k:'due',label:'Срок',type:'date'},{k:'note',label:'Решение / примечание',w:1}],d.roam.map((r,i)=>i));
+ const have=new Set(d.roam.map(r=>r.src).filter(Boolean));const cand=[];
+ states.forEach(x=>{if(!x.st)return;(x.st.risks||[]).forEach(r=>{if(num(r.p)*num(r.i)>=15&&r.status!=='Закрыт')cand.push({team:x.team,r:r,src:x.team.id+':'+r.name});});});
+ h+=`<div class="card"><div class="org-sn">Высокие риски из реестров команд</div><p class="org-note">Риски с оценкой вероятность × влияние ≥ 15. Перенесите в ROAM стрима те, что требуют решения на уровне стрима.</p>`
+  +(cand.length?cand.map(c=>`<div class="str-frow"><span><b>${esc(c.team.name)}</b> · ${esc(c.r.name)}</span><span class="pill p-crit">${num(c.r.p)*num(c.r.i)}</span><span class="org-note">${esc(c.r.owner||'')}</span>`
+    +(have.has(c.src)?'<span class="pill p-good">в ROAM</span>':sdocCanEdit()?`<button class="btn" data-sact="toRoam" data-src="${esc(c.src)}">↗ В ROAM</button>`:'')+`</div>`).join(''):'<p class="org-empty">Высоких рисков в командах нет.</p>')+`</div>`;
+ return h;}
+/* ---- Scrum of Scrums ---- */
+function sSos(states){const d=SDOC.data,dates=[...new Set(d.sos.map(s=>s.date))].sort().reverse();
+ const sel=(SDOC.sosDate&&dates.includes(SDOC.sosDate))?SDOC.sosDate:dates[0];
+ let h=`<div class="org-bar">${dates.length?`<label>Встреча <select data-sact="pickSos">${sOpts(dates.map(x=>({v:x,l:fmtd(pd(x))})),sel)}</select></label>`:''}`;
+ if(sdocCanEdit())h+=`<label>Дата <input type="date" data-f="sosDate" value="${esc(todayISO())}"></label><button class="btn primary" data-sact="sosNew">Сформировать повестку</button>`;
+ h+=`</div><p class="org-note">Повестка заполняется автоматически по данным команд: прогресс текущего спринта, открытые импедименты и заблокированные зависимости. Дополните её на встрече.</p>`;
+ h+=sel?sTable('sos',[{k:'team',label:'Команда',type:'select',opts:teamOpts()},{k:'done',label:'Сделано / прогресс',w:1},{k:'next',label:'Планы',w:1},{k:'blockers',label:'Блокеры',w:1},{k:'help',label:'Нужна помощь от'}],
+  d.sos.map((s,i)=>i).filter(i=>d.sos[i].date===sel)):'<p class="org-empty">Встреч ещё не было — сформируйте повестку.</p>';
+ const open=d.deps.filter(x=>x.status!=='Выполнена');
+ h+=`<div class="card"><div class="org-sn">Открытые межкомандные зависимости: ${open.length}</div>${open.map(x=>`<div class="str-frow"><span><b>${esc(x.id)}</b> ${esc(x.item||'')}</span><span class="org-note">${esc((orgTeam(x.to)||{name:'?'}).name)} → ${esc((orgTeam(x.from)||{name:'?'}).name)}</span><span class="pill p-${x.status==='Заблокирована'?'crit':'neut'}">${esc(x.status||'')}</span></div>`).join('')||'<p class="org-empty">Нет</p>'}</div>`;
+ return h;}
+function sosAgenda(date,states){const rows=[];states.forEach(x=>{const m=teamMetrics(x.st);const st=x.st;
+ const imp=st?(st.impediments||[]).filter(i=>i.status!=='Снят').map(i=>i.title):[];
+ const bl=st?(st.deps||[]).filter(dp=>dp.status==='Заблокировано').map(dp=>dp.item||dp.desc||dp.id):[];
+ const sd=SDOC.data.deps.filter(dp=>dp.from===x.team.id&&dp.status!=='Выполнена').map(dp=>dp.to);
+ rows.push({id:genId(SDOC.data.sos.concat(rows),'id','S-'),date:date,team:x.team.id,
+  done:m&&m.risk?('Спринт #'+m.cur+': '+fmt(m.risk.done)+' из '+fmt(m.risk.plan)+' SP, риск — '+m.risk.level.toLowerCase()):'',next:'',
+  blockers:imp.concat(bl).join('; '),help:[...new Set(sd)].map(t=>(orgTeam(t)||{name:t}).name).join(', ')});});return rows;}
+function sNewRow(coll){const d=SDOC.data,pi=piCur(),t0=(streamTeamsList()[0]||{}).id||'';
+ return {features:()=>({id:genId(d.features,'id','F-'),name:'Новая фича',status:'Воронка',pi:pi.id,owner:'',bv:5,tc:3,rr:2,size:5,links:[]}),
+  objectives:()=>({id:genId(d.objectives,'id','O-'),pi:pi.id,team:curTeam(),text:'',bv:5,actual:'',committed:true}),
+  deps:()=>({id:genId(d.deps,'id','XD-'),from:curTeam(),to:t0,feature:'',item:'',need:'',plan:'',status:'Открыта'}),
+  roam:()=>({id:genId(d.roam,'id','R-'),title:'',team:'',impact:'Среднее',roam:'—',owner:'',due:'',note:''})}[coll]();}
+/* ---- события разделов стрима ---- */
+document.addEventListener('click',async e=>{const b=e.target.closest('.str-wrap [data-sact]');if(!b||b.tagName==='SELECT')return;
+ const a=b.dataset.sact,d=SDOC.data,tr=b.closest('tr[data-coll]'),i=tr?+tr.dataset.i:-1;
+ try{
+  if(a==='refresh'){STC.at=0;await streamFill(CURV,true);return;}
+  if(a==='openTeam'){await switchTeam(b.dataset.team);return;}
+  if(a==='add'){d[b.dataset.coll].push(sNewRow(b.dataset.coll));if(sdocSave())streamRerender();return;}
+  if(a==='del'){if(!confirm('Удалить запись?'))return;d[tr.dataset.coll].splice(i,1);if(sdocSave())streamRerender();return;}
+  if(a==='addPi'){const n=d.pis.length+1,last=piCur(),its=piIters(last);
+   d.pis.push({id:'PI-'+n,name:'PI '+n,start:iso(addD(its[its.length-1].a,14)),iters:last.iters||5});d.curPi='PI-'+n;if(sdocSave())streamRerender();return;}
+  if(a==='split'){const box=document.getElementById('str_split');box.hidden=false;box.dataset.i=i;document.getElementById('str_split_f').textContent='— '+d.features[i].id+' '+(d.features[i].name||'');box.querySelector('[data-f=title]').focus();return;}
+  if(a==='splitClose'){document.getElementById('str_split').hidden=true;return;}
+  if(a==='splitGo'){const box=document.getElementById('str_split'),f=d.features[+box.dataset.i];if(!f)return;
+   const team=box.querySelector('[data-f=team]').value,title=box.querySelector('[data-f=title]').value.trim(),est=num(box.querySelector('[data-f=est]').value),k=+box.querySelector('[data-f=iter]').value;
+   if(!title){toast('Введите название истории');return;}
+   const states=await streamTeamStates();const x=states.find(s=>s.team.id===team);
+   const id=await teamAddTask(team,{title:'['+f.id+'] '+title,assignee:'',role:'',type:'История',est:est,status:'To Do',sprint:k?sprintOfIter(x&&x.st,k,piCur()):'',dep:'',started:'',done:'',priority:'Should'});
+   f.links.push({team:team,task:id});if(f.status==='Воронка'||f.status==='Анализ'||f.status==='Бэклог')f.status='В работе';
+   sdocSave();toast('История '+id+' создана в бэклоге «'+((orgTeam(team)||{}).name||team)+'»');STC.at=0;await streamFill(CURV,true);return;}
+  if(a==='toRoam'){const states=await streamTeamStates();const src=b.dataset.src,[tid]=src.split(':');const x=states.find(s=>s.team.id===tid);
+   const r=x&&x.st&&(x.st.risks||[]).find(y=>tid+':'+y.name===src);if(!r)return;
+   d.roam.push({id:genId(d.roam,'id','R-'),title:r.name,team:tid,impact:'Высокое',roam:'—',owner:r.owner||'',due:'',note:r.mit||'',src:src});if(sdocSave())streamRerender();return;}
+  if(a==='sosNew'){const date=b.closest('.org-bar').querySelector('[data-f=sosDate]').value||todayISO();
+   if(d.sos.some(s=>s.date===date)&&!confirm('Повестка на эту дату уже есть. Добавить строки ещё раз?'))return;
+   const states=await streamTeamStates(true);d.sos=d.sos.concat(sosAgenda(date,states));SDOC.sosDate=date;if(sdocSave())streamRerender();return;}
+ }catch(err){toast(typeof err==='string'?err:'Ошибка');}});
+document.addEventListener('change',async e=>{const t=e.target;if(!t.closest('.str-wrap'))return;const d=SDOC.data;
+ if(t.dataset.sact==='pickStream'){const first=streamTeamsList(t.value)[0];if(!first){toast('В этом стриме нет доступных команд');t.value=curStream();return;}await switchTeam(first.id);return;}
+ if(t.dataset.sact==='pickPi'){d.curPi=t.value;if(!sdocCanEdit()||sdocSave())streamRerender();return;}
+ if(t.dataset.sact==='pickSos'){SDOC.sosDate=t.value;streamRerender();return;}
+ if(t.dataset.pi){const pi=piCur();pi[t.dataset.pi]=t.dataset.pi==='iters'?Math.max(1,Math.min(12,parseInt(t.value,10)||5)):t.value;if(sdocSave())streamRerender();return;}
+ const tr=t.closest('tr[data-coll]');if(!tr||!t.dataset.k)return;const row=d[tr.dataset.coll][+tr.dataset.i];if(!row)return;
+ row[t.dataset.k]=t.type==='checkbox'?t.checked:t.type==='number'?(t.value===''?'':num(t.value)):t.value;
+ if(sdocSave())streamRerender();});
 /* ---------- Python analytics service integration ---------- */
 async function startAnalytics(){
  const set=(t,c)=>{const e=document.getElementById('anst');if(e){e.textContent=t;e.className='pill '+c;}};
@@ -6059,7 +6361,7 @@ startAnalytics();setInterval(startAnalytics,30000);
     Пересобирается на каждой загрузке из NAV + DOM (h1/.lede каждого раздела) + TOUR + CHANGELOG,
     поэтому «обучение» помощника происходит само после каждого обновления приложения:
     новый или переименованный раздел, изменённое описание и новая версия подхватываются без правок. */
- const AKA={org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
+ const AKA={stream:'обзор стрима сводка команд стрима метрики стрима',features:'фичи стрима фича wsjf бэклог стрима разбить на истории',streampi:'pi планирование инкремента программная доска цели pi предсказуемость межкомандные зависимости',roam:'roam риски стрима resolved owned accepted mitigated',sos:'scrum of scrums скрам скрамов синхронизация команд повестка',org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
   roadmap:'дорожная карта план спринтов график спринтов',quarters:'кварталы квартальный план',sprintGoals:'цель спринта обязательство ценность',
   kanban:'канбан доска статусы колонки карточки',board:'холст схемы стикеры мозговой штурм whiteboard рисование шаблоны ретро swot lean canvas карточки задач виджеты метрики отмена группировка мини-карта голосование презентация показ комментарии упоминания блок-схема майнд-карта mind map таблица дорожки swimlane',okr:'цели ключевые результаты objectives key results',
   backlog:'бэклог задачи список работ',wbs:'иерархия работ декомпозиция эпик фича история роллап',storymap:'карта историй активности',
@@ -6290,6 +6592,8 @@ startAnalytics();setInterval(startAnalytics,30000);
 const TOUR=[
  {v:'dash',h:'Управление стримами и командами — обзор',p:'Веб-приложение для планирования работы кросс-функциональной команды по двухнедельным спринтам: данные, метрики и диаграммы в одном месте. Пройдёмся по всем разделам.',d:8000},
  {v:'org',h:'Стримы и команды',p:'Оргструктура «Стрим → Команда»: у каждой команды свои бэклог, спринты, доска и метрики. Команда переключается в шапке; новые команды создаются пустыми или копией, импортируются из JSON; роли назначаются на стрим или команду.',d:10000},
+ {v:'stream',h:'Обзор стрима',p:'Сводка по всем командам стрима: velocity, health, риск срыва спринта, say/do, баги и блокеры, предсказуемость PI и фичи текущего инкремента по WSJF.',d:10000},
+ {v:'streampi',h:'PI стрима',p:'Программная доска «команды × итерации» строится из историй фич в бэклогах команд; цели PI с бизнес-ценностью дают предсказуемость, межкомандные зависимости подсвечивают конфликты сроков.',d:10000},
  {v:'dash',h:'Дашборд',p:'Сводка проекта: KPI с RAG-подсветкой, блок «Что требует внимания», кликабельные карточки и sparkline-тренды. Ниже — графики ёмкости, velocity, багов и Time to Market.',d:10000},
  {v:'roadmap',h:'Дорожная карта',p:'Спринты рассчитываются автоматически из параметров и состава команды: даты, рабочие дни, ёмкость, план, velocity и процент выполнения.',d:9000},
  {v:'quarters',h:'Кварталы',p:'Агрегация спринтов по кварталам и квартальный roadmap на шкале дат.',d:7000},
