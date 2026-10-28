@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/planirovanie}
-    username: ${DB_USER:planirovanie}
-    password: ${DB_PASSWORD:planirovanie}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/streams}
+    username: ${DB_USER:streams}
+    password: ${DB_PASSWORD:streams}
   flyway:
     # Flyway owns the schema (src/main/resources/db/migration). Runs on startup before JPA.
     enabled: true
@@ -41,11 +41,11 @@ app:
     allowed-origins: ${APP_WS_ALLOWED_ORIGINS:*}
   audit:
     # Event/audit logging into a SEPARATE PostgreSQL database. If that DB is unreachable,
-    # logging self-disables and the app keeps running. Create it once: CREATE DATABASE planirovanie_audit;
+    # logging self-disables and the app keeps running. Create it once: CREATE DATABASE streams_audit;
     enabled: ${AUDIT_ENABLED:true}
-    url: ${AUDIT_DB_URL:jdbc:postgresql://localhost:5432/planirovanie_audit}
-    username: ${AUDIT_DB_USER:${DB_USER:planirovanie}}
-    password: ${AUDIT_DB_PASSWORD:${DB_PASSWORD:planirovanie}}
+    url: ${AUDIT_DB_URL:jdbc:postgresql://localhost:5432/streams_audit}
+    username: ${AUDIT_DB_USER:${DB_USER:streams}}
+    password: ${AUDIT_DB_PASSWORD:${DB_PASSWORD:streams}}
   integrations:
     # Optional outbound integrations. Left empty by default (feature stays off until configured).
     slack:

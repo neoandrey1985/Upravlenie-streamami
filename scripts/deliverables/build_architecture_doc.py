@@ -177,7 +177,7 @@ def main():
         s.left_margin = s.right_margin = Inches(1.0)
     doc.styles["Normal"].font.name = "Calibri"; doc.styles["Normal"].font.size = Pt(11)
     doc.add_heading("Архитектура приложения", level=0)
-    doc.add_paragraph().add_run("Управление кросс-функциональной командой · v" + VER).italic = True
+    doc.add_paragraph().add_run("Управление стримами и командами · v" + VER).italic = True
     doc.add_paragraph("Все диаграммы и зависимости архитектуры: общая архитектура, микросервисы и база данных. "
                       "Стек — полиглот (веб-SPA + Java + Python + PostgreSQL), разворачивается через docker-compose.")
 
@@ -232,7 +232,7 @@ def main():
                  "API → внешние (исходящие): Atlassian (Jira, Confluence, Opsgenie, Bitbucket, Trello, JSM, Bamboo, Statuspage), Slack."]:
         doc.add_paragraph(line, style="List Bullet")
     doc.add_paragraph("Внешние интеграции опциональны (включаются переменными окружения); приложение работает и офлайн.")
-    doc.add_paragraph().add_run("Сгенерировано для приложения «Управление кросс-функциональной командой» v" + VER + ".").italic = True
+    doc.add_paragraph().add_run("Сгенерировано для приложения «Управление стримами и командами» v" + VER + ".").italic = True
     doc.save(str(OUT))
     print("saved", OUT, OUT.stat().st_size, "bytes; tables:", len(order))
 

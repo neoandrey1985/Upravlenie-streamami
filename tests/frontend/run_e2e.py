@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""End-to-end / functional test suite for the Управление кросс-функциональной командой frontend SPA.
+"""End-to-end / functional test suite for the Управление стримами и командами frontend SPA.
 
 Covers ALL application functionality:
   * Smoke-tests EVERY navigation section (auto-discovered from the app's NAV) — so
@@ -366,16 +366,16 @@ def main():
               const b=migrate(JSON.parse(JSON.stringify(a)));
               return Array.isArray(a.tasks) && a.tasks.length===b.tasks.length;}""")
             assert ok, 'migrate() not idempotent on task count'
-            saved = page.evaluate("""()=>{localStorage.removeItem('sprintapp');
-              setPerm('editor');applyPerms();save();const v=!!localStorage.getItem('sprintapp');
+            saved = page.evaluate("""()=>{localStorage.removeItem('streamapp');
+              setPerm('editor');applyPerms();save();const v=!!localStorage.getItem('streamapp');
               setPerm('viewer');applyPerms();return v;}""")
             assert saved, 'save() did not persist to localStorage for an editor'
         case('data: migrate() idempotent and save() persists', t_migrate)
 
         # ---- 9b. save() is gated by permission (viewer cannot persist) ----
         def t_perm_gate():
-            blocked = page.evaluate("""()=>{setPerm('viewer');applyPerms();localStorage.removeItem('sprintapp');
-              save();return localStorage.getItem('sprintapp')===null;}""")
+            blocked = page.evaluate("""()=>{setPerm('viewer');applyPerms();localStorage.removeItem('streamapp');
+              save();return localStorage.getItem('streamapp')===null;}""")
             assert blocked, 'viewer must not be able to persist via save()'
         case('security: save() is gated by edit permission', t_perm_gate)
 

@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text
 
 DB_URL = os.getenv(
     "DB_URL_PY",
-    "postgresql+psycopg2://planirovanie:planirovanie@localhost:5432/planirovanie",
+    "postgresql+psycopg2://streams:streams@localhost:5432/streams",
 )
 engine = create_engine(DB_URL, pool_pre_ping=True, future=True)
 

@@ -1,4 +1,4 @@
-# Управление кросс-функциональной командой — agent & contributor guide
+# Управление стримами и командами — agent & contributor guide
 
 Веб-приложение для agile-планирования по двухнедельным спринтам. Полиглот-стек:
 `frontend/` (самодостаточный SPA на ванильном JS в одном `index.html`),
@@ -9,7 +9,7 @@
 ## Build / run
 
 ```bash
-make up            # собрать и запустить весь стек на http://localhost:8080
+make up            # собрать и запустить весь стек на http://localhost:8090
 make build         # только собрать образы
 docker compose down
 ```

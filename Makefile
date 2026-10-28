@@ -3,8 +3,8 @@ COMPOSE ?= docker compose
 .PHONY: help up up-d down clean logs ps build test test-java test-python test-frontend seed
 
 help:
-	@echo "Планирование спринтов — команды:"
-	@echo "  make up          - собрать и запустить весь стек (db + java + python + web) на :8080"
+	@echo "Управление стримами и командами — команды:"
+	@echo "  make up          - собрать и запустить весь стек (db + java + python + web) на :8090"
 	@echo "  make up-d        - то же в фоне"
 	@echo "  make down        - остановить контейнеры"
 	@echo "  make clean       - остановить и удалить тома (сбросить БД)"

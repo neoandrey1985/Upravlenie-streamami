@@ -1,16 +1,19 @@
+# Отдельный compose-проект: контейнеры, тома и порт не пересекаются с «Планированием спринта» (:8080).
+name: upravlenie-streamami
+
 services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: planirovanie
-      POSTGRES_USER: planirovanie
+      POSTGRES_DB: streams
+      POSTGRES_USER: streams
       # DB is only reachable on the internal docker network (no published port).
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-planirovanie}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-streams}
     volumes:
       - pgdata:/var/lib/postgresql/data
     # Schema + seed are applied by Flyway from the Java service on startup (not by Postgres init).
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U planirovanie -d planirovanie"]
+      test: ["CMD-SHELL", "pg_isready -U streams -d streams"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -18,9 +21,9 @@ services:
   api:
     build: ./backend-java
     environment:
-      DB_URL: jdbc:postgresql://db:5432/planirovanie
-      DB_USER: planirovanie
-      DB_PASSWORD: ${DB_PASSWORD:-planirovanie}
+      DB_URL: jdbc:postgresql://db:5432/streams
+      DB_USER: streams
+      DB_PASSWORD: ${DB_PASSWORD:-streams}
       JPA_DDL_AUTO: none
       # Security: no weak demo users by default. On a fresh DB an "admin" is created with
       # APP_ADMIN_PASSWORD (or a random password printed in `docker compose logs api`).
@@ -64,7 +67,7 @@ services:
   analytics:
     build: ./analytics-python
     environment:
-      DB_URL_PY: postgresql+psycopg2://planirovanie:${DB_PASSWORD:-planirovanie}@db:5432/planirovanie
+      DB_URL_PY: postgresql+psycopg2://streams:${DB_PASSWORD:-streams}@db:5432/streams
       # Analytics data endpoints require the same bearer session token as the Java API.
       ANALYTICS_AUTH_ENABLED: ${ANALYTICS_AUTH_ENABLED:-true}
       ANALYTICS_CORS_ORIGINS: ${APP_ALLOWED_ORIGINS:-*}
@@ -79,7 +82,7 @@ services:
       - api
       - analytics
     ports:
-      - "8080:80"     # the only publicly exposed port — open http://localhost:8080
+      - "8090:80"     # the only publicly exposed port — open http://localhost:8090
 
 volumes:
   pgdata:

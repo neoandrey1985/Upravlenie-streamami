@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Управление кросс-функциональной командой</title>
+<title>Управление стримами и командами</title>
 <style>
 :root{--bg:#EEF2F7;--panel:#FFF;--panel2:#F7F9FC;--ink:#16202E;--muted:#5A6B82;--line:#DCE3EC;
 --accent:#2D5BE3;--accent-soft:#E4EBFB;--good:#1F9D6B;--warn:#C98A00;--crit:#D24545;
@@ -523,7 +523,7 @@ body.noadmin #rst,body.noadmin #imp{display:none}
 </style>
 <header class="top"><div class="inner">
  <button class="btn iconbtn" id="menubtn" aria-label="Меню" title="Свернуть / развернуть меню">☰</button>
- <div class="brand"><span class="dot"></span>Управление кросс-функциональной командой</div>
+ <div class="brand"><span class="dot"></span>Управление стримами и командами</div>
  <button class="btn iconbtn" id="palettebtn" title="Поиск и переход (Ctrl+K)">🔎</button>
  <div class="tools">
   <div class="dmenu" id="dmenu">
@@ -1437,7 +1437,7 @@ function syncAgile(){if(!Array.isArray(ST.agile))ST.agile=[];const have=new Set(
  Object.keys(AGILE_FW).forEach(fw=>AGILE_FW[fw].forEach(dim=>{const k=fw+'|'+dim;if(!have.has(k)){ST.agile.push({id:'AM-'+String(++seq).padStart(2,'0'),framework:fw,dimension:dim,level:seedAgileLevel(fw,dim),note:''});have.add(k);added++;}}));return added;}
 let ST=load();
 
-function load(){let d;try{const s=localStorage.getItem('sprintapp');d=s?JSON.parse(s):JSON.parse(JSON.stringify(SEED));}catch(e){d=JSON.parse(JSON.stringify(SEED));}return migrate(d);}
+function load(){let d;try{const s=localStorage.getItem('streamapp');d=s?JSON.parse(s):JSON.parse(JSON.stringify(SEED));}catch(e){d=JSON.parse(JSON.stringify(SEED));}return migrate(d);}
 /* Recover text that was corrupted by decoding UTF-8 bytes as latin1 (mojibake like "Ð¿Ñ€Ð¾..."). */
 function fixMojibake(s){if(typeof s!=='string'||!/[\u00C0-\u00FF][\u0080-\u00BF]/.test(s))return s;
  try{const b=Uint8Array.from(s,c=>c.charCodeAt(0)&255);const dec=new TextDecoder('utf-8',{fatal:false}).decode(b);
@@ -1737,7 +1737,7 @@ function cpm(tasks){const dur={},pred={},ids=tasks.map(t=>t.id),idset=new Set(id
  const LF={},LS={};ids.forEach(i=>{LF[i]=proj;LS[i]=proj-dur[i];});
  for(let k=0;k<ids.length+2;k++)ids.forEach(i=>{const ss=succ[i];LF[i]=ss.length?Math.min.apply(null,ss.map(s=>LS[s])):proj;LS[i]=LF[i]-dur[i];});
  const crit=new Set();ids.forEach(i=>{if(Math.abs(LS[i]-ES[i])<1e-9&&dur[i]>0)crit.add(i);});return crit;}
-function save(){if(typeof PERM!=='undefined'&&!PERM.canEdit)return;localStorage.setItem('sprintapp',JSON.stringify(ST));if(typeof syncSchedule==='function')syncSchedule();}
+function save(){if(typeof PERM!=='undefined'&&!PERM.canEdit)return;localStorage.setItem('streamapp',JSON.stringify(ST));if(typeof syncSchedule==='function')syncSchedule();}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600);}
 let toastT=null;
 function toastAction(text,label,cb){const e=document.getElementById('toast');e.innerHTML=esc(text)+' <a id="toastact">'+esc(label)+'</a>';e.classList.add('show');
@@ -2169,7 +2169,7 @@ function integrationsView(){const w=document.createElement('div');
  w.addEventListener('click',e=>{const b=e.target.closest('.intg-test');if(!b||b.disabled)return;const k=b.dataset.k;
    b.disabled=true;b.textContent='…';
    fetch('api/integrations/atlassian/'+k,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AUTH.token},
-     body:JSON.stringify({title:'Проверка интеграции из приложения',body:'Тестовое сообщение от «Управление кросс-функциональной командой».'})})
+     body:JSON.stringify({title:'Проверка интеграции из приложения',body:'Тестовое сообщение от «Управление стримами и командами».'})})
     .then(r=>r.json()).then(d=>{toast(d&&d.ok?('Отправлено: '+k):('Ошибка: '+((d&&d.error)||'нет ответа')));b.disabled=false;b.textContent='Проверить';})
     .catch(()=>{toast('Нет связи с сервером');b.disabled=false;b.textContent='Проверить';});});
  return w;}
@@ -3328,12 +3328,12 @@ function brdWSRecv(data){let m;try{m=JSON.parse(data);}catch(e){return;}
  if(m.from&&m.from===BWS.id)return;
  if(m.type==='cursor'){brdPeerCursor(m.from,m.name||((BWS.peers[m.from]||{}).name)||'Гость',m.color||'#2D5BE3',m.x,m.y);return;}
  if(m.type==='op'){brdApplyRemote(m);return;}
- if(m.type==='session'&&m.session){brdEnsure().session=m.session;try{localStorage.setItem('sprintapp',JSON.stringify(ST));}catch(e){}if(typeof CURV!=='undefined'&&CURV==='board'){brdRender();brdSessRefresh();}return;}
+ if(m.type==='session'&&m.session){brdEnsure().session=m.session;try{localStorage.setItem('streamapp',JSON.stringify(ST));}catch(e){}if(typeof CURV!=='undefined'&&CURV==='board'){brdRender();brdSessRefresh();}return;}
  if(m.type==='present'){brdPresRemote(m);return;}}
 function brdApplyRemote(m){brdEnsure();
  if(m.op==='upsert'&&m.item&&m.item.id){const arr=brdItems();const i=arr.findIndex(x=>x.id===m.item.id);if(i>=0)arr[i]=m.item;else arr.push(m.item);}
  else if(m.op==='delete'&&m.ids){ST.board.items=brdItems().filter(x=>m.ids.indexOf(x.id)<0);BW.sel=(BW.sel||[]).filter(id=>m.ids.indexOf(id)<0);}
- try{localStorage.setItem('sprintapp',JSON.stringify(ST));}catch(e){}
+ try{localStorage.setItem('streamapp',JSON.stringify(ST));}catch(e){}
  if(BW.hist)brdHistReset(); // правки соавторов: локальную историю начинаем заново, чтобы отмена их не откатила
  if(typeof CURV!=='undefined'&&CURV==='board')brdRender();}
 function brdCurLayer(){if(!BW.wrap)return null;let l=BW.wrap.querySelector('.brd-curlayer');if(!l){l=document.createElement('div');l.className='brd-curlayer';l.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:9;overflow:hidden';BW.wrap.appendChild(l);}return l;}
@@ -4277,7 +4277,7 @@ function statusReportMd(){const C=compute();const E=evm(C);const risk=sprintRisk
    iss.slice(0,8).forEach(x=>L.push('- ❗ '+(x.title||'')+' ('+(x.priority||'')+', '+(x.owner||'')+')'));}
  const done=(ST.tasks||[]).filter(t=>+t.sprint===C.cur&&t.status==='Готово');
  L.push('');L.push('## Сделано в спринте #'+C.cur);if(done.length)done.slice(0,12).forEach(t=>L.push('- ✅ '+(t.title||t.id)));else L.push('- —');
- L.push('');L.push('_Сгенерировано приложением «Управление кросс-функциональной командой» v'+APP_VERSION+'_');
+ L.push('');L.push('_Сгенерировано приложением «Управление стримами и командами» v'+APP_VERSION+'_');
  return L.join('\n');}
 function statusReportView(){const w=document.createElement('div');const md=statusReportMd();
  const bar=document.createElement('div');bar.className='grm-pick';
@@ -5381,9 +5381,12 @@ const NAV=[
  {g:'Система',items:[['params','Параметры','⚙️'],['integrations','Интеграции','🔌'],['calendar','Календарь','📅'],['budget','Бюджет','💰'],['checks','Проверки данных','🧪'],['eda','EDA отчёт','🔬'],['audit','Журнал событий','🧾']]},
  {g:'Справка',items:[['faq','FAQ','❓'],['support','Support','🛟']]},
 ];
-const APP_VERSION='1.49.0';const APP_DATE='2026-10-28';
+const APP_VERSION='2.0.0';const APP_DATE='2026-10-28';
 const APP_ABOUT='Кросс-функциональная команда — это группа специалистов из разных областей (разработчиков, дизайнеров, маркетологов, аналитиков, менеджеров и других), которые объединяются для работы над одним конкретным проектом или задачей. Ключевая идея в том, чтобы собрать внутри команды всех необходимых экспертов, чтобы она могла самостоятельно пройти путь от идеи до результата, не передавая задачу последовательно из одного отдела в другой.';
 const CHANGELOG=[
+ {v:'2.0.0',date:'2026-10-28',items:[
+   'Новый продукт «Управление стримами и командами» — отдельный проект на основе «Управления кросс-функциональной командой» v1.49.0 (форк с общей историей: исправления базового проекта переносятся через git upstream).',
+   'Изоляция от базового проекта: свой порт (:8090), своя база streams, свой compose-проект и свой ключ данных в браузере — оба приложения можно запускать одновременно.']},
  {v:'1.49.0',date:'2026-10-28',items:[
    'Доска — проведение сессий: голосование точками с лимитом голосов на участника, скрытым режимом и раскрытием итогов (медали 🥇🥈🥉), анонимный ввод с раскрытием авторов, показ по фреймам как по слайдам (← →, во весь экран) и режим «следовать за ведущим».',
    'Доска — обсуждения: комментарии к любому элементу с @упоминаниями участников команды, значок 💬 на элементе и сводка всех обсуждений.',
@@ -5585,7 +5588,7 @@ function buildNav(){
  const nav=document.getElementById('nav');nav.innerHTML=h;
  if(_navQ){const s=document.getElementById('navsearch');if(s){s.value=_navQ;navFilter(_navQ);}}
  const sf=document.getElementById('sidefoot');
- if(sf)sf.innerHTML=`<div class="sf-name">Управление кросс-функциональной командой</div><div class="sf-ver">v${APP_VERSION} · ${APP_DATE}</div>`;}
+ if(sf)sf.innerHTML=`<div class="sf-name">Управление стримами и командами</div><div class="sf-ver">v${APP_VERSION} · ${APP_DATE}</div>`;}
 function navFilter(q){_navQ=(q||'').trim();const ql=_navQ.toLowerCase();const nav=document.getElementById('nav');nav.classList.toggle('filtering',!!ql);
  nav.querySelectorAll('.nav-group').forEach(grp=>{let any=false;
    grp.querySelectorAll('.nav-row').forEach(row=>{const lbl=(row.querySelector('.nav-lbl').textContent||'').toLowerCase();const show=!ql||lbl.includes(ql);row.style.display=show?'':'none';if(show)any=true;});
@@ -5808,7 +5811,7 @@ async function syncPull(initial){
   const busy=(!initial)&&(Date.now()-SYNC.editAt<4000);
   if((initial||d.version>SYNC.ver)&&!busy){
     ST=migrate(d.state||JSON.parse(JSON.stringify(SEED)));SYNC.ver=d.version;
-    localStorage.setItem('sprintapp',JSON.stringify(ST));views();activate(CURV);
+    localStorage.setItem('streamapp',JSON.stringify(ST));views();activate(CURV);
     if(!initial)toast('Обновлено (другой пользователь)');
   }
   setSt('🟢 онлайн','p-good');
@@ -5823,7 +5826,7 @@ async function syncPush(){
   if(r.status===403){setSt('🔒 только чтение','p-warn');toast('Недостаточно прав для сохранения на сервере');return;}
   if(r.status===409){ // another user saved first — adopt their version, never silently overwrite
     const d=await r.json();ST=migrate(d.state||JSON.parse(JSON.stringify(SEED)));SYNC.ver=d.version;
-    localStorage.setItem('sprintapp',JSON.stringify(ST));views();activate(CURV);
+    localStorage.setItem('streamapp',JSON.stringify(ST));views();activate(CURV);
     setSt('🟢 онлайн','p-good');toast('Изменено другим пользователем — загружена свежая версия');return;}
   if(!r.ok)throw 0;const d=await r.json();SYNC.ver=d.version;SYNC.on=true;setSt('🟢 сохранено','p-good');
  }catch(e){SYNC.on=false;setSt('⚪ офлайн','p-neut');}
@@ -5920,7 +5923,7 @@ startAnalytics();setInterval(startAnalytics,30000);
  function sectionAnswer(sec){let head=sec.title;if(sec.title.toLowerCase().indexOf(sec.label.toLowerCase())<0)head+=' («'+sec.label+'»)';head+=' — блок «'+sec.group+'».';return {t:head+'\n'+sec.text,goto:sec.id};}
  function overview(){const n=NAV.reduce((a,g)=>a+g.items.length,0);
   const parts=NAV.map(g=>'• '+g.g+': '+g.items.map(it=>it[1]).join(', '));
-  return {t:'Приложение «Управление кросс-функциональной командой» — '+n+' разделов в '+NAV.length+' блоках:\n'+parts.join('\n')+'\n\nСпросите про любой раздел («что такое Гант», «зачем Bus factor», «как работает DORA») или скажите «открой …».'};}
+  return {t:'Приложение «Управление стримами и командами» — '+n+' разделов в '+NAV.length+' блоках:\n'+parts.join('\n')+'\n\nСпросите про любой раздел («что такое Гант», «зачем Bus factor», «как работает DORA») или скажите «открой …».'};}
  function groupAnswer(s){for(const g of NAV){if(s.indexOf(g.g.toLowerCase())>=0)return {t:'Блок «'+g.g+'» — '+g.items.length+' разд.: '+g.items.map(it=>it[1]).join(', ')+'.'};}return null;}
  function whatsNew(){const c=(typeof CHANGELOG!=='undefined'&&CHANGELOG[0])||null;if(!c)return {t:'Текущая версия приложения: '+APP_VERSION+'.'};
   return {t:'Версия '+c.v+' от '+c.date+':\n• '+c.items.slice(0,8).join('\n• ')+(c.items.length>8?'\n…':'')+'\n\nПолная история — в разделе FAQ.',goto:'faq'};}
@@ -5937,7 +5940,7 @@ startAnalytics();setInterval(startAnalytics,30000);
   let best=null,bs=0;items.forEach(it=>{const hay=((it.q||'')+' '+(it.a||'')+' '+(it.category||'')).toLowerCase();
    let sc=0;qt.forEach(w=>{if(hay.indexOf(w)>=0)sc++;});if(sc>bs){bs=sc;best=it;}});
   return (best&&bs>=Math.min(2,qt.length))?(best.q+'\n\n'+best.a):null;}
- function help(){return {t:'Я помощник по приложению «Управление кросс-функциональной командой» и знаю все его разделы и функции. Могу:\n• рассказать про любой из '+NAV.reduce((a,g)=>a+g.items.length,0)+' разделов и методологий («что такое Гант», «зачем Bus factor», «как работает DORA»);\n• перечислить все разделы приложения («какие разделы есть», «что в блоке Команда»);\n• показать метрики — velocity, health, TTM, баги, зависимости, бюджет, прогноз;\n• подсказать, что требует внимания, и что нового в версии;\n• открыть нужный раздел и выполнить действия («набери спринт 4», «сортируй бэклог»).',chips:true};}
+ function help(){return {t:'Я помощник по приложению «Управление стримами и командами» и знаю все его разделы и функции. Могу:\n• рассказать про любой из '+NAV.reduce((a,g)=>a+g.items.length,0)+' разделов и методологий («что такое Гант», «зачем Bus factor», «как работает DORA»);\n• перечислить все разделы приложения («какие разделы есть», «что в блоке Команда»);\n• показать метрики — velocity, health, TTM, баги, зависимости, бюджет, прогноз;\n• подсказать, что требует внимания, и что нового в версии;\n• открыть нужный раздел и выполнить действия («набери спринт 4», «сортируй бэклог»).',chips:true};}
  function reply(q){const s=(q||'').toLowerCase().trim();if(!s)return help();const C=compute();
   if(/^(привет|здравств|хай|hello|hi|добр|ку\b|yo)/.test(s))return {t:'Привет! Спросите про данные проекта (velocity, баги, риски, «что требует внимания») или про разделы приложения. Могу и открыть нужный раздел, а также выполнить действия: «набери спринт 4», «сортируй бэклог по приоритету», «исправь данные», «создай задачу …».',chips:true};
   if(/(что ты умеешь|как польз|помоги|help|что можешь|команды)/.test(s))return help();
@@ -6106,7 +6109,7 @@ startAnalytics();setInterval(startAnalytics,30000);
 })();
 /* ---------- guided tour (video-style walkthrough) ---------- */
 const TOUR=[
- {v:'dash',h:'Управление кросс-функциональной командой — обзор',p:'Веб-приложение для планирования работы кросс-функциональной команды по двухнедельным спринтам: данные, метрики и диаграммы в одном месте. Пройдёмся по всем разделам.',d:8000},
+ {v:'dash',h:'Управление стримами и командами — обзор',p:'Веб-приложение для планирования работы кросс-функциональной команды по двухнедельным спринтам: данные, метрики и диаграммы в одном месте. Пройдёмся по всем разделам.',d:8000},
  {v:'dash',h:'Дашборд',p:'Сводка проекта: KPI с RAG-подсветкой, блок «Что требует внимания», кликабельные карточки и sparkline-тренды. Ниже — графики ёмкости, velocity, багов и Time to Market.',d:10000},
  {v:'roadmap',h:'Дорожная карта',p:'Спринты рассчитываются автоматически из параметров и состава команды: даты, рабочие дни, ёмкость, план, velocity и процент выполнения.',d:9000},
  {v:'quarters',h:'Кварталы',p:'Агрегация спринтов по кварталам и квартальный roadmap на шкале дат.',d:7000},

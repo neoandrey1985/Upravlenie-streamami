@@ -160,7 +160,7 @@ def main():
     doc.styles["Normal"].font.name = "Calibri"; doc.styles["Normal"].font.size = Pt(11)
 
     doc.add_heading("Тестовая документация", level=0)
-    doc.add_paragraph().add_run("Управление кросс-функциональной командой · v%s · %s" % (VER, today)).italic = True
+    doc.add_paragraph().add_run("Управление стримами и командами · v%s · %s" % (VER, today)).italic = True
     doc.add_paragraph(
         "Тест-план, тестовые сценарии и тест-кейсы приложения для управления кросс-функциональной командой. "
         "Документ генерируется из реального набора автотестов (frontend e2e, backend MockMvc, analytics) и "
@@ -254,7 +254,7 @@ def main():
         doc.add_paragraph(line, style="List Bullet")
 
     doc.add_paragraph().add_run(
-        "Сгенерировано из набора тестов приложения «Управление кросс-функциональной командой» v%s (%s). "
+        "Сгенерировано из набора тестов приложения «Управление стримами и командами» v%s (%s). "
         "Публикуется и обновляется при каждом релизе." % (VER, today)).italic = True
     doc.save(str(OUT))
     print("saved", OUT, OUT.stat().st_size, "bytes; e2e cases:", len(fe_rows), "+smoke" if smoke else "",

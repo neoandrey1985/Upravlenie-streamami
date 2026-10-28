@@ -76,8 +76,8 @@ jobs:
           set -e
           ok=0
           for i in $(seq 1 60); do
-            if curl -fs http://localhost:8080/api/health >/dev/null \
-               && curl -fs http://localhost:8080/analytics/health >/dev/null; then
+            if curl -fs http://localhost:8090/api/health >/dev/null \
+               && curl -fs http://localhost:8090/analytics/health >/dev/null; then
               ok=1; echo "services ready"; break
             fi
             echo "waiting ($i)…"; sleep 3
@@ -87,24 +87,24 @@ jobs:
         run: |
           set -e
           # public endpoints
-          curl -fs http://localhost:8080/api/health | grep -q '"status"'
-          curl -fs http://localhost:8080/analytics/health | grep -q '"status"'
-          curl -fs http://localhost:8080/ | grep -qi 'Управление'
+          curl -fs http://localhost:8090/api/health | grep -q '"status"'
+          curl -fs http://localhost:8090/analytics/health | grep -q '"status"'
+          curl -fs http://localhost:8090/ | grep -qi 'Управление'
           # unauthenticated access to protected endpoints must be REJECTED (401)
-          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/api/state)" = "401"
-          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/analytics/metrics)" = "401"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8090/api/state)" = "401"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8090/analytics/metrics)" = "401"
           # log in and use the bearer token
-          TOKEN=$(curl -fs -X POST http://localhost:8080/api/auth/login \
+          TOKEN=$(curl -fs -X POST http://localhost:8090/api/auth/login \
             -H 'Content-Type: application/json' \
             -d '{"username":"admin","password":"admin123"}' | grep -oE '"token":"[^"]+"' | cut -d'"' -f4)
           test -n "$TOKEN"
           AUTH="Authorization: Bearer $TOKEN"
-          curl -fs -H "$AUTH" http://localhost:8080/api/state | grep -q '"version"'
-          curl -fs -H "$AUTH" http://localhost:8080/analytics/metrics | grep -q 'avgVelocity'
-          curl -fs -H "$AUTH" http://localhost:8080/analytics/rice | grep -q 'F-02'
+          curl -fs -H "$AUTH" http://localhost:8090/api/state | grep -q '"version"'
+          curl -fs -H "$AUTH" http://localhost:8090/analytics/metrics | grep -q 'avgVelocity'
+          curl -fs -H "$AUTH" http://localhost:8090/analytics/rice | grep -q 'F-02'
           # security headers present
-          curl -sI http://localhost:8080/ | grep -qi 'X-Frame-Options: DENY'
-          curl -sI http://localhost:8080/ | grep -qi 'Content-Security-Policy'
+          curl -sI http://localhost:8090/ | grep -qi 'X-Frame-Options: DENY'
+          curl -sI http://localhost:8090/ | grep -qi 'Content-Security-Policy'
       - name: Dump logs on failure
         if: failure()
         run: docker compose logs
