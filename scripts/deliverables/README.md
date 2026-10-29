@@ -45,6 +45,7 @@ System Demo) — данные пользователя не трогаются.
 | `refresh_images.py` | заменяет снимки во всех `.docx` и в презентации свежими: картинка опознаётся по хэшу (`shot_hashes.json`) |
 | `release_v23_streams.py` | главы о стримах и командах в руководствах и описаниях, замены продукта/портов/БД (идемпотентно) |
 | `release_v23_slides.py` | слайды уровня стрима, титульный и итоговый слайды (идемпотентно) |
+| `release_v211_links.py` | раздел «Зависимости на «Ганте по иерархии»» (⇄ межкомандные зависимости), уточнение 17.10, описания, слайд, версия (идемпотентно) |
 | `release_v210_stages.py` | раздел «Метки этапов» (и группировка историй под фичами стрима) в руководстве и описаниях, миграция V13 в руководстве администратора и инструкции, слайд, версия (идемпотентно) |
 | `release_v29_hgantt.py` | раздел «Гант по иерархии» в руководстве и описаниях, слайд после «Диаграммы Ганта», версия (идемпотентно) |
 | `release_v28_profile.py` | глава 23 «Мой профиль», актуальная шапка в главах 1, 2, 14, 17.1, 17.2, 22.1, эндпоинты профиля и миграция V4 в руководстве администратора, миграции в инструкции (идемпотентно) |
@@ -68,6 +69,7 @@ python scripts/deliverables/release_v27_roles.py
 python scripts/deliverables/release_v28_profile.py
 python scripts/deliverables/release_v29_hgantt.py
 python scripts/deliverables/release_v210_stages.py
+python scripts/deliverables/release_v211_links.py
 python scripts/deliverables/release_v23_slides.py
 python scripts/deliverables/refresh_images.py           # все снимки в docx/pptx → свежие
 python scripts/deliverables/gen_xlsx.py
