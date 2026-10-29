@@ -44,6 +44,8 @@ SHOTS = {
                "t:'@Петрова М. проверь, пожалуйста, макет корзины',ts:'2026-09-09T10:00:00Z',m:['Петрова М.']}]});views();activate('profile');window.scrollTo(0,0);}"],
  "s_profile2": ["MOCK", "async()=>{AUTH.username='lead';AUTH.user='Петрова Мария';AUTH.role='EDITOR';AUTH.member='Петрова М.';setPerm('editor');applyPerms();updateRoleBtn();"
                 "views();activate('profile');await new Promise(r=>setTimeout(r,500));const c=document.getElementById('pf_stream');if(c){c.scrollIntoView({block:'start'});window.scrollBy(0,-120);}}"],
+ # «Гант по иерархии»: уровень «до историй», вид на сетку
+ "s_hgantt": ["()=>{HG.level=3;HG.open={};HG.fact=true;views();activate('hgantt');const g=document.querySelector('#hg_root .hg-bar');if(g){g.scrollIntoView({block:'start'});window.scrollBy(0,-70);}}"],
  # серверные окна администратора — на подменённых ответах сервера (демо-учётки, без реальных данных)
  "admin_users": ["MOCK", "async()=>{activate('dash');window.scrollTo(0,0);await openUsers();}"],
  "admin_audit": ["MOCK", "async()=>{views();activate('audit');await new Promise(r=>setTimeout(r,600));"
