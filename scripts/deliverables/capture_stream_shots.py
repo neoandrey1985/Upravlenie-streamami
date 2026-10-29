@@ -13,7 +13,8 @@
   s_deps.jpg       — межкомандные зависимости с конфликтами;
   s_roam.jpg       — риски ROAM;
   s_sos.jpg        — Scrum of Scrums;
-  s_demo.jpg       — System Demo.
+  s_demo.jpg       — System Demo;
+  s_maturity.jpg / s_mat_practices.jpg / s_mat_teams.jpg — зрелость стрима: радар, практики, голоса и зрелость команд.
 Запуск: python scripts/deliverables/capture_stream_shots.py [имя ...]"""
 import sys, pathlib
 from playwright.sync_api import sync_playwright
@@ -47,6 +48,9 @@ SHOTS = {
  "s_roam": ["()=>{activate('roam');window.scrollTo(0,0);}"],
  "s_sos": ["()=>{activate('sos');window.scrollTo(0,0);}"],
  "s_demo": ["()=>{activate('sysdemo');window.scrollTo(0,0);}"],
+ "s_maturity": ["()=>{activate('smaturity');streamRerender();window.scrollTo(0,0);}"],
+ "s_mat_practices": ["()=>{activate('smaturity');streamRerender();}", to("#str_smaturity .mat-t", -120)],
+ "s_mat_teams": ["()=>{activate('smaturity');streamRerender();}", to("#str_smaturity .mat-v", -60)],
 }
 CLEAN = "()=>{const t=document.getElementById('toast');if(t)t.classList.remove('show');}"
 

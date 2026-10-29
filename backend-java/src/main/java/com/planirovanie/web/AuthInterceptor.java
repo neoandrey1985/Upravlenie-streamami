@@ -81,7 +81,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (path.contains("/api/audit/client")) return true;
         // Organisation structure: everyone reads (filtered by access), only ADMIN changes it.
         if (path.contains("/api/org")) {
-            if (path.endsWith("/doc")) return true;                      // stream document: stream role checked in OrgController
+            if (path.endsWith("/doc") || path.endsWith("/vote")) return true;   // stream document / team vote: checked in OrgController
             return !writing || "ADMIN".equals(role) ? true : deny(res, 403, "forbidden");
         }
         // Reading the audit log is ADMIN-only.

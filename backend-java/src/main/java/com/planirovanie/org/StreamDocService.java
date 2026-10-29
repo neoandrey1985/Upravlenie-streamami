@@ -56,6 +56,46 @@ public class StreamDocService {
         return d.version;
     }
 
+    /**
+     * Голос команды в оценке зрелости стрима: data.mat.rounds[pi].votes[dim][team] = level (1..5; 0 — снять голос).
+     * Сливается в документ на сервере под блокировкой строки — участник команды не перезаписывает остальной документ.
+     */
+    @Transactional
+    public Map<String, Object> vote(String streamId, String pi, String team, JsonNode votes, String user) {
+        if (pi == null || pi.isBlank() || team == null || votes == null || !votes.isObject()) throw new IllegalArgumentException("bad_vote");
+        OrgStreamDoc d = docs.findForUpdate(streamId).orElseGet(() -> {
+            OrgStreamDoc n = new OrgStreamDoc(); n.streamId = streamId; n.version = 0; return n;
+        });
+        com.fasterxml.jackson.databind.node.ObjectNode data;
+        try {
+            JsonNode cur = d.data == null || d.data.isBlank() ? null : mapper.readTree(d.data);
+            data = cur != null && cur.isObject() ? (com.fasterxml.jackson.databind.node.ObjectNode) cur : mapper.createObjectNode();
+        } catch (Exception e) { data = mapper.createObjectNode(); }
+        com.fasterxml.jackson.databind.node.ObjectNode mat = data.has("mat") && data.get("mat").isObject()
+                ? (com.fasterxml.jackson.databind.node.ObjectNode) data.get("mat") : data.putObject("mat");
+        com.fasterxml.jackson.databind.node.ArrayNode rounds = mat.has("rounds") && mat.get("rounds").isArray()
+                ? (com.fasterxml.jackson.databind.node.ArrayNode) mat.get("rounds") : mat.putArray("rounds");
+        com.fasterxml.jackson.databind.node.ObjectNode round = null;
+        for (JsonNode r : rounds) if (r.isObject() && pi.equals(r.path("pi").asText())) { round = (com.fasterxml.jackson.databind.node.ObjectNode) r; break; }
+        if (round == null) { round = rounds.addObject(); round.put("pi", pi); round.putObject("votes"); round.putObject("final"); round.putObject("notes"); }
+        com.fasterxml.jackson.databind.node.ObjectNode vs = round.has("votes") && round.get("votes").isObject()
+                ? (com.fasterxml.jackson.databind.node.ObjectNode) round.get("votes") : round.putObject("votes");
+        var it = votes.fields();
+        while (it.hasNext()) {
+            var e = it.next(); int lv = e.getValue().asInt(-1);
+            if (lv < 0 || lv > 5 || e.getKey().length() > 40) throw new IllegalArgumentException("bad_vote");
+            com.fasterxml.jackson.databind.node.ObjectNode dim = vs.has(e.getKey()) && vs.get(e.getKey()).isObject()
+                    ? (com.fasterxml.jackson.databind.node.ObjectNode) vs.get(e.getKey()) : vs.putObject(e.getKey());
+            if (lv == 0) dim.remove(team); else dim.put(team, lv);
+        }
+        try { d.data = mapper.writeValueAsString(data); } catch (Exception e) { throw new IllegalArgumentException("bad_document"); }
+        if (d.data.length() > MAX_BYTES) throw new IllegalArgumentException("document_too_large");
+        d.version = d.version + 1; d.updatedAt = Instant.now(); d.updatedBy = user;
+        docs.save(d);
+        Map<String, Object> r = new LinkedHashMap<>(); r.put("version", d.version); r.put("data", data);
+        return r;
+    }
+
     @Transactional
     public void delete(String streamId) {
         docs.findById(streamId).ifPresent(docs::delete);

@@ -570,6 +570,13 @@ body.noadmin #rst,body.noadmin #imp{display:none}
 .str-det summary{cursor:pointer;color:var(--muted);font-size:12px}
 .str-det div{font-size:12px;color:var(--muted);padding:2px 0}
 .str-t td input[type=checkbox]{width:auto;min-width:0}
+.mat-cur{font-weight:700;color:var(--accent)}
+.mat-t td{vertical-align:top}.mat-t td input{min-width:130px}.mat-t .str-det div{max-width:360px}
+.mat-t td:nth-child(6){min-width:200px;max-width:260px;white-space:normal}
+.mat-h{white-space:normal;min-width:88px;font-size:10.5px;line-height:1.3}
+.mat-stat td{font-size:12px}
+.mat-v td select{min-width:64px}
+.mat-cfg{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0}.mat-cfg label{display:flex;gap:6px;align-items:center;font-size:13px}
 .str-alerts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .str-alerts .org-sn{flex:1 0 100%}
 .str-al{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:4px 12px;font:inherit;font-size:12.5px;cursor:pointer}
@@ -645,7 +652,7 @@ body.noadmin #rst,body.noadmin #imp{display:none}
  </div>
 </div></header>
 <div class="shell"><aside class="side" id="side"><nav id="nav"></nav><div class="side-foot" id="sidefoot"></div></aside><div class="scrim" id="scrim"></div>
-<main id="main"><section class="view" id="v_org"></section><section class="view" id="v_stream"></section><section class="view" id="v_features"></section><section class="view" id="v_streampi"></section><section class="view" id="v_roam"></section><section class="view" id="v_sos"></section><section class="view" id="v_sysdemo"></section><section class="view" id="v_dash"></section><section class="view" id="v_board"></section><section class="view" id="v_kanban"></section><section class="view" id="v_backlog"></section><section class="view" id="v_team"></section><section class="view" id="v_starmap"></section><section class="view" id="v_roadmap"></section><section class="view" id="v_quarters"></section><section class="view" id="v_rice"></section><section class="view" id="v_wsjf"></section><section class="view" id="v_moscow"></section><section class="view" id="v_sprintGoals"></section><section class="view" id="v_gantt"></section><section class="view" id="v_deps"></section><section class="view" id="v_piboard"></section><section class="view" id="v_releases"></section><section class="view" id="v_milestones"></section><section class="view" id="v_debt"></section><section class="view" id="v_okr"></section><section class="view" id="v_budget"></section><section class="view" id="v_analytics"></section><section class="view" id="v_risks"></section><section class="view" id="v_bugs"></section><section class="view" id="v_daily"></section><section class="view" id="v_grooming"></section><section class="view" id="v_demo"></section><section class="view" id="v_vacation"></section><section class="view" id="v_birthdays"></section><section class="view" id="v_retro"></section><section class="view" id="v_agile"></section><section class="view" id="v_calendar"></section><section class="view" id="v_scope"></section><section class="view" id="v_checks"></section><section class="view" id="v_eda"></section><section class="view" id="v_integrations"></section><section class="view" id="v_params"></section><section class="view" id="v_faq"></section><section class="view" id="v_support"></section><section class="view" id="v_audit"></section><section class="view" id="v_evm"></section><section class="view" id="v_changes"></section><section class="view" id="v_issues"></section><section class="view" id="v_stakeholders"></section><section class="view" id="v_statusreport"></section><section class="view" id="v_decisions"></section><section class="view" id="v_wbs"></section><section class="view" id="v_storymap"></section><section class="view" id="v_impediments"></section><section class="view" id="v_poker"></section><section class="view" id="v_lessons"></section><section class="view" id="v_raci"></section><section class="view" id="v_portfolio"></section><section class="view" id="v_busfactor"></section><section class="view" id="v_healthcheck"></section><section class="view" id="v_dora"></section><section class="view" id="v_incidents"></section></main></div>
+<main id="main"><section class="view" id="v_org"></section><section class="view" id="v_stream"></section><section class="view" id="v_features"></section><section class="view" id="v_streampi"></section><section class="view" id="v_roam"></section><section class="view" id="v_sos"></section><section class="view" id="v_sysdemo"></section><section class="view" id="v_smaturity"></section><section class="view" id="v_dash"></section><section class="view" id="v_board"></section><section class="view" id="v_kanban"></section><section class="view" id="v_backlog"></section><section class="view" id="v_team"></section><section class="view" id="v_starmap"></section><section class="view" id="v_roadmap"></section><section class="view" id="v_quarters"></section><section class="view" id="v_rice"></section><section class="view" id="v_wsjf"></section><section class="view" id="v_moscow"></section><section class="view" id="v_sprintGoals"></section><section class="view" id="v_gantt"></section><section class="view" id="v_deps"></section><section class="view" id="v_piboard"></section><section class="view" id="v_releases"></section><section class="view" id="v_milestones"></section><section class="view" id="v_debt"></section><section class="view" id="v_okr"></section><section class="view" id="v_budget"></section><section class="view" id="v_analytics"></section><section class="view" id="v_risks"></section><section class="view" id="v_bugs"></section><section class="view" id="v_daily"></section><section class="view" id="v_grooming"></section><section class="view" id="v_demo"></section><section class="view" id="v_vacation"></section><section class="view" id="v_birthdays"></section><section class="view" id="v_retro"></section><section class="view" id="v_agile"></section><section class="view" id="v_calendar"></section><section class="view" id="v_scope"></section><section class="view" id="v_checks"></section><section class="view" id="v_eda"></section><section class="view" id="v_integrations"></section><section class="view" id="v_params"></section><section class="view" id="v_faq"></section><section class="view" id="v_support"></section><section class="view" id="v_audit"></section><section class="view" id="v_evm"></section><section class="view" id="v_changes"></section><section class="view" id="v_issues"></section><section class="view" id="v_stakeholders"></section><section class="view" id="v_statusreport"></section><section class="view" id="v_decisions"></section><section class="view" id="v_wbs"></section><section class="view" id="v_storymap"></section><section class="view" id="v_impediments"></section><section class="view" id="v_poker"></section><section class="view" id="v_lessons"></section><section class="view" id="v_raci"></section><section class="view" id="v_portfolio"></section><section class="view" id="v_busfactor"></section><section class="view" id="v_healthcheck"></section><section class="view" id="v_dora"></section><section class="view" id="v_incidents"></section></main></div>
 <div class="palette" id="palette"><div class="pbox"><input class="pin" id="pin" placeholder="Поиск раздела или действия…" autocomplete="off"><div class="plist" id="plist"></div></div></div>
 <div class="role-pop" id="rolepop"></div>
 <div class="modal" id="accmodal"><div class="mbox">
@@ -3575,6 +3582,7 @@ function views(){
  setView('roam','Риски ROAM','Риски уровня стрима по модели ROAM (Resolved, Owned, Accepted, Mitigated) с переносом высоких рисков из реестров команд.',streamShell('roam'));
  setView('sos','Scrum of Scrums','Синхронизация команд стрима: повестка формируется из данных команд — прогресс спринта, импедименты, блокеры и кому нужна помощь.',streamShell('sos'));
  setView('sysdemo','System Demo','Совместный показ стрима в конце итерации: повестка из фич с готовыми историями, отзывы стейкхолдеров и решение «принято / доработать».',streamShell('sysdemo'));
+ setView('smaturity','Зрелость стрима','Agile-зрелость стрима в трёх слоях: зрелость команд, практики стрима по рубрике (голоса команд и итог RTE) и объективные индикаторы из данных со сверкой «оценка ↔ факты»; динамика по PI и бэклог улучшений.',streamShell('smaturity'));
  setView('portfolio','Портфель','Портфельный обзор нескольких проектов: статус RAG, health, velocity, бюджет и прогресс; снимок текущего проекта одной кнопкой.',portfolioView());
  setView('busfactor','Bus factor / покрытие компетенций','Риск ключевого человека: сколько людей владеют каждым навыком (из Star Map), одиночные точки отказа и непокрытые навыки.',busFactorView());
  setView('healthcheck','Team Health Check','Периодическая самооценка здоровья команды (модель Spotify Squad): светофор и тренд по измерениям.',healthCheckView());
@@ -5497,7 +5505,7 @@ function recomputeSoft(){/* light: refresh dashboard only, keep edit focus */ re
 /* ---------- sidebar navigation ---------- */
 const NAV=[
  {g:'Обзор',items:[['org','Стримы и команды','🏢'],['dash','Дашборд','📋'],['statusreport','Статус-отчёт','📰'],['portfolio','Портфель','🗂']]},
- {g:'Стрим',items:[['stream','Дашборд стрима','🛰️'],['features','Фичи стрима','🎁'],['streampi','PI стрима','🗓️'],['roam','Риски ROAM','🛡️'],['sos','Scrum of Scrums','🔄'],['sysdemo','System Demo','🎬']]},
+ {g:'Стрим',items:[['stream','Дашборд стрима','🛰️'],['features','Фичи стрима','🎁'],['streampi','PI стрима','🗓️'],['roam','Риски ROAM','🛡️'],['sos','Scrum of Scrums','🔄'],['sysdemo','System Demo','🎬'],['smaturity','Зрелость стрима','🧭']]},
  {g:'Планирование',items:[['roadmap','Дорожная карта','🗺️'],['quarters','Кварталы','🗓️'],['sprintGoals','Цели спринтов','🎯'],['kanban','Kanban-доска','🗃️'],['board','Доска','🧩'],['okr','OKR','🧭']]},
  {g:'Бэклог и приоритизация',items:[['backlog','Бэклог','🗂️'],['wbs','Иерархия работ','🌳'],['storymap','Story Map','🗺'],['rice','RICE','📊'],['wsjf','WSJF','⚖️'],['moscow','MoSCoW','📌']]},
  {g:'Расписание и зависимости',items:[['gantt','Гант','📊'],['deps','Зависимости','🔗'],['piboard','Программная доска','🧭'],['milestones','Вехи','🏁']]},
@@ -5509,9 +5517,15 @@ const NAV=[
  {g:'Система',items:[['params','Параметры','⚙️'],['integrations','Интеграции','🔌'],['calendar','Календарь','📅'],['budget','Бюджет','💰'],['checks','Проверки данных','🧪'],['eda','EDA отчёт','🔬'],['audit','Журнал событий','🧾']]},
  {g:'Справка',items:[['faq','FAQ','❓'],['support','Support','🛟']]},
 ];
-const APP_VERSION='2.4.0';const APP_DATE='2026-10-29';
+const APP_VERSION='2.5.0';const APP_DATE='2026-10-29';
 const APP_ABOUT='Кросс-функциональная команда — это группа специалистов из разных областей (разработчиков, дизайнеров, маркетологов, аналитиков, менеджеров и других), которые объединяются для работы над одним конкретным проектом или задачей. Ключевая идея в том, чтобы собрать внутри команды всех необходимых экспертов, чтобы она могла самостоятельно пройти путь от идеи до результата, не передавая задачу последовательно из одного отдела в другой.';
 const CHANGELOG=[
+ {v:'2.5.0',date:'2026-10-29',items:[
+   'Зрелость стрима — новый раздел меню «Стрим», три слоя: зрелость команд (тепловая карта по Scrum/Kanban/SAFe со средним, минимумом и разбросом), практики стрима и объективные индикаторы.',
+   'Практики стрима: 10 измерений (PI-планирование, каденция, бэклог фич, зависимости, System Demo, Inspect & Adapt, роли, непрерывная поставка, технические практики, метрики) с рубрикой из 5 уровней; можно отключать измерения и добавлять свои.',
+   'Команды голосуют по рубрике (участник команды — за свою команду), RTE фиксирует итог; медиана, разброс голосов, комментарий к итогу.',
+   'Индикаторы из данных (предсказуемость PI, каденция, WSJF и истории фич, конфликты зависимостей, регулярность System Demo, ROAM и улучшения, DORA, DoD, срезы и Scrum of Scrums) и сверка «оценка ↔ факты»; радар, динамика по PI, бэклог улучшений из слабых измерений.',
+   'Дашборд стрима: плитка «Зрелость стрима» (уровень и слабое звено) и сигналы о расхождении с фактами и о непроведённой оценке в конце PI; листы Excel «Зрелость стрима» и «Улучшения стрима».']},
  {v:'2.4.0',date:'2026-10-29',items:[
    'Дашборд стрима (вместо «Обзора стрима»): все показатели стрима и каждой команды; сигналы «Требует внимания» (риск срыва, перегруз, критичные баги, старые импедименты, конфликты зависимостей, риски ROAM, фичи без историй) с переходом к причине.',
    'Вкладки: «Сводка» (KPI, burn-up, velocity, матрица), «Команды» (тепловая матрица или карточки с мини-трендом), «Поток» (cycle time, WIP, say/do, загрузка, распределение работы), «Качество» (баги по серьёзности, DRE, DoD, DORA, техдолг), «Люди» (Health Check, настроение, SPOF, импедименты), «Тренды».',
@@ -6122,7 +6136,7 @@ document.getElementById('orgfile').onchange=e=>{const f=e.target.files[0];if(!f)
    Сводные метрики считаются теми же функциями, что и для команды (compute, sprintRisk, sayDo), по данным каждой команды. */
 var SDOC={sid:null,ver:0,data:null,role:null,loaded:false};
 var STC={sid:null,at:0,list:null};
-const SVIEWS=['stream','features','streampi','roam','sos','sysdemo'];
+const SVIEWS=['stream','features','streampi','roam','sos','sysdemo','smaturity'];
 const DEMO_ST=['Запланировано','Показано','Принято','Доработать'];
 const STR_COLORS=['#2D5BE3','#1F9D6B','#D24545','#C98A00','#8A5BD6','#0EA5A5','#E5588F','#7A8AA0'];
 const FEAT_ST=['Воронка','Анализ','Бэклог','В работе','Готово'];
@@ -6131,7 +6145,7 @@ const SDEP_ST=['Открыта','Принята','Выполнена','Забл�
 function curStream(){const t=orgTeam();return (t&&t.streamId)||(ORG.streams[0]&&ORG.streams[0].id)||'s1';}
 function streamTeamsList(sid){return ORG.teams.filter(t=>t.streamId===(sid||curStream()));}
 function sdocKey(sid){return 'streamapp:stream:'+(sid||curStream());}
-function sdocDefault(){return {pis:[{id:'PI-1',name:'PI 1',start:(ST.params&&ST.params.start)||todayISO(),iters:5}],curPi:'PI-1',features:[],objectives:[],roam:[],deps:[],sos:[],demos:[],snaps:[]};}
+function sdocDefault(){return {pis:[{id:'PI-1',name:'PI 1',start:(ST.params&&ST.params.start)||todayISO(),iters:5}],curPi:'PI-1',features:[],objectives:[],roam:[],deps:[],sos:[],demos:[],snaps:[],mat:{off:[],custom:[],rounds:[]},mActions:[]};}
 function sdocNorm(d){const D=sdocDefault();d=(d&&typeof d==='object'&&!Array.isArray(d))?d:{};
  Object.keys(D).forEach(k=>{if(Array.isArray(D[k])){if(!Array.isArray(d[k]))d[k]=D[k];}else if(d[k]==null)d[k]=D[k];});
  if(!d.pis.length)d.pis=D.pis;if(!d.pis.some(p=>p.id===d.curPi))d.curPi=d.pis[0].id;
@@ -6211,8 +6225,8 @@ function streamShell(id){const w=document.createElement('div');w.className='str-
  setTimeout(()=>streamFill(id),0);return w;}
 async function streamFill(id,force){const w=document.getElementById('str_'+id);if(!w)return;
  await sdocLoad(force);const states=await streamTeamStates(force);const w2=document.getElementById('str_'+id);if(!w2)return;
- const R={stream:sDash,features:sFeatures,streampi:sPi,roam:sRoam,sos:sSos,sysdemo:sDemo}[id];
- try{w2.innerHTML=sHead()+R(states);if(id==='stream')sDashCharts(states);}catch(e){w2.innerHTML='<p class="org-empty">Ошибка отображения: '+esc(e.message)+'</p>';}}
+ const R={stream:sDash,features:sFeatures,streampi:sPi,roam:sRoam,sos:sSos,sysdemo:sDemo,smaturity:sMaturity}[id];
+ try{w2.innerHTML=sHead()+R(states);if(id==='stream')sDashCharts(states);if(id==='smaturity')sMatCharts();}catch(e){w2.innerHTML='<p class="org-empty">Ошибка отображения: '+esc(e.message)+'</p>';}}
 function streamRerender(){SVIEWS.forEach(id=>{if(document.getElementById('str_'+id))streamFill(id);});}
 function sHead(){const sid=curStream(),n=streamTeamsList(sid).length,ed=sdocCanEdit();
  return `<div class="str-head"><label>Стрим <select data-sact="pickStream">${ORG.streams.map(s=>`<option value="${esc(s.id)}"${s.id===sid?' selected':''}>${esc(s.name)}</option>`).join('')}</select></label>`
@@ -6278,7 +6292,7 @@ function streamAgg(M,states,pi){const ok=M.filter(y=>y.m).map(y=>y.m),s=k=>ok.re
   sayDo:avgOf(ok.map(m=>m.sayDo)),load:avgOf(ok.map(m=>m.load)),ct:median(allCt),wip:s('wip'),
   bugs:s('bugsOpen'),crit:s('crit'),dre:avgOf(ok.map(m=>m.dre)),debt:s('debtOpen'),
   depl:ok.reduce((a,m)=>a+m.dora.freq,0),lead:avgOf(ok.map(m=>m.dora.lead)),cfr:avgOf(ok.map(m=>m.dora.count?m.dora.cfr:null)),mttr:avgOf(ok.map(m=>m.dora.mttr)),
-  hc:avgOf(ok.map(m=>m.hc)),hcRed:s('hcRed'),mood:avgOf(ok.map(m=>m.mood)),spof:s('spof'),impOpen:s('impOpen'),impAge:ok.reduce((a,m)=>Math.max(a,m.impAge),0)};}
+  mat:matSummary(states,pi),hc:avgOf(ok.map(m=>m.hc)),hcRed:s('hcRed'),mood:avgOf(ok.map(m=>m.mood)),spof:s('spof'),impOpen:s('impOpen'),impAge:ok.reduce((a,m)=>Math.max(a,m.impAge),0)};}
 /* Сигналы «Требует внимания»: команда → боковая панель, стрим → раздел с причиной. */
 function streamAlerts(M,A,pi){const out=[],add=(lvl,txt,act)=>out.push({lvl,txt,act});
  M.forEach(({x,m})=>{if(!m)return;const n=x.team.name;
@@ -6291,6 +6305,8 @@ function streamAlerts(M,A,pi){const out=[],add=(lvl,txt,act)=>out.push({lvl,txt,
  if(A.roamHigh)add('crit','Высокие риски ROAM без решения — '+A.roamHigh,{view:'roam'});
  const nost=SDOC.data.features.filter(f=>f.pi===pi.id&&f.status!=='Готово'&&!(f.links||[]).length).length;
  if(nost)add('warn','Фичи '+pi.name+' без историй в командах — '+nost,{view:'features'});
+ if(A.mat&&A.mat.mism)add('warn','Зрелость стрима: самооценка расходится с фактами в '+A.mat.mism+' измер.',{view:'smaturity'});
+ if(A.mat&&!A.mat.rated&&piIterNow(pi)===piIters(pi).length)add('warn','Оценка зрелости стрима за '+pi.name+' не проведена (Inspect & Adapt)',{view:'smaturity'});
  if(A.pred!=null&&A.pred<0.8)add('warn','Предсказуемость '+pi.name+' — '+pctf(A.pred)+' (цель ≥ 80%)',{view:'streampi'});
  return out.sort((a,b)=>(a.lvl==='crit'?0:1)-(b.lvl==='crit'?0:1));}
 /* Колонки матрицы команд: значение, формат и светофор. */
@@ -6349,7 +6365,8 @@ function sDash(states){const pi=piCur(),M=states.map(x=>({x:x,m:teamMetricsX(x.s
    kp('Velocity стрима',fmt(A.vel,1),'SP за спринт (сумма средних)','neut'),kp('Health стрима',pctf(A.health),'среднее по командам',R3(A.health,0.7,0.5)),
    kp('Предсказуемость '+esc(pi.name),pctf(A.pred),'факт / план бизнес-ценности',R3(A.pred,0.8,0.6)),
    kp('Фичи '+esc(pi.name),A.featDone+' / '+A.featTotal,'готово / всего','neut'),kp('Burn-up',pctf(A.bu),'сделано от объёма историй PI',R3(A.bu,(piIterNow(pi)||0)/piIters(pi).length,0.5*(piIterNow(pi)||0)/piIters(pi).length)),
-   kp('System Demo',pctf(A.demoAcc),'принято из показанных',R3(A.demoAcc,0.8,0.6)),kp('Блокеры · конфликты',A.blocked+' · '+A.conf,'зависимости команд и стрима',(A.blocked+A.conf)?'crit':'good'));
+   kp('System Demo',pctf(A.demoAcc),'принято из показанных',R3(A.demoAcc,0.8,0.6)),
+   kp('Зрелость стрима',A.mat.overall?A.mat.overall+' из 5':'—',A.mat.overall?agileLevelName(A.mat.overall)+(A.mat.weakest?' · слабое звено: '+A.mat.weakest:''):'оценка за PI не проведена',A.mat.overall?LVC(A.mat.overall):'neut'),kp('Блокеры · конфликты',A.blocked+' · '+A.conf,'зависимости команд и стрима',(A.blocked+A.conf)?'crit':'good'));
   h+=`<div class="str-charts"><div class="card"><div class="org-sn">Burn-up ${esc(pi.name)}</div><div class="str-chart" id="str_bu"></div><div class="str-leg"><span><i style="background:var(--good)"></i>Сделано</span><span><i class="dash" style="border-color:var(--accent)"></i>Объём фич PI</span><span><i class="dash" style="border-color:var(--muted)"></i>Идеальный темп</span></div></div>`
    +`<div class="card"><div class="org-sn">Velocity команд по итерациям</div><div class="str-chart" id="str_vel"></div>${sLegend(states)}</div></div>`;
   h+=`<div class="card"><div class="org-sn">Команды стрима</div>${sMatrix(M,'sum')}</div>`;}
@@ -6466,8 +6483,118 @@ function streamSheets(){const out=[{name:'Стримы и команды',aoa:[[
  out.push({name:'ROAM',aoa:[['ID','Риск','Команда','Влияние','ROAM','Владелец','Срок','Решение']].concat(d.roam.map(r=>[r.id,r.title,tn(r.team),r.impact,r.roam,r.owner,r.due,r.note]))});
  out.push({name:'Scrum of Scrums',aoa:[['Дата','Команда','Сделано / прогресс','Планы','Блокеры','Нужна помощь от']].concat(d.sos.map(x=>[x.date,tn(x.team),x.done,x.next,x.blockers,x.help]))});
  out.push({name:'Срезы стрима',aoa:[['PI','Итерация','Дата','Velocity','Health','Предсказуемость PI','Say/Do','Баги','Блокеры']].concat((d.snaps||[]).map(x=>[pn(x.pi),x.iter,x.date,Math.round(num(x.s.vel)*10)/10,x.s.health==null?'':Math.round(x.s.health*100)/100,x.s.pred==null?'':Math.round(x.s.pred*100)/100,x.s.sayDo==null?'':Math.round(x.s.sayDo*100)/100,x.s.bugs,x.s.blocked]))});
+ (function(){const pi=piCur(),r=matRound(pi.id,false);if(!r)return;const dims=matDims(),tn2=id=>(orgTeam(id)||{name:id}).name;
+  out.push({name:'Зрелость стрима',aoa:[['PI','Измерение','Голоса команд','Медиана','Итог RTE','Комментарий']].concat(dims.map(dm=>{const v=r.votes[dm.id]||{},vals=Object.values(v).filter(x=>x>0);
+   return [pi.name,dm.n,Object.keys(v).map(k=>tn2(k)+': '+v[k]).join('; '),vals.length?median(vals):'',r.final[dm.id]||'',r.notes[dm.id]||''];}))});})();
+ if((d.mActions||[]).length)out.push({name:'Улучшения стрима',aoa:[['ID','Измерение','Действие','Владелец','PI','Статус']].concat(d.mActions.map(a=>[a.id,(matDims(true).find(x=>x.id===a.dim)||{n:a.dim}).n,a.title,a.owner,pn(a.pi),a.status]))});
  out.push({name:'System Demo',aoa:[['ID','PI','Итерация','Дата','Фича','Команды','Докладчик','Итог','Отзывы']].concat(d.demos.map(x=>[x.id,pn(x.pi),nv(x.iter),x.date,x.feature,x.teams,x.presenter,x.status,x.feedback]))});
  return out;}
+/* ---- Зрелость стрима: 3 слоя — зрелость команд, практики стрима (голоса команд + итог RTE по рубрике), индикаторы из данных ----
+   Данные: SDOC.data.mat = {off:[id…], custom:[{id,name}], rounds:[{pi,date,votes:{dim:{team:lv}},final:{dim:lv},notes:{dim:txt}}]},
+   SDOC.data.mActions — бэклог улучшений. Голос участника команды без роли в стриме — POST /api/org/streams/{id}/vote. */
+const SMAT=[
+ {id:'pi',n:'PI-планирование',r:['PI-планирование не проводится, команды планируют независимо','Совместное планирование эпизодически, без целей PI','PI-планирование каждый PI, цели команд зафиксированы','Цели с бизнес-ценностью от бизнес-владельцев, предсказуемость ≥ 80%','Предсказуемость 80–100% несколько PI подряд, план корректируется по фактам']},
+ {id:'cad',n:'Синхронизация каденции',r:['У команд разные каденции','Общая длина спринта, старты не совпадают','Общие итерации PI у большинства команд','Все команды в общей каденции, события синхронны','Каденция стрима — основа планирования релизов и бюджета']},
+ {id:'backlog',n:'Бэклог фич',r:['Бэклога фич нет — работа приходит в команды напрямую','Список фич без приоритетов и критериев','Фичи с WSJF и размером, приоритет пересматривается каждый PI','Фичи с критериями приёмки разбиты на истории до планирования','Бэклог фич связан со стратегией и OKR, у фич есть гипотезы и метрики ценности']},
+ {id:'deps',n:'Межкомандные зависимости',r:['Зависимости обнаруживаются по факту блокировки','Зависимости фиксируются, но не планируются','Зависимости видны на программной доске и согласованы на PI','Конфликтов сроков почти нет, блокировки снимаются за итерацию','Архитектура и состав команд сводят зависимости к минимуму']},
+ {id:'demo',n:'System Demo',r:['Совместных показов нет','Показы по командам, без интеграции','System Demo по итогам PI','System Demo каждую итерацию, интегрированный инкремент','Решения стейкхолдеров на демо сразу меняют бэклог фич']},
+ {id:'ia',n:'Inspect & Adapt',r:['Ретроспектив уровня стрима нет','Проблемы обсуждаются без действий','I&A каждый PI, есть бэклог улучшений','Улучшения с владельцами выполняются и проверяются метриками','Улучшения — часть PI-плана, устраняются корневые причины']},
+ {id:'roles',n:'Роли стрима',r:['Ролей уровня стрима нет','Роли назначены формально','RTE и Product Management работают регулярно','Архитектор и бизнес-владельцы участвуют в PI-планировании и демо','Роли развивают стрим: коучинг, сообщества практик']},
+ {id:'cd',n:'Непрерывная поставка',r:['Ручные выпуски раз в несколько месяцев','CI в части команд, выпуски по расписанию','CI/CD во всех командах, выпуск по итогам итерации','Автоматизированный конвейер, частые выпуски, низкая доля сбоев','Выпуск по требованию бизнеса, DORA на уровне High/Elite']},
+ {id:'tech',n:'Технические практики',r:['Общего DoD нет, техдолг не отслеживается','DoD у команд различается','Общий DoD стрима, техдолг в бэклоге','Автотесты и ревью — норма, техдолг снижается','Архитектурный задел опережает фичи, качество встроено']},
+ {id:'metrics',n:'Метрики и прозрачность',r:['Метрики не собираются','Метрики команд разрознены','Дашборд стрима: предсказуемость и velocity видны всем','Решения принимаются по метрикам потока и трендам','Метрики ценности (outcomes) связаны с OKR']}];
+const MACT_ST=['Запланировано','В работе','Сделано'];
+function matData(){const d=SDOC.data;if(!d.mat||typeof d.mat!=='object')d.mat={};const m=d.mat;
+ if(!Array.isArray(m.off))m.off=[];if(!Array.isArray(m.custom))m.custom=[];if(!Array.isArray(m.rounds))m.rounds=[];if(!Array.isArray(d.mActions))d.mActions=[];return m;}
+function matDims(all){const m=matData();return SMAT.concat(m.custom.map(c=>({id:c.id,n:c.name,r:['','','','',''],custom:true}))).filter(x=>all||!m.off.includes(x.id));}
+function matRound(piId,create){const m=matData();let r=m.rounds.find(x=>x.pi===piId);
+ if(!r&&create){r={pi:piId,date:todayISO(),votes:{},final:{},notes:{}};m.rounds.push(r);}
+ if(r){r.votes=r.votes||{};r.final=r.final||{};r.notes=r.notes||{};}return r;}
+const LVL=(r,t)=>r==null||isNaN(r)?null:r>=t[3]?5:r>=t[2]?4:r>=t[1]?3:r>=t[0]?2:1;
+/* Объективные индикаторы из данных команд и стрима: {val, lvl} (lvl=null — нет данных, только самооценка). */
+function matIndicators(states,pi){const d=SDOC.data,ok=states.filter(x=>x.st&&x.st.params),out={},its=piIters(pi),k=piIterNow(pi)||(pd(todayISO())>its[its.length-1].b?its.length:0);
+ const pred=piPredict(pi);out.pi={val:pred==null?'нет фактов по целям PI':'предсказуемость '+pctf(pred),lvl:LVL(pred,[0.5,0.65,0.8,0.9])};
+ const al=ok.filter(x=>{const s=pd(x.st.params.start);return s&&Math.round((s-pd(pi.start))/MS)%14===0;}).length;
+ out.cad={val:ok.length?al+' из '+ok.length+' команд в каденции PI':'нет данных',lvl:ok.length?LVL(al/ok.length,[0.4,0.6,0.8,1]):null};
+ const fs=d.features.filter(f=>f.pi===pi.id),fr=fs.filter(f=>num(f.size)>0&&(num(f.bv)+num(f.tc)+num(f.rr))>0&&(f.links||[]).length).length;
+ out.backlog={val:fs.length?fr+' из '+fs.length+' фич с WSJF и историями':'нет фич в PI',lvl:fs.length?LVL(fr/fs.length,[0.25,0.5,0.75,0.9]):null};
+ const conf=dp=>dp.status==='Заблокирована'||(num(dp.plan)&&num(dp.need)&&num(dp.plan)>num(dp.need)),od=d.deps.filter(x=>x.status!=='Выполнена');
+ out.deps={val:d.deps.length?(od.filter(conf).length+' конфликтов из '+od.length+' открытых'):'зависимостей нет',lvl:d.deps.length?LVL(od.length?od.filter(x=>!conf(x)).length/od.length:1,[0.5,0.75,0.9,1]):null};
+ const passed=Math.max(0,k-1),held=new Set(d.demos.filter(x=>x.pi===pi.id&&x.status!=='Запланировано'&&+x.iter<=Math.max(passed,1)).map(x=>+x.iter)).size;
+ out.demo={val:passed?'показы в '+held+' из '+passed+' прошедших итераций':'итерации PI ещё не завершались',lvl:passed?LVL(held/passed,[0.25,0.5,0.75,1]):null};
+ const rh=d.roam.length?d.roam.filter(r=>r.roam&&r.roam!=='—').length/d.roam.length:null,ac=d.mActions||[],ad=ac.length?ac.filter(a=>a.status==='Сделано').length/ac.length:null;
+ const ia=avgOf([rh,ad]);out.ia={val:ia==null?'нет рисков ROAM и улучшений':'разобрано рисков ROAM '+pctf(rh)+(ad==null?'':', улучшений выполнено '+pctf(ad)),lvl:LVL(ia,[0.25,0.5,0.75,0.9])};
+ out.roles={val:'только самооценка',lvl:null};
+ const TS={Elite:5,High:4,Medium:3,Low:2};const dm=ok.map(x=>withState(x.st,()=>dora())).filter(D=>D.count);
+ const ds=avgOf(dm.map(D=>avgOf([TS[D.tFreq],TS[D.tCfr]])));out.cd={val:dm.length?'DORA: средний уровень '+fmt(ds,1)+' из 5':'нет данных о деплоях',lvl:ds==null?null:Math.max(1,Math.min(5,Math.round(ds)))};
+ const dod=avgOf(ok.map(x=>withState(x.st,()=>compute().dodPct)));out.tech={val:dod==null?'нет данных':'средний DoD команд '+pctf(dod),lvl:LVL(dod,[0.25,0.5,0.75,0.9])};
+ const sn=(d.snaps||[]).filter(s=>s.pi===pi.id).length,sos=new Set(d.sos.map(s=>s.date)).size;
+ out.metrics={val:k?('срезов '+sn+' из '+k+' итераций, встреч Scrum of Scrums: '+sos):'PI ещё не начался',lvl:k?LVL(Math.min(1,sn/k)*0.7+Math.min(1,sos/k)*0.3,[0.25,0.5,0.75,0.95]):null};
+ return out;}
+/* Сводка по раунду: медиана голосов, разброс, итог (RTE или медиана), индикатор и сверка. */
+function matRows(states,pi){const r=matRound(pi.id,false)||{votes:{},final:{},notes:{}},I=matIndicators(states,pi);
+ return matDims().map(dm=>{const v=r.votes[dm.id]||{},vals=states.map(x=>v[x.team.id]).filter(x=>x>0),med=median(vals),fin=r.final[dm.id]||null,eff=fin||(med!=null?Math.round(med):null),ind=I[dm.id]||{val:'—',lvl:null};
+  const gap=eff!=null&&ind.lvl!=null?eff-ind.lvl:0;
+  return {dm,votes:v,n:vals.length,med,spread:vals.length?Math.max(...vals)-Math.min(...vals):null,fin,eff,ind,gap,note:r.notes[dm.id]||''};});}
+function matSummary(states,pi){const R=matRows(states,pi).filter(x=>x.eff!=null);if(!R.length)return {overall:null,weakest:null,mism:0,rated:0};
+ const w=R.slice().sort((a,b)=>a.eff-b.eff)[0];return {overall:Math.round(median(R.map(x=>x.eff))),weakest:w.dm.n,weakLvl:w.eff,mism:R.filter(x=>Math.abs(x.gap)>=2).length,rated:R.length};}
+function matCanVote(tid){if(!orgServer())return PERM.canEdit;if(sdocCanEdit())return true;const t=orgTeam(tid);return tid===curTeam()&&t&&(t.role==='EDITOR'||t.role==='ADMIN');}
+async function matSetVote(dim,tid,lv){const pi=piCur();
+ if(orgServer()&&!sdocCanEdit()){if(!matCanVote(tid))throw 'Голосовать можно только за свою команду';
+  const r=await fetch('api/org/streams/'+encodeURIComponent(SDOC.sid)+'/vote',{method:'POST',headers:hdrs(true),body:JSON.stringify({team:tid,pi:pi.id,votes:{[dim]:lv}})});
+  if(!r.ok)throw (r.status===403?'Нет прав голосовать за эту команду':'Голос не сохранён');const d=await r.json();SDOC.ver=d.version;SDOC.data=sdocNorm(d.data);return;}
+ if(!matCanVote(tid))throw 'Нет прав на изменение';const rd=matRound(pi.id,true);rd.votes[dim]=rd.votes[dim]||{};if(lv)rd.votes[dim][tid]=lv;else delete rd.votes[dim][tid];sdocSave();}
+const LVC=v=>v==null?'neut':v>=4?'good':v>=3?'warn':'crit';
+function sMaturity(states){const d=SDOC.data,pi=piCur(),ed=sdocCanEdit(),R=matRows(states,pi),S=matSummary(states,pi),dims=matDims();
+ const mfw=lsGetS('str_mfw','SAFe'),FWS=Object.keys(AGILE_FW);
+ let h=`<div class="org-bar"><label>PI <select data-sact="pickPi">${sOpts(d.pis.map(p=>({v:p.id,l:p.name})),pi.id)}</select></label>`
+  +`<span class="org-sum">Уровень стрима: <b>${S.overall?S.overall+' — '+esc(agileLevelName(S.overall)):'не оценён'}</b>${S.weakest?' · слабое звено: <b>'+esc(S.weakest)+'</b> ('+S.weakLvl+')':''}${S.mism?' · <span class="pill p-warn">расхождений с фактами: '+S.mism+'</span>':''}</span>`
+  +(ed?`<button class="btn" data-sact="matAccept" title="Принять медиану голосов как итог там, где итог не задан">Принять медианы</button>`:'')+`</div>`;
+ h+=`<p class="org-note">Оценка — раз в PI, на Inspect &amp; Adapt. Команды голосуют по рубрике (раскройте измерение), RTE фиксирует итоговый уровень. Индикаторы считаются из данных приложения и подсвечивают расхождение с самооценкой на 2 уровня и более.</p>`;
+ // радар: итог против индикаторов
+ const rad=R.filter(x=>x.eff!=null||x.ind.lvl!=null);
+ h+=`<div class="str-charts"><div class="card"><div class="org-sn">Итоговая оценка и индикаторы</div>${radarSvg(rad.map(x=>({axis:x.dm.n,score:x.eff||0,prev:x.ind.lvl||0})))}<div class="str-leg"><span><i style="background:var(--accent)"></i>Итог (RTE или медиана голосов)</span><span><i class="dash" style="border-color:var(--muted)"></i>Индикаторы из данных</span></div></div>`
+  +`<div class="card"><div class="org-sn">Динамика по PI</div><div class="str-chart" id="mat_dyn"></div><p class="org-note">Итоговый уровень стрима (медиана по измерениям) в каждом оценённом PI.</p></div></div>`;
+ // практики стрима
+ h+=`<div class="card"><div class="org-sn">Практики стрима — ${esc(pi.name)}</div><div class="org-scroll"><table class="cardt str-t mat-t"><thead><tr><th>Измерение и рубрика</th><th>Голосов</th><th>Медиана</th><th>Разброс</th><th>Итог RTE</th><th>Индикатор из данных</th><th>Сверка</th><th>Комментарий</th></tr></thead><tbody>`
+  +R.map(x=>{const lv=x.eff;
+   return `<tr data-dim="${esc(x.dm.id)}"><td data-label="Измерение"><details class="str-det"><summary><b>${esc(x.dm.n)}</b></summary>${x.dm.r.map((t,i)=>t?`<div class="${lv===i+1?'mat-cur':''}">${i+1}. ${esc(t)}</div>`:'').join('')}</details></td>`
+    +`<td class="num" data-label="Голосов">${x.n} из ${states.length}</td>`
+    +`<td class="num" data-label="Медиана">${x.med==null?'—':fmt(x.med,1)}</td><td class="num${x.spread>=2?' hm-crit':''}" data-label="Разброс">${x.spread==null?'—':x.spread}</td>`
+    +`<td data-label="Итог RTE">${ed?`<select data-mat="final">${sOpts([{v:'',l:x.med==null?'—':'медиана '+Math.round(x.med)}].concat([1,2,3,4,5].map(n=>({v:n,l:n+' — '+AGILE_LEVELS[n]}))),x.fin||'')}</select>`:(x.fin?x.fin+' — '+esc(AGILE_LEVELS[x.fin]):(x.med==null?'—':'медиана '+Math.round(x.med)))}</td>`
+    +`<td data-label="Индикатор">${x.ind.lvl!=null?`<span class="pill p-${LVC(x.ind.lvl)}">${x.ind.lvl}</span> `:''}<span class="org-note">${esc(x.ind.val)}</span></td>`
+    +`<td data-label="Сверка">${x.gap>=2?'<span class="pill p-warn">возможна переоценка</span>':x.gap<=-2?'<span class="pill p-neut">возможна недооценка</span>':(x.ind.lvl!=null&&lv!=null?'<span class="pill p-good">согласуется</span>':'—')}</td>`
+    +`<td data-label="Комментарий">${ed?`<input data-mat="note" value="${esc(x.note)}" placeholder="Обоснование итога">`:esc(x.note)}</td></tr>`;}).join('')+`</tbody></table></div></div>`;
+ // голоса команд
+ h+=`<div class="card"><div class="org-sn">Голоса команд — ${esc(pi.name)}</div><p class="org-note">${orgServer()&&!ed?'Вы голосуете за свою команду («'+esc((orgTeam()||{}).name||'')+'»); голоса других команд — только просмотр.':'Уровень 1–5 по рубрике измерения; пусто — команда не голосовала.'}</p>`
+  +`<div class="org-scroll"><table class="cardt str-t mat-v"><thead><tr><th>Измерение</th>${states.map(s=>`<th>${esc(s.team.name)}</th>`).join('')}</tr></thead><tbody>`
+  +R.map(x=>`<tr data-dim="${esc(x.dm.id)}"><td data-label="Измерение">${esc(x.dm.n)}</td>${states.map(s=>{const v=x.votes[s.team.id]||'';
+    return `<td data-label="${esc(s.team.name)}" class="hm-${v?LVC(v):'neut'}">${matCanVote(s.team.id)?`<select data-mat="vote" data-team="${esc(s.team.id)}">${sOpts([{v:'',l:'—'},1,2,3,4,5],v)}</select>`:(v||'—')}</td>`;}).join('')}</tr>`).join('')+`</tbody></table></div></div>`;
+ // зрелость команд
+ const TM=states.map(x=>{const ag=(x.st&&x.st.agile)||[];return {x,lv:AGILE_FW[mfw].map(dim=>{const a=ag.find(z=>z.framework===mfw&&z.dimension===dim);return a&&num(a.level)>0?num(a.level):null;})};});
+ const colStat=i=>{const v=TM.map(t=>t.lv[i]).filter(x=>x!=null);return v.length?{avg:avgOf(v),min:Math.min(...v),spr:Math.max(...v)-Math.min(...v)}:null;};
+ h+=`<div class="card"><div class="org-bar"><span class="org-sn">Зрелость команд (самооценка команд)</span><span class="str-seg">${FWS.map(f=>`<button class="btn${f===mfw?' on':''}" data-sact="matFw" data-v="${esc(f)}">${esc(f)}</button>`).join('')}</span></div>`
+  +`<div class="org-scroll"><table class="cardt str-t str-hm"><thead><tr><th>Команда</th>${AGILE_FW[mfw].map(dm=>`<th class="mat-h">${esc(dm)}</th>`).join('')}<th>Среднее</th></tr></thead><tbody>`
+  +TM.map(t=>`<tr><td data-label="Команда"><b>${esc(t.x.team.name)}</b></td>${t.lv.map((v,i)=>`<td class="hm hm-${LVC(v)}" data-label="${esc(AGILE_FW[mfw][i])}">${v==null?'—':v}</td>`).join('')}<td class="hm" data-label="Среднее"><b>${fmt(avgOf(t.lv),1)}</b></td></tr>`).join('')
+  +['Среднее','Минимум','Разброс'].map((lab,j)=>`<tr class="mat-stat"><td data-label=""><b>${lab}</b></td>${AGILE_FW[mfw].map((dm,i)=>{const s=colStat(i);const v=s?[s.avg,s.min,s.spr][j]:null;
+     return `<td class="hm ${j===2?(v>=2?'hm-crit':''):'hm-'+LVC(v)}" data-label="${esc(dm)}">${v==null?'—':fmt(v,1)}</td>`;}).join('')}<td data-label=""></td></tr>`).join('')
+  +`</tbody></table></div><p class="org-note">Разброс ≥ 2 уровней — команды стрима работают по-разному в этом измерении: тема для сообщества практик.</p></div>`;
+ // бэклог улучшений
+ h+=`<div class="card"><div class="org-bar"><span class="org-sn">Бэклог улучшений</span>${ed?`<button class="btn" data-sact="matSuggest">Предложить из слабых измерений</button>`:''}${sAddBtn('mActions','Улучшение')}</div>`
+  +sTable('mActions',[{k:'id',label:'ID',ro:true},{k:'dim',label:'Измерение',type:'select',opts:()=>dims.map(x=>({v:x.id,l:x.n}))},{k:'title',label:'Действие',w:1},{k:'owner',label:'Владелец'},
+   {k:'pi',label:'PI',type:'select',opts:()=>d.pis.map(p=>({v:p.id,l:p.name}))},{k:'status',label:'Статус',type:'select',opts:MACT_ST}],d.mActions.map((a,i)=>i))+`</div>`;
+ // настройка измерений
+ if(ed)h+=`<details class="card str-det"><summary><b>Настроить измерения</b></summary><div class="mat-cfg">${matDims(true).map(x=>`<label><input type="checkbox" data-mat="on" data-dim="${esc(x.id)}"${matData().off.includes(x.id)?'':' checked'}> ${esc(x.n)}${x.custom?' <button class="rowdel" data-sact="matDel" data-dim="'+esc(x.id)+'" title="Удалить своё измерение">✕</button>':''}</label>`).join('')}</div>`
+  +`<div class="org-add"><input data-f="mdim" placeholder="Своё измерение (например, «Работа с бизнес-владельцами»)"><button class="btn" data-sact="matAddDim">＋ Измерение</button></div></details>`;
+ return h;}
+function sMatCharts(){const el=document.getElementById('mat_dyn');if(!el)return;const d=SDOC.data,ss=[];
+ d.pis.forEach(p=>{const r=matRound(p.id,false);if(!r)return;const v=matDims().map(dm=>{const f=r.final[dm.id];if(f)return f;const vv=Object.values(r.votes[dm.id]||{}).filter(x=>x>0);return vv.length?Math.round(median(vv)):null;}).filter(x=>x!=null);
+  if(v.length)ss.push({l:p.name,v:median(v)});});
+ if(ss.length<2){el.innerHTML='<p class="org-empty">'+(ss.length?'Оценён один PI: уровень '+fmt(ss[0].v,1)+' («'+esc(ss[0].l)+'»). Динамика появится после оценки следующего PI.':'Оценок по PI ещё нет.')+'</p>';return;}
+ lines(el,ss.map(s=>s.l),[{color:col('--accent'),data:ss.map(s=>s.v),w:3}],{target:4});}
+function matSuggest(states){const d=SDOC.data,pi=piCur(),R=matRows(states,pi).filter(x=>x.eff!=null&&x.eff<5).sort((a,b)=>a.eff-b.eff).slice(0,3);let n=0;
+ R.forEach(x=>{if(d.mActions.some(a=>a.dim===x.dm.id&&a.pi===pi.id&&a.status!=='Сделано'))return;
+  const nxt=x.dm.r[x.eff]||'';d.mActions.push({id:genId(d.mActions,'id','MA-'),dim:x.dm.id,title:'Поднять «'+x.dm.n+'» до уровня '+(x.eff+1)+(nxt?': '+nxt:''),owner:'',pi:pi.id,status:'Запланировано'});n++;});return n;}
 /* ---- Фичи стрима ---- */
 function sFeatures(states){const d=SDOC.data,ed=sdocCanEdit();
  const idx=d.features.map((f,i)=>i).sort((a,b)=>featWsjf(d.features[b])-featWsjf(d.features[a]));
@@ -6552,6 +6679,7 @@ function sNewRow(coll){const d=SDOC.data,pi=piCur(),t0=(streamTeamsList()[0]||{}
   objectives:()=>({id:genId(d.objectives,'id','O-'),pi:pi.id,team:curTeam(),text:'',bv:5,actual:'',committed:true}),
   deps:()=>({id:genId(d.deps,'id','XD-'),from:curTeam(),to:t0,feature:'',item:'',need:'',plan:'',status:'Открыта'}),
   roam:()=>({id:genId(d.roam,'id','R-'),title:'',team:'',impact:'Среднее',roam:'—',owner:'',due:'',note:''}),
+  mActions:()=>({id:genId(d.mActions,'id','MA-'),dim:(matDims()[0]||{}).id||'',title:'',owner:'',pi:pi.id,status:'Запланировано'}),
   demos:()=>({id:genId(d.demos,'id','SD-'),pi:pi.id,iter:1,date:todayISO(),feature:'',teams:'',presenter:'',status:'Запланировано',feedback:''})}[coll]();}
 /* ---- события разделов стрима ---- */
 document.addEventListener('click',async e=>{const b=e.target.closest('.str-wrap [data-sact]');if(!b||b.tagName==='SELECT')return;
@@ -6575,6 +6703,13 @@ document.addEventListener('click',async e=>{const b=e.target.closest('.str-wrap 
   if(a==='toRoam'){const states=await streamTeamStates();const src=b.dataset.src,[tid]=src.split(':');const x=states.find(s=>s.team.id===tid);
    const r=x&&x.st&&(x.st.risks||[]).find(y=>tid+':'+y.name===src);if(!r)return;
    d.roam.push({id:genId(d.roam,'id','R-'),title:r.name,team:tid,impact:'Высокое',roam:'—',owner:r.owner||'',due:'',note:r.mit||'',src:src});if(sdocSave())streamRerender();return;}
+  if(a==='matFw'){lsSetS('str_mfw',b.dataset.v);streamRerender();return;}
+  if(a==='matAccept'){const rd=matRound(piCur().id,true);let n=0;matRows(await streamTeamStates(),piCur()).forEach(x=>{if(!x.fin&&x.med!=null){rd.final[x.dm.id]=Math.round(x.med);n++;}});
+   if(!n){toast('Нет измерений с голосами без итога');return;}if(sdocSave()){toast('Итог задан по медиане: '+n);streamRerender();}return;}
+  if(a==='matSuggest'){const n=matSuggest(await streamTeamStates());if(!n){toast('Нет оценённых слабых измерений без открытых улучшений');return;}if(sdocSave()){toast('Добавлено улучшений: '+n);streamRerender();}return;}
+  if(a==='matAddDim'){const inp=b.closest('.org-add').querySelector('[data-f=mdim]'),nm=inp.value.trim();if(!nm){toast('Введите название измерения');return;}
+   const m=matData();m.custom.push({id:'c'+(m.custom.reduce((x,c)=>Math.max(x,+String(c.id).slice(1)||0),0)+1),name:nm.slice(0,80)});if(sdocSave())streamRerender();return;}
+  if(a==='matDel'){const m=matData(),id=b.dataset.dim;if(!confirm('Удалить своё измерение и его оценки?'))return;m.custom=m.custom.filter(c=>c.id!==id);m.off=m.off.filter(x=>x!==id);if(sdocSave())streamRerender();return;}
   if(a==='dtab'){lsSetS('str_dtab',b.dataset.v);streamRerender();return;}
   if(a==='tview'){lsSetS('str_tview',b.dataset.v);streamRerender();return;}
   if(a==='teamPanel'){sTeamPanel(b.dataset.team);return;}
@@ -6592,6 +6727,13 @@ document.addEventListener('click',async e=>{const b=e.target.closest('.str-wrap 
    const states=await streamTeamStates(true);d.sos=d.sos.concat(sosAgenda(date,states));SDOC.sosDate=date;if(sdocSave())streamRerender();return;}
  }catch(err){toast(typeof err==='string'?err:'Ошибка');}});
 document.addEventListener('change',async e=>{const t=e.target;if(!t.closest('.str-wrap'))return;const d=SDOC.data;
+ if(t.dataset.mat){const tr=t.closest('[data-dim]'),dim=(tr&&tr.dataset.dim)||t.dataset.dim,kind=t.dataset.mat;
+  try{if(kind==='vote'){await matSetVote(dim,t.dataset.team,+t.value||0);streamRerender();return;}
+   if(kind==='on'){const m=matData();m.off=m.off.filter(x=>x!==dim);if(!t.checked)m.off.push(dim);if(sdocSave())streamRerender();return;}
+   const rd=matRound(piCur().id,true);
+   if(kind==='final'){if(t.value)rd.final[dim]=+t.value;else delete rd.final[dim];if(sdocSave())streamRerender();return;}
+   if(kind==='note'){rd.notes[dim]=t.value;sdocSave();return;}
+  }catch(err){toast(typeof err==='string'?err:'Ошибка');streamRerender();}return;}
  if(t.dataset.sact==='pickStream'){const first=streamTeamsList(t.value)[0];if(!first){toast('В этом стриме нет доступных команд');t.value=curStream();return;}await switchTeam(first.id);return;}
  if(t.dataset.sact==='pickPi'){d.curPi=t.value;if(!sdocCanEdit()||sdocSave())streamRerender();return;}
  if(t.dataset.sact==='pickSos'){SDOC.sosDate=t.value;streamRerender();return;}
@@ -6638,7 +6780,7 @@ startAnalytics();setInterval(startAnalytics,30000);
     Пересобирается на каждой загрузке из NAV + DOM (h1/.lede каждого раздела) + TOUR + CHANGELOG,
     поэтому «обучение» помощника происходит само после каждого обновления приложения:
     новый или переименованный раздел, изменённое описание и новая версия подхватываются без правок. */
- const AKA={stream:'дашборд стрима обзор стрима сводка команд стрима метрики стрима показатели команд матрица команд срез тренды требует внимания burn-up бернап velocity по итерациям графики стрима',features:'фичи стрима фича wsjf бэклог стрима разбить на истории канбан фич',streampi:'pi планирование инкремента программная доска цели pi предсказуемость межкомандные зависимости',roam:'roam риски стрима resolved owned accepted mitigated',sos:'scrum of scrums скрам скрамов синхронизация команд повестка',sysdemo:'system demo системное демо показ стрима приёмка фич отзывы стейкхолдеров',org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
+ const AKA={stream:'дашборд стрима обзор стрима сводка команд стрима метрики стрима показатели команд матрица команд срез тренды требует внимания burn-up бернап velocity по итерациям графики стрима',features:'фичи стрима фича wsjf бэклог стрима разбить на истории канбан фич',streampi:'pi планирование инкремента программная доска цели pi предсказуемость межкомандные зависимости',roam:'roam риски стрима resolved owned accepted mitigated',sos:'scrum of scrums скрам скрамов синхронизация команд повестка',smaturity:'зрелость стрима agile зрелость стрима art assessment оценка зрелости рубрика inspect adapt улучшения слабое звено',sysdemo:'system demo системное демо показ стрима приёмка фич отзывы стейкхолдеров',org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
   roadmap:'дорожная карта план спринтов график спринтов',quarters:'кварталы квартальный план',sprintGoals:'цель спринта обязательство ценность',
   kanban:'канбан доска статусы колонки карточки',board:'холст схемы стикеры мозговой штурм whiteboard рисование шаблоны ретро swot lean canvas карточки задач виджеты метрики отмена группировка мини-карта голосование презентация показ комментарии упоминания блок-схема майнд-карта mind map таблица дорожки swimlane',okr:'цели ключевые результаты objectives key results',
   backlog:'бэклог задачи список работ',wbs:'иерархия работ декомпозиция эпик фича история роллап',storymap:'карта историй активности',
@@ -6873,6 +7015,7 @@ const TOUR=[
  {v:'features',h:'Фичи стрима',p:'Бэклог фич с приоритетом WSJF — таблицей или канбаном по статусам. «＋ История» создаёт историю фичи прямо в бэклоге нужной команды; прогресс фичи считается по статусам историй.',d:10000},
  {v:'streampi',h:'PI стрима',p:'Программная доска «команды × итерации» строится из историй фич в бэклогах команд; цели PI с бизнес-ценностью дают предсказуемость, межкомандные зависимости подсвечивают конфликты сроков.',d:10000},
  {v:'sysdemo',h:'System Demo и Scrum of Scrums',p:'Повестки формируются из данных команд: на System Demo — фичи с готовыми историями итерации и решение «принято / доработать», на Scrum of Scrums — прогресс спринтов, импедименты и блокеры.',d:10000},
+ {v:'smaturity',h:'Зрелость стрима',p:'Три слоя: зрелость команд, практики стрима по рубрике (команды голосуют, RTE фиксирует итог) и индикаторы из данных со сверкой «оценка ↔ факты». Радар, динамика по PI и бэклог улучшений из слабых измерений.',d:10000},
  {v:'dash',h:'Дашборд',p:'Сводка проекта: KPI с RAG-подсветкой, блок «Что требует внимания», кликабельные карточки и sparkline-тренды. Ниже — графики ёмкости, velocity, багов и Time to Market.',d:10000},
  {v:'roadmap',h:'Дорожная карта',p:'Спринты рассчитываются автоматически из параметров и состава команды: даты, рабочие дни, ёмкость, план, velocity и процент выполнения.',d:9000},
  {v:'quarters',h:'Кварталы',p:'Агрегация спринтов по кварталам и квартальный roadmap на шкале дат.',d:7000},

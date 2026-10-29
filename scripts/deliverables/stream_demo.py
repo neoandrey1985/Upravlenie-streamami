@@ -18,6 +18,7 @@ DEMO_JS = r"""async()=>{
   st.tasks.forEach((t,i)=>{if((+t.sprint===1||+t.sprint===2)&&t.status==='Готово'&&(i+k)%4===0)t.status='В работе';
    if(+t.sprint===3&&(i+k)%3===0)t.status='Готово';});
   (st.bugs||[]).forEach((b,i)=>{if((i+k)%3===0)b.status='Закрыт';});
+  (st.agile||[]).forEach((x,i)=>{x.level=Math.max(1,Math.min(5,(+x.level||3)+((i+k)%3)-1));});
   st.params.name=name;localStorage.setItem(stKey(id),JSON.stringify(st));return id;};
  const t2=await mk('Каталог','s1',1),t3=await mk('Личный кабинет','s1',2),t4=await mk('Поиск','s1',3),t5=await mk('Мобильное приложение','s1',1);
  const s2=await orgAddStream('Стрим «Логистика»');await mk('Склад',s2,2);await mk('Доставка',s2,3);
@@ -52,4 +53,11 @@ DEMO_JS = r"""async()=>{
  d.sos=sosAgenda('2026-09-08',st2);d.sos.forEach((s,i)=>{s.next=['Довести СБП до стенда','Фильтры — в ревью','Макеты кабинета','Индекс — в прод','Экран оплаты на заглушке'][i]||'';});
  d.demos=demoAgenda(st2,1,'2026-08-14').concat(demoAgenda(st2,2,'2026-08-28'));
  d.demos.forEach((m,i)=>{m.status=i===0?'Принято':i===1?'Принято':'Доработать';m.feedback=['Готово к релизу','Скорость устраивает','Нужен экран ошибок оплаты'][i]||'';});
+ matData();const r1=matRound('PI-1',true),TT=['t1',t2,t3,t4,t5];
+ const V={pi:[4,3,3,4,3],cad:[4,4,4,4,4],backlog:[3,3,2,3,3],deps:[3,2,3,3,2],demo:[3,3,3,3,3],ia:[2,3,2,2,3],roles:[3,3,3,3,4],cd:[4,4,3,4,3],tech:[3,3,2,4,2],metrics:[4,3,3,4,3]};
+ Object.keys(V).forEach(k=>{r1.votes[k]={};TT.forEach((tid,i)=>r1.votes[k][tid]=V[k][i]);});
+ Object.assign(r1.final,{pi:4,cad:4,backlog:3,deps:3,demo:3,ia:2,roles:3,cd:4,tech:3});
+ r1.notes.ia='Улучшения после I&A не доводятся до конца';r1.notes.pi='Предсказуемость 89%, цели с бизнес-ценностью у всех команд';
+ d.mActions.push({id:'MA-01',dim:'ia',title:'Вести бэклог улучшений I&A с владельцами и сроками',owner:'RTE',pi:'PI-1',status:'В работе'},
+  {id:'MA-02',dim:'tech',title:'Единый DoD стрима: автотесты и ревью обязательны',owner:'Архитектор',pi:'PI-1',status:'Запланировано'});
  sdocSave();STC.at=0;views();return 'ok';}"""

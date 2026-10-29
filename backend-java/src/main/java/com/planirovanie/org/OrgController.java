@@ -79,6 +79,22 @@ public class OrgController {
         }
     }
 
+    /** Голос команды в оценке зрелости стрима: нужен EDITOR на этой команде (роль в стриме не требуется). */
+    @PostMapping("/streams/{id}/vote")
+    public ResponseEntity<?> vote(@PathVariable String id, @RequestBody JsonNode body, HttpServletRequest req) {
+        if (!org.streamExists(id)) return ResponseEntity.notFound().build();
+        String teamId = body == null ? null : body.path("team").asText(null);
+        var team = teamId == null ? java.util.Optional.<OrgTeam>empty() : org.team(teamId);
+        if (team.isEmpty() || !id.equals(team.get().streamId)) return ResponseEntity.badRequest().body(Map.of("error", "team_not_in_stream"));
+        UserSession s = session(req);
+        if (!OrgService.canWrite(org.effectiveRole(s, team.get()))) return ResponseEntity.status(403).body(Map.of("error", "forbidden"));
+        try {
+            return ResponseEntity.ok(docs.vote(id, body.path("pi").asText(null), teamId, body.get("votes"), s == null ? null : s.username));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     // ----- teams -----
 
     @PostMapping("/teams")

@@ -1092,6 +1092,43 @@ def main():
                 assert r['sheetRows'] >= 2, 'Excel sheet «Срезы стрима»'
         case('stream dashboard: aggregates, alerts, tabs, matrix/cards, panel, snapshots', t_stream_dashboard)
 
+        # ---- 39. Stream maturity: votes → median/spread, RTE final, indicators & mismatch, dims config, improvements ----
+        def t_stream_maturity():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);
+             try{setPerm('admin');applyPerms();if(curTeam()!=='t1')await switchTeam('t1');
+              localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;STC.at=0;
+              const a=await orgAddTeam('Зета','s1','copy'),b=await orgAddTeam('Эта','s1','empty');await sdocLoad(true);const pi=piCur();
+              await matSetVote('pi','t1',4);await matSetVote('pi',a,2);
+              const st=await streamTeamStates(true);let row=matRows(st,pi).find(x=>x.dm.id==='pi');
+              const voteOk=row.n===2&&row.med===3&&row.spread===2&&row.eff===3&&row.fin===null;
+              SDOC.data.objectives.push({id:'O-1',pi:pi.id,team:'t1',text:'x',bv:10,actual:5,committed:true});
+              matRound(pi.id,true).final.pi=5;sdocSave();
+              row=matRows(st,pi).find(x=>x.dm.id==='pi');const S=matSummary(st,pi);
+              const indOk=row.ind.lvl===2&&row.gap===3&&S.mism>=1&&S.overall===5;
+              const al=streamAlerts(st.map(x=>({x,m:teamMetricsX(x.st)})),streamAgg(st.map(x=>({x,m:teamMetricsX(x.st)})),st,pi),pi).some(x=>x.act.view==='smaturity');
+              activate('smaturity');await streamFill('smaturity',true);
+              const rows=document.querySelectorAll('#str_smaturity .mat-t tbody tr').length,sel=document.querySelectorAll('#str_smaturity .mat-v select').length;
+              const cb=document.querySelector('#str_smaturity [data-mat=on][data-dim=roles]');cb.checked=false;cb.dispatchEvent(new Event('change',{bubbles:true}));
+              await new Promise(r=>setTimeout(r,200));const off=matDims().length;
+              matData().custom.push({id:'c1',name:'Работа с бизнес-владельцами'});const withCustom=matDims().length;
+              await matSetVote('deps','t1',2);const n1=matSuggest(st),n2=matSuggest(st);
+              const sheet=streamSheets().some(x=>x.name==='Зрелость стрима'&&x.aoa.length===withCustom+1);
+              setPerm('viewer');applyPerms();let denied=false;try{await matSetVote('pi','t1',1);}catch(e){denied=true;}setPerm('admin');applyPerms();
+              await orgDelTeam(a);await orgDelTeam(b);localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;activate('dash');
+              return {voteOk,indOk,al,rows,sel,off,withCustom,n1,n2,sheet,denied,errs};
+             }catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);}}""")
+            assert isinstance(r, dict), 'stream maturity failed: ' + str(r)
+            assert not r['errs'], 'page errors: ' + str(r['errs'][:3])
+            assert r['voteOk'], 'votes must give median 3 and spread 2 without a final'
+            assert r['indOk'], 'RTE final 5 vs indicator 2 (predictability 50%) must be a mismatch'
+            assert r['al'], 'dashboard must signal the maturity mismatch'
+            assert r['rows'] == 10 and r['sel'] == 30, 'practices table 10 dims, votes matrix 10 x 3 teams: ' + str(r)
+            assert r['off'] == 9 and r['withCustom'] == 10, 'disable a dim / add a custom dim: ' + str(r)
+            assert 1 <= r['n1'] <= 3 and r['n2'] == 0, 'improvements from weakest dims without duplicates: ' + str(r)
+            assert r['sheet'], 'Excel sheet «Зрелость стрима»'
+            assert r['denied'], 'viewer must not vote'
+        case('stream maturity: votes, RTE final, indicators, mismatch, config, improvements', t_stream_maturity)
+
         br.close()
     httpd.shutdown()
 
