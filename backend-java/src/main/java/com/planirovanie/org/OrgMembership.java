@@ -13,4 +13,6 @@ public class OrgMembership {
     @Column(name = "scope_type", nullable = false) @JsonProperty("scopeType") public String scopeType;  // STREAM | TEAM
     @Column(name = "scope_id", nullable = false) @JsonProperty("scopeId") public String scopeId;
     @Column(nullable = false) public String role;                                                   // VIEWER | EDITOR
+    /** Должность в команде управления стрима (только для STREAM): LEAD | ITLEAD | ARCH | PM; null — без должности. */
+    public String position;
 }

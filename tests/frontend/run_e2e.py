@@ -1193,6 +1193,41 @@ def main():
             assert r['wiz'] and r['back'], 'wizard creates stream, 3 teams and PI: ' + str(r)
         case('scenarios: my day, first steps, new stream wizard', t_scenarios)
 
+        # ---- 42. Stream management team: positions, dashboard line, maturity indicator, Excel, wizard ----
+        def t_stream_positions():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);
+             try{setPerm('admin');applyPerms();if(curTeam()!=='t1')await switchTeam('t1');const s1=orgStream('s1');const keep=s1.mgmt;delete s1.mgmt;saveOrg();
+              activate('org');const inputs=[...document.querySelectorAll('#org_root [data-stream=s1] input[data-mgmt]')].map(i=>i.dataset.mgmt);
+              const fill=(k,v)=>{const i=document.querySelector('#org_root [data-stream=s1] input[data-mgmt='+k+']');i.value=v;i.dispatchEvent(new Event('change',{bubbles:true}));};
+              localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;await sdocLoad(true);const st=await streamTeamStates(true);
+              const ind0=matIndicators(st,piCur()).roles.lvl;
+              fill('LEAD','Петрова М.');fill('ITLEAD','Смирнов К.');
+              const ind2=matIndicators(st,piCur()).roles.lvl;
+              fill('ARCH','Кузнецова Е.');fill('PM','Орлов Д.');
+              const ind4=matIndicators(st,piCur()).roles.lvl,names=streamMgmt('s1').map(x=>x.names[0]);
+              activate('stream');await streamFill('stream',true);const line=(document.querySelector('#str_stream .str-mgmt')||{}).textContent||'';
+              activate('smaturity');await streamFill('smaturity',true);const head=[...document.querySelectorAll('#str_smaturity .mat-t th')].map(x=>x.textContent);
+              const sheet=streamSheets().find(x=>x.name==='Команда управления');
+              fill('PM','');const cleared=streamMgmt('s1').find(x=>x.pos==='PM').names.length===0;
+              wizOpen();const m=document.getElementById('wizmodal');m.querySelector('[data-w=name]').value='Стрим «Роли»';m.querySelector('[data-w=teams]').value='Одна';
+              m.querySelector('[data-wpos=LEAD]').value='Лидеров Л.';m.querySelector('[data-wpos=PM]').value='Менеджеров П.';await wizRun();
+              const ns=ORG.streams.find(x=>x.name==='Стрим «Роли»'),wiz=!!ns&&streamMgmt(ns.id).filter(x=>x.names.length).map(x=>x.pos).join(',')==='LEAD,PM';
+              await switchTeam('t1');if(ns){for(const x of ORG.teams.filter(t=>t.streamId===ns.id))await orgDelTeam(x.id);localStorage.removeItem(sdocKey(ns.id));await orgDelStream(ns.id);}
+              s1.mgmt=keep;if(!keep)delete s1.mgmt;saveOrg();localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;activate('dash');
+              return {inputs,ind0,ind2,ind4,names,line,head,sheetRows:sheet?sheet.aoa.length-1:-1,streams:ORG.streams.length,cleared,wiz,errs};
+             }catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);}}""")
+            assert isinstance(r, dict), 'stream positions failed: ' + str(r)
+            assert not r['errs'], 'page errors: ' + str(r['errs'][:3])
+            assert r['inputs'] == ['LEAD', 'ITLEAD', 'ARCH', 'PM'], 'four management positions in the stream card: ' + str(r['inputs'])
+            assert (r['ind0'], r['ind2'], r['ind4']) == (1, 3, 4), 'maturity «management team» indicator by filled positions: ' + str(r)
+            assert r['names'] == ['Петрова М.', 'Смирнов К.', 'Кузнецова Е.', 'Орлов Д.'], str(r['names'])
+            assert 'Лидер стрима' in r['line'] and 'Орлов Д.' in r['line'], 'dashboard shows the management team: ' + r['line']
+            assert 'Итог команды управления' in r['head'] and not any('RTE' in x for x in r['head']), 'maturity final column renamed: ' + str(r['head'])
+            assert r['sheetRows'] == 4 * r['streams'], 'Excel «Команда управления»: 4 positions per stream'
+            assert r['cleared'], 'empty name removes the position'
+            assert r['wiz'], 'wizard assigns the management team'
+        case('stream roles: management team positions, dashboard, maturity, Excel, wizard', t_stream_positions)
+
         br.close()
     httpd.shutdown()
 

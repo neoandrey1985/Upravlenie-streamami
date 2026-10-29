@@ -89,7 +89,7 @@ def team_context(team_id, username, global_role):
         if row is None:
             raise LookupError("team_not_found")
         mem = [] if username is None else [dict(r._mapping) for r in c.execute(
-            text("SELECT scope_type, scope_id, role FROM org_memberships WHERE username = :u"), {"u": username})]
+            text("SELECT * FROM org_memberships WHERE username = :u"), {"u": username})]
     role = "EDITOR" if username is None else org.effective_role(global_role, mem, {"id": row[0], "stream_id": row[1]})
     if role is None:
         raise PermissionError("forbidden")

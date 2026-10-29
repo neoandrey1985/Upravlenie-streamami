@@ -24,6 +24,11 @@ def main():
     assert org.effective_role("VIEWER", team_m, t1) is None                   # other team -> no access
     assert org.effective_role("EDITOR", stream_m, t2) == "VIEWER"             # stream membership covers its teams
     assert org.effective_role("EDITOR", team_m + stream_m, t2) == "EDITOR"    # the higher role wins
+    lead = [{"scope_type": "STREAM", "scope_id": "s2", "role": "EDITOR", "position": "LEAD"}]
+    arch = [{"scope_type": "STREAM", "scope_id": "s2", "role": "EDITOR", "position": "ARCH"}]
+    assert org.effective_role("VIEWER", lead, t2) == "EDITOR"                 # stream lead edits the stream's teams
+    assert org.effective_role("VIEWER", arch, t2) == "VIEWER"                 # architect / PM: teams read-only
+    assert org.effective_role("VIEWER", arch, t1) is None                     # other stream -> no access
 
     assert org.safe_schema(None) is None and org.safe_schema("team_t2") == "team_t2"
     for bad in ('x"; DROP SCHEMA public', "1abc", "a-b", ""):

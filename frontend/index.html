@@ -560,6 +560,14 @@ body.dense h1{font-size:19px}body.dense .lede{margin-bottom:10px;font-size:12.5p
 body.dense .kpi .k-val{font-size:21px;margin-top:2px}body.dense .kpi .k-label{font-size:11px}
 body.dense .kpis{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}body.dense .grid{gap:10px}
 body.dense .nav-item{padding:4px 10px;font-size:13px}body.dense .str-wrap{gap:10px}
+/* ---- команда управления стрима ---- */
+.str-mgmt{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:12.5px}
+.str-mg{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}.str-mg.empty{color:var(--muted)}.str-mg.empty b{font-weight:500}
+.org-mgmt{display:flex;flex-direction:column;gap:6px;padding:8px 0 4px;border-top:1px solid var(--line)}
+.org-mg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.org-mg{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}.org-mg b{color:var(--ink);font-size:13.5px}
+.org-mg input{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;padding:6px 8px;font:inherit;font-size:13px}
+.wiz-pos{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 /* ---- компактная шапка ---- */
 .st-hidden,#syncst,#anst{display:none!important}
 .st-dot i{display:block;width:10px;height:10px;border-radius:50%;background:var(--muted)}
@@ -3637,7 +3645,7 @@ function views(){
  setView('roam','Риски ROAM','Риски уровня стрима по модели ROAM (Resolved, Owned, Accepted, Mitigated) с переносом высоких рисков из реестров команд.',streamShell('roam'));
  setView('sos','Scrum of Scrums','Синхронизация команд стрима: повестка формируется из данных команд — прогресс спринта, импедименты, блокеры и кому нужна помощь.',streamShell('sos'));
  setView('sysdemo','System Demo','Совместный показ стрима в конце итерации: повестка из фич с готовыми историями, отзывы стейкхолдеров и решение «принято / доработать».',streamShell('sysdemo'));
- setView('smaturity','Зрелость стрима','Agile-зрелость стрима в трёх слоях: зрелость команд, практики стрима по рубрике (голоса команд и итог RTE) и объективные индикаторы из данных со сверкой «оценка ↔ факты»; динамика по PI и бэклог улучшений.',streamShell('smaturity'));
+ setView('smaturity','Зрелость стрима','Agile-зрелость стрима в трёх слоях: зрелость команд, практики стрима по рубрике (голоса команд и итог команды управления) и объективные индикаторы из данных со сверкой «оценка ↔ факты»; динамика по PI и бэклог улучшений.',streamShell('smaturity'));
  setView('portfolio','Портфель','Портфельный обзор нескольких проектов: статус RAG, health, velocity, бюджет и прогресс; снимок текущего проекта одной кнопкой.',portfolioView());
  setView('busfactor','Bus factor / покрытие компетенций','Риск ключевого человека: сколько людей владеют каждым навыком (из Star Map), одиночные точки отказа и непокрытые навыки.',busFactorView());
  setView('healthcheck','Team Health Check','Периодическая самооценка здоровья команды (модель Spotify Squad): светофор и тренд по измерениям.',healthCheckView());
@@ -5572,9 +5580,14 @@ const NAV=[
  {g:'Система',items:[['params','Параметры','⚙️'],['integrations','Интеграции','🔌'],['calendar','Календарь','📅'],['budget','Бюджет','💰'],['checks','Проверки данных','🧪'],['eda','EDA отчёт','🔬'],['audit','Журнал событий','🧾']]},
  {g:'Справка',items:[['faq','FAQ','❓'],['support','Support','🛟']]},
 ];
-const APP_VERSION='2.6.0';const APP_DATE='2026-10-29';
+const APP_VERSION='2.7.0';const APP_DATE='2026-10-29';
 const APP_ABOUT='Кросс-функциональная команда — это группа специалистов из разных областей (разработчиков, дизайнеров, маркетологов, аналитиков, менеджеров и других), которые объединяются для работы над одним конкретным проектом или задачей. Ключевая идея в том, чтобы собрать внутри команды всех необходимых экспертов, чтобы она могла самостоятельно пройти путь от идеи до результата, не передавая задачу последовательно из одного отдела в другой.';
 const CHANGELOG=[
+ {v:'2.7.0',date:'2026-10-29',items:[
+   'Ролевая модель стрима: команда управления стрима — лидер стрима, ИТ-лидер стрима, архитектор, проектный менеджер; состав виден в «Стримах и командах», на дашборде и в зрелости стрима.',
+   'Права должностей: лидер и ИТ-лидер стрима — редакторы данных стрима и всех его команд; архитектор и проектный менеджер — редакторы данных стрима (фичи, PI, ROAM, зрелость), команды — просмотр. Правило едино для API, аналитики и доски.',
+   'С сервером должность назначается пользователю в «Ролях в стримах и командах» (POST /api/org/memberships с position); без сервера — ФИО в карточке стрима; мастер «Новый стрим» сразу назначает команду управления.',
+   'Зрелость стрима: итог фиксирует команда управления (вместо RTE); измерение «Команда управления стрима» с новой рубрикой и индикатором по заполненности должностей. Excel: лист «Команда управления».']},
  {v:'2.6.0',date:'2026-10-29',items:[
    'Скорость: открытый раздел строится сразу, остальные — при открытии; полная перерисовка в 5 раз быстрее, элементов страницы в 5–6 раз меньше.',
    'Шапка: «＋ Создать» (задача, баг, риск, импедимент, фича и риск стрима, мастер стрима), одна точка состояния вместо двух индикаторов, меню пользователя (роль, данные, тема, плотность, стартовая страница, обзор).',
@@ -5584,7 +5597,7 @@ const CHANGELOG=[
  {v:'2.5.0',date:'2026-10-29',items:[
    'Зрелость стрима — новый раздел меню «Стрим», три слоя: зрелость команд (тепловая карта по Scrum/Kanban/SAFe со средним, минимумом и разбросом), практики стрима и объективные индикаторы.',
    'Практики стрима: 10 измерений (PI-планирование, каденция, бэклог фич, зависимости, System Demo, Inspect & Adapt, роли, непрерывная поставка, технические практики, метрики) с рубрикой из 5 уровней; можно отключать измерения и добавлять свои.',
-   'Команды голосуют по рубрике (участник команды — за свою команду), RTE фиксирует итог; медиана, разброс голосов, комментарий к итогу.',
+   'Команды голосуют по рубрике (участник команды — за свою команду), команда управления стрима фиксирует итог; медиана, разброс голосов, комментарий к итогу.',
    'Индикаторы из данных (предсказуемость PI, каденция, WSJF и истории фич, конфликты зависимостей, регулярность System Demo, ROAM и улучшения, DORA, DoD, срезы и Scrum of Scrums) и сверка «оценка ↔ факты»; радар, динамика по PI, бэклог улучшений из слабых измерений.',
    'Дашборд стрима: плитка «Зрелость стрима» (уровень и слабое звено) и сигналы о расхождении с фактами и о непроведённой оценке в конце PI; листы Excel «Зрелость стрима» и «Улучшения стрима».']},
  {v:'2.4.0',date:'2026-10-29',items:[
@@ -6078,6 +6091,7 @@ function wizOpen(){if(!orgCanManage()){toast('Создавать стримы м
   <label class="qc-f"><span>Название стрима</span><input data-w="name" placeholder="Например, Стрим «Платежи»"></label>
   <label class="qc-f"><span>Команды — по одной в строке</span><textarea data-w="teams" rows="5">Команда 1\nКоманда 2\nКоманда 3\nКоманда 4\nКоманда 5</textarea></label>
   <label class="qc-f"><span>Новые команды</span><select data-w="tpl"><option value="empty">Пустые (справочники текущей команды)</option><option value="copy">Копии текущей команды</option></select></label>
+  <div class="wiz-pos">${SPOS.map(p=>`<label class="qc-f"><span>${p[2]} ${p[1]}</span><input data-wpos="${p[0]}" placeholder="${orgServer()?'логин пользователя':'ФИО'}"></label>`).join('')}</div>
   <div class="wiz-row"><label class="qc-f"><span>PI</span><input data-w="pi" value="PI 1"></label><label class="qc-f"><span>Старт PI</span><input type="date" data-w="start" value="${esc(st)}"></label><label class="qc-f"><span>Итераций по 2 недели</span><input type="number" min="1" max="12" data-w="iters" value="5"></label></div>
   <div class="qc-act"><button class="btn" data-wx="cancel">Отмена</button><button class="btn primary" data-wx="ok">Создать стрим</button></div></div>`;
  m.classList.add('open');setTimeout(()=>m.querySelector('[data-w=name]').focus(),30);
@@ -6086,6 +6100,9 @@ async function wizRun(){const m=document.getElementById('wizmodal'),v={};m.query
  const names=v.teams.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,30);if(!v.name){toast('Введите название стрима');return;}if(!names.length){toast('Добавьте хотя бы одну команду');return;}
  const btn=m.querySelector('[data-wx=ok]');btn.disabled=true;btn.textContent='Создаю…';
  try{const sid=await orgAddStream(v.name);const ids=[];for(const n of names)ids.push(await orgAddTeam(n,sid,v.tpl));
+  const pos={};m.querySelectorAll('[data-wpos]').forEach(e=>{if(e.value.trim())pos[e.dataset.wpos]=e.value.trim();});
+  if(orgServer()){for(const k of Object.keys(pos)){try{await orgApi('POST','api/org/memberships',{username:pos[k],scopeType:'STREAM',scopeId:sid,role:'EDITOR',position:k});}catch(e){toast(posTitle(k)+': пользователь «'+pos[k]+'» не найден');}}await orgFetch();}
+  else{const so=orgStream(sid);if(so){so.mgmt=pos;saveOrg();}}
   await switchTeam(ids[0]);await sdocLoad(true);const d=SDOC.data;d.pis=[{id:'PI-1',name:v.pi||'PI 1',start:v.start||todayISO(),iters:Math.max(1,Math.min(12,parseInt(v.iters,10)||5))}];d.curPi='PI-1';sdocSave();
   m.classList.remove('open');activate('stream');toast('Стрим «'+v.name+'» создан: команд — '+ids.length);if(typeof auditClient==='function')auditClient('wizard_stream',v.name);
  }catch(err){toast(typeof err==='string'?err:'Не удалось создать стрим');btn.disabled=false;btn.textContent='Создать стрим';}}
@@ -6286,6 +6303,13 @@ function startSync(){
 }
 startSync();
 /* ---------- Стримы и команды: переключение, управление, роли ---------- */
+/* Команда управления стрима: должности. С сервером — назначения пользователей (дают права), локально — имена. */
+const SPOS=[['LEAD','Лидер стрима','👑'],['ITLEAD','ИТ-лидер стрима','💻'],['ARCH','Архитектор','🏛'],['PM','Проектный менеджер','📋']];
+function posTitle(k){const p=SPOS.find(x=>x[0]===k);return p?p[1]:k;}
+function streamMgmt(sid){const s=orgStream(sid||curStream());if(!s)return [];
+ if(orgServer())return SPOS.map(p=>{const list=(s.mgmt||[]).filter(m=>m.position===p[0]);return {pos:p[0],title:p[1],ic:p[2],names:list.map(m=>m.name||m.username)};});
+ const m=s.mgmt||{};return SPOS.map(p=>({pos:p[0],title:p[1],ic:p[2],names:m[p[0]]?[m[p[0]]]:[]}));}
+function mgmtLine(sid){return `<div class="str-mgmt"><span class="org-note">Команда управления:</span>${streamMgmt(sid).map(x=>`<span class="str-mg${x.names.length?'':' empty'}" title="${esc(x.title)}">${x.ic} ${esc(x.title)}: <b>${x.names.length?esc(x.names.join(', ')):'не назначен'}</b></span>`).join('')}</div>`;}
 function orgServer(){return ORG.server&&typeof AUTH!=='undefined'&&AUTH.mode==='server'&&!!AUTH.token;}
 function orgCanManage(){return orgServer()?!!ORG.canManage:PERM.canAdmin;}
 function orgNextId(prefix,list){let mx=0;list.forEach(x=>{const m=String(x.id||'').match(new RegExp('^'+prefix+'(\\d+)$'));if(m)mx=Math.max(mx,+m[1]);});return prefix+(mx+1);}
@@ -6340,7 +6364,10 @@ function orgFill(w){const man=orgCanManage(),srv=orgServer();
  ORG.streams.forEach(s=>{const ts=ORG.teams.filter(t=>t.streamId===s.id);
   h+=`<div class="card org-stream" data-stream="${esc(s.id)}"><div class="org-sh"><div><div class="org-sn">${esc(s.name)}</div>${s.descr?`<div class="org-sd">${esc(s.descr)}</div>`:''}</div><div class="org-sa">`;
   if(man)h+=`<button class="btn" data-act="renStream" title="Переименовать стрим">✏️</button><button class="btn" data-act="delStream" title="Удалить пустой стрим"${ts.length?' disabled':''}>🗑</button>`;
-  h+=`</div></div><div class="org-scroll"><table class="cardt org-tt"><thead><tr><th>Команда</th><th class="num">Участников</th><th class="num">Задач</th><th class="num">Открыто</th>${srv?'<th>Ваша роль</th>':''}<th></th></tr></thead><tbody>`;
+  h+=`</div></div>`;
+  h+=`<div class="org-mgmt"><div class="org-note"><b>Команда управления стрима</b>${srv?(man?' — назначение пользователей и прав: «Роли в стримах и командах» ниже':''):' — с сервером лидеры правят стрим и все его команды, архитектор и проектный менеджер — данные стрима'}</div><div class="org-mg-grid">`
+   +streamMgmt(s.id).map(x=>`<label class="org-mg"><span>${x.ic} ${esc(x.title)}</span>${(!srv&&man)?`<input data-mgmt="${x.pos}" value="${esc(x.names[0]||'')}" placeholder="ФИО">`:`<b>${x.names.length?esc(x.names.join(', ')):'—'}</b>`}</label>`).join('')+`</div></div>`;
+  h+=`<div class="org-scroll"><table class="cardt org-tt"><thead><tr><th>Команда</th><th class="num">Участников</th><th class="num">Задач</th><th class="num">Открыто</th>${srv?'<th>Ваша роль</th>':''}<th></th></tr></thead><tbody>`;
   if(!ts.length)h+=`<tr><td colspan="${srv?6:5}" class="org-empty" data-label="">В стриме пока нет команд</td></tr>`;
   ts.forEach(t=>{const st=orgTeamStats(t.id),cur=t.id===curTeam(),f=v=>st?v:'—';
    h+=`<tr data-team="${esc(t.id)}"${cur?' class="org-cur"':''}><td data-label="Команда"><b>${esc(t.name)}</b>${cur?' <span class="pill p-good">текущая</span>':''}</td><td class="num" data-label="Участников">${f(st&&st.people)}</td><td class="num" data-label="Задач">${f(st&&st.tasks)}</td><td class="num" data-label="Открыто">${f(st&&st.open)}</td>`
@@ -6352,13 +6379,13 @@ function orgFill(w){const man=orgCanManage(),srv=orgServer();
   h+=`</tbody></table></div>`;
   if(man)h+=`<div class="org-add"><input data-f="name" placeholder="Название новой команды" maxlength="120"><select data-f="tpl"><option value="empty">Пустая (справочники текущей команды)</option><option value="copy">Копия текущей команды</option></select><button class="btn" data-act="addTeam">＋ Команда</button></div>`;
   h+=`</div>`;});
- if(srv&&man)h+=`<div class="card org-members"><div class="org-sn">Роли в стримах и командах</div><p class="org-note">Пользователь без назначений работает со всеми командами по своей общей роли. Назначение сужает доступ: роль в стриме действует на все его команды, роль в команде — только на неё.</p><div id="org_mtable">Загрузка…</div>
-  <div class="org-add"><input data-f="muser" placeholder="Логин пользователя"><select data-f="mscope">${ORG.streams.map(s=>`<option value="STREAM:${esc(s.id)}">Стрим: ${esc(s.name)}</option>`).join('')}${ORG.teams.map(t=>`<option value="TEAM:${esc(t.id)}">Команда: ${esc(orgLabel(t.id))}</option>`).join('')}</select><select data-f="mrole"><option value="EDITOR">Редактор</option><option value="VIEWER">Просмотр</option></select><button class="btn" data-act="grant">Назначить</button></div></div>`;
+ if(srv&&man)h+=`<div class="card org-members"><div class="org-sn">Роли в стримах и командах</div><p class="org-note">Пользователь без назначений работает со всеми командами по своей общей роли. Назначение сужает доступ: роль в стриме действует на все его команды, роль в команде — только на неё. Должности команды управления (только для стрима): лидер и ИТ-лидер стрима — редакторы стрима и всех его команд, архитектор и проектный менеджер — редакторы данных стрима, команды — просмотр.</p><div id="org_mtable">Загрузка…</div>
+  <div class="org-add"><input data-f="muser" placeholder="Логин пользователя"><select data-f="mscope">${ORG.streams.map(s=>`<option value="STREAM:${esc(s.id)}">Стрим: ${esc(s.name)}</option>`).join('')}${ORG.teams.map(t=>`<option value="TEAM:${esc(t.id)}">Команда: ${esc(orgLabel(t.id))}</option>`).join('')}</select><select data-f="mpos" title="Должность в команде управления (только для стрима)"><option value="">Без должности</option>${SPOS.map(p=>`<option value="${p[0]}">${p[2]} ${p[1]}</option>`).join('')}</select><select data-f="mrole"><option value="EDITOR">Редактор</option><option value="VIEWER">Просмотр</option></select><button class="btn" data-act="grant">Назначить</button></div></div>`;
  w.innerHTML=h;if(srv&&man)orgLoadMembers();}
 async function orgLoadMembers(){const box=document.getElementById('org_mtable');if(!box)return;
  try{const r=await fetch('api/org/memberships',{headers:hdrs(false),cache:'no-store'});if(!r.ok)throw 0;const list=await r.json();
   if(!list.length){box.innerHTML='<p class="org-empty">Назначений нет — все пользователи работают по общей роли.</p>';return;}
-  box.innerHTML=`<table class="cardt"><thead><tr><th>Пользователь</th><th>Область</th><th>Роль</th><th></th></tr></thead><tbody>${list.map(m=>`<tr><td>${esc(m.username)}</td><td>${m.scopeType==='STREAM'?'Стрим: '+esc((orgStream(m.scopeId)||{name:m.scopeId}).name):'Команда: '+esc(orgLabel(m.scopeId))}</td><td>${m.role==='EDITOR'?'Редактор':'Просмотр'}</td><td><button class="rowdel" data-act="revoke" data-pk="${esc(m.pk)}" title="Снять назначение">✕</button></td></tr>`).join('')}</tbody></table>`;
+  box.innerHTML=`<table class="cardt"><thead><tr><th>Пользователь</th><th>Область</th><th>Должность</th><th>Роль</th><th></th></tr></thead><tbody>${list.map(m=>`<tr><td>${esc(m.username)}</td><td>${m.scopeType==='STREAM'?'Стрим: '+esc((orgStream(m.scopeId)||{name:m.scopeId}).name):'Команда: '+esc(orgLabel(m.scopeId))}</td><td>${m.position?esc(posTitle(m.position)):'—'}</td><td>${m.role==='EDITOR'?'Редактор':'Просмотр'}</td><td><button class="rowdel" data-act="revoke" data-pk="${esc(m.pk)}" title="Снять назначение">✕</button></td></tr>`).join('')}</tbody></table>`;
  }catch(e){box.innerHTML='<p class="org-empty">Не удалось загрузить назначения</p>';}}
 async function orgApi(method,url,body){const r=await fetch(url,{method:method,headers:hdrs(!!body),body:body?JSON.stringify(body):undefined});
  let d=null;try{d=await r.json();}catch(e){}if(!r.ok){const er=d&&d.error;throw ({stream_not_empty:'В стриме есть команды',default_team:'Первую команду удалить нельзя'}[er]||('Ошибка '+r.status));}return d;}
@@ -6399,10 +6426,13 @@ document.addEventListener('click',async e=>{const b=e.target.closest('#org_root 
   else if(act==='delTeam'){if(confirm('Удалить команду «'+orgLabel(tid)+'» вместе со всеми её данными? Действие необратимо.')){await orgDelTeam(tid);toast('Команда удалена');}}
   else if(act==='importTeam'){document.getElementById('orgfile').click();return;}
   else if(act==='grant'){const box=b.closest('.org-add'),u=box.querySelector('[data-f=muser]').value.trim(),sc=box.querySelector('[data-f=mscope]').value.split(':'),role=box.querySelector('[data-f=mrole]').value;
-   if(!u){toast('Укажите логин');return;}await orgApi('POST','api/org/memberships',{username:u,scopeType:sc[0],scopeId:sc[1],role:role});toast('Роль назначена');orgLoadMembers();return;}
+   const pos=box.querySelector('[data-f=mpos]').value;if(!u){toast('Укажите логин');return;}if(pos&&sc[0]!=='STREAM'){toast('Должность назначается на стрим');return;}
+   await orgApi('POST','api/org/memberships',{username:u,scopeType:sc[0],scopeId:sc[1],role:pos?'EDITOR':role,position:pos||null});toast(pos?posTitle(pos)+' назначен(а)':'Роль назначена');await orgFetch();orgRefresh();return;}
   else if(act==='revoke'){await orgApi('DELETE','api/org/memberships/'+encodeURIComponent(b.dataset.pk));toast('Назначение снято');orgLoadMembers();return;}
   orgSwUpdate();orgRefresh();
  }catch(err){toast(typeof err==='string'?err:'Ошибка');}});
+document.addEventListener('change',e=>{const i=e.target.closest('#org_root input[data-mgmt]');if(!i||orgServer()||!orgCanManage())return;
+ const s=orgStream(i.closest('[data-stream]').dataset.stream);if(!s)return;s.mgmt=s.mgmt||{};const v=i.value.trim().slice(0,120);if(v)s.mgmt[i.dataset.mgmt]=v;else delete s.mgmt[i.dataset.mgmt];saveOrg();toast(posTitle(i.dataset.mgmt)+(v?': '+v:' — снят(а)'));});
 document.addEventListener('change',async e=>{const s=e.target.closest('#org_root select[data-act=moveTeam]');if(!s)return;
  try{await orgMoveTeam(s.closest('tr[data-team]').dataset.team,s.value);toast('Команда перенесена');orgSwUpdate();orgRefresh();}catch(err){toast(typeof err==='string'?err:'Ошибка');}});
 document.getElementById('orgfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
@@ -6630,7 +6660,7 @@ function kp(label,val,note,rag){return kpiCard(label,val,note,rag);}
 function sDash(states){const pi=piCur(),M=states.map(x=>({x:x,m:teamMetricsX(x.st)}));STM=M;
  const A=streamAgg(M,states,pi),AL=streamAlerts(M,A,pi),tab=lsGetS('str_dtab','sum'),d=SDOC.data;
  sSnapAuto(M,A,pi);
- let h=`<div class="org-bar"><label>PI <select data-sact="pickPi">${sOpts(d.pis.map(p=>({v:p.id,l:p.name})),pi.id)}</select></label>`
+ let h=mgmtLine()+`<div class="org-bar"><label>PI <select data-sact="pickPi">${sOpts(d.pis.map(p=>({v:p.id,l:p.name})),pi.id)}</select></label>`
   +`<span class="org-note">Итерация: <b>${piIterNow(pi)||'—'}</b> из ${piIters(pi).length}</span>`
   +(sdocCanEdit()?`<button class="btn" data-sact="snap" title="Сохранить показатели стрима и команд за текущую итерацию">📌 Зафиксировать срез</button>`:'')+`</div>`;
  h+=`<div class="card str-alerts"><div class="org-sn">${AL.length?'⚠ Требует внимания: '+AL.length:'✅ Критичных сигналов нет'}</div>`
@@ -6754,6 +6784,7 @@ function demoAgenda(states,k,date){const pi=piCur(),d=SDOC.data,out=[];
 function streamSheets(){const out=[{name:'Стримы и команды',aoa:[['Стрим','Команда','ID команды','Текущая']].concat(ORG.teams.map(t=>[(orgStream(t.streamId)||{}).name||t.streamId,t.name,t.id,t.id===curTeam()?'да':'']))}];
  let d=(SDOC.loaded&&SDOC.sid===curStream())?SDOC.data:null;
  if(!d&&!orgServer()){try{const raw=localStorage.getItem(sdocKey());if(raw)d=sdocNorm(JSON.parse(raw));}catch(e){}}
+ out.push({name:'Команда управления',aoa:[['Стрим','Должность','Сотрудник','Права']].concat(ORG.streams.flatMap(s=>streamMgmt(s.id).map(x=>[s.name,x.title,x.names.join(', '),x.pos==='LEAD'||x.pos==='ITLEAD'?'стрим и все команды':'данные стрима, команды — просмотр'])))});
  if(!d)return out;const tn=id=>id?(orgTeam(id)||{name:id}).name:'Стрим',pn=id=>(d.pis.find(p=>p.id===id)||{name:id||''}).name,nv=v=>v===''||v==null?'':num(v);
  out.push({name:'Фичи стрима',aoa:[['ID','Фича','Статус','PI','Владелец','BV','TC','RR','Размер','WSJF','Историй']].concat(d.features.map(f=>[f.id,f.name,f.status,pn(f.pi),f.owner,num(f.bv),num(f.tc),num(f.rr),num(f.size),Math.round(featWsjf(f)*10)/10,(f.links||[]).length]))});
  out.push({name:'Цели PI',aoa:[['ID','PI','Команда','Цель','BV план','BV факт','Обязательная']].concat(d.objectives.map(o=>[o.id,pn(o.pi),tn(o.team),o.text,nv(o.bv),nv(o.actual),o.committed===false?'нет':'да']))});
@@ -6771,13 +6802,13 @@ function streamSheets(){const out=[{name:'Стримы и команды',aoa:[[
    Данные: SDOC.data.mat = {off:[id…], custom:[{id,name}], rounds:[{pi,date,votes:{dim:{team:lv}},final:{dim:lv},notes:{dim:txt}}]},
    SDOC.data.mActions — бэклог улучшений. Голос участника команды без роли в стриме — POST /api/org/streams/{id}/vote. */
 const SMAT=[
- {id:'pi',n:'PI-планирование',r:['PI-планирование не проводится, команды планируют независимо','Совместное планирование эпизодически, без целей PI','PI-планирование каждый PI, цели команд зафиксированы','Цели с бизнес-ценностью от бизнес-владельцев, предсказуемость ≥ 80%','Предсказуемость 80–100% несколько PI подряд, план корректируется по фактам']},
+ {id:'pi',n:'PI-планирование',r:['PI-планирование не проводится, команды планируют независимо','Совместное планирование эпизодически, без целей PI','PI-планирование каждый PI, цели команд зафиксированы','Цели с бизнес-ценностью согласованы с лидером стрима, предсказуемость ≥ 80%','Предсказуемость 80–100% несколько PI подряд, план корректируется по фактам']},
  {id:'cad',n:'Синхронизация каденции',r:['У команд разные каденции','Общая длина спринта, старты не совпадают','Общие итерации PI у большинства команд','Все команды в общей каденции, события синхронны','Каденция стрима — основа планирования релизов и бюджета']},
  {id:'backlog',n:'Бэклог фич',r:['Бэклога фич нет — работа приходит в команды напрямую','Список фич без приоритетов и критериев','Фичи с WSJF и размером, приоритет пересматривается каждый PI','Фичи с критериями приёмки разбиты на истории до планирования','Бэклог фич связан со стратегией и OKR, у фич есть гипотезы и метрики ценности']},
  {id:'deps',n:'Межкомандные зависимости',r:['Зависимости обнаруживаются по факту блокировки','Зависимости фиксируются, но не планируются','Зависимости видны на программной доске и согласованы на PI','Конфликтов сроков почти нет, блокировки снимаются за итерацию','Архитектура и состав команд сводят зависимости к минимуму']},
  {id:'demo',n:'System Demo',r:['Совместных показов нет','Показы по командам, без интеграции','System Demo по итогам PI','System Demo каждую итерацию, интегрированный инкремент','Решения стейкхолдеров на демо сразу меняют бэклог фич']},
  {id:'ia',n:'Inspect & Adapt',r:['Ретроспектив уровня стрима нет','Проблемы обсуждаются без действий','I&A каждый PI, есть бэклог улучшений','Улучшения с владельцами выполняются и проверяются метриками','Улучшения — часть PI-плана, устраняются корневые причины']},
- {id:'roles',n:'Роли стрима',r:['Ролей уровня стрима нет','Роли назначены формально','RTE и Product Management работают регулярно','Архитектор и бизнес-владельцы участвуют в PI-планировании и демо','Роли развивают стрим: коучинг, сообщества практик']},
+ {id:'roles',n:'Команда управления стрима',r:['Команды управления стрима нет','Должности назначены формально','Лидер стрима и ИТ-лидер регулярно решают вопросы приоритетов и техники','Архитектор и проектный менеджер вместе с лидерами ведут PI-планирование, зависимости и System Demo','Команда управления развивает стрим: коучинг команд, сообщества практик, решения по данным']},
  {id:'cd',n:'Непрерывная поставка',r:['Ручные выпуски раз в несколько месяцев','CI в части команд, выпуски по расписанию','CI/CD во всех командах, выпуск по итогам итерации','Автоматизированный конвейер, частые выпуски, низкая доля сбоев','Выпуск по требованию бизнеса, DORA на уровне High/Elite']},
  {id:'tech',n:'Технические практики',r:['Общего DoD нет, техдолг не отслеживается','DoD у команд различается','Общий DoD стрима, техдолг в бэклоге','Автотесты и ревью — норма, техдолг снижается','Архитектурный задел опережает фичи, качество встроено']},
  {id:'metrics',n:'Метрики и прозрачность',r:['Метрики не собираются','Метрики команд разрознены','Дашборд стрима: предсказуемость и velocity видны всем','Решения принимаются по метрикам потока и трендам','Метрики ценности (outcomes) связаны с OKR']}];
@@ -6802,7 +6833,7 @@ function matIndicators(states,pi){const d=SDOC.data,ok=states.filter(x=>x.st&&x.
  out.demo={val:passed?'показы в '+held+' из '+passed+' прошедших итераций':'итерации PI ещё не завершались',lvl:passed?LVL(held/passed,[0.25,0.5,0.75,1]):null};
  const rh=d.roam.length?d.roam.filter(r=>r.roam&&r.roam!=='—').length/d.roam.length:null,ac=d.mActions||[],ad=ac.length?ac.filter(a=>a.status==='Сделано').length/ac.length:null;
  const ia=avgOf([rh,ad]);out.ia={val:ia==null?'нет рисков ROAM и улучшений':'разобрано рисков ROAM '+pctf(rh)+(ad==null?'':', улучшений выполнено '+pctf(ad)),lvl:LVL(ia,[0.25,0.5,0.75,0.9])};
- out.roles={val:'только самооценка',lvl:null};
+ const mg=streamMgmt().filter(x=>x.names.length).length;out.roles={val:'назначено '+mg+' из '+SPOS.length+' должностей команды управления',lvl:mg>=4?4:mg>=2?3:mg?2:1};
  const TS={Elite:5,High:4,Medium:3,Low:2};const dm=ok.map(x=>withState(x.st,()=>dora())).filter(D=>D.count);
  const ds=avgOf(dm.map(D=>avgOf([TS[D.tFreq],TS[D.tCfr]])));out.cd={val:dm.length?'DORA: средний уровень '+fmt(ds,1)+' из 5':'нет данных о деплоях',lvl:ds==null?null:Math.max(1,Math.min(5,Math.round(ds)))};
  const dod=avgOf(ok.map(x=>withState(x.st,()=>compute().dodPct)));out.tech={val:dod==null?'нет данных':'средний DoD команд '+pctf(dod),lvl:LVL(dod,[0.25,0.5,0.75,0.9])};
@@ -6827,19 +6858,19 @@ function sMaturity(states){const d=SDOC.data,pi=piCur(),ed=sdocCanEdit(),R=matRo
  const mfw=lsGetS('str_mfw','SAFe'),FWS=Object.keys(AGILE_FW);
  let h=`<div class="org-bar"><label>PI <select data-sact="pickPi">${sOpts(d.pis.map(p=>({v:p.id,l:p.name})),pi.id)}</select></label>`
   +`<span class="org-sum">Уровень стрима: <b>${S.overall?S.overall+' — '+esc(agileLevelName(S.overall)):'не оценён'}</b>${S.weakest?' · слабое звено: <b>'+esc(S.weakest)+'</b> ('+S.weakLvl+')':''}${S.mism?' · <span class="pill p-warn">расхождений с фактами: '+S.mism+'</span>':''}</span>`
-  +(ed?`<button class="btn" data-sact="matAccept" title="Принять медиану голосов как итог там, где итог не задан">Принять медианы</button>`:'')+`</div>`;
- h+=`<p class="org-note">Оценка — раз в PI, на Inspect &amp; Adapt. Команды голосуют по рубрике (раскройте измерение), RTE фиксирует итоговый уровень. Индикаторы считаются из данных приложения и подсвечивают расхождение с самооценкой на 2 уровня и более.</p>`;
+  +(ed?`<button class="btn" data-sact="matAccept" title="Принять медиану голосов как итог там, где итог не задан">Принять медианы</button>`:'')+`</div>`+mgmtLine();
+ h+=`<p class="org-note">Оценка — раз в PI, на Inspect &amp; Adapt. Команды голосуют по рубрике (раскройте измерение), команда управления стрима фиксирует итоговый уровень. Индикаторы считаются из данных приложения и подсвечивают расхождение с самооценкой на 2 уровня и более.</p>`;
  // радар: итог против индикаторов
  const rad=R.filter(x=>x.eff!=null||x.ind.lvl!=null);
- h+=`<div class="str-charts"><div class="card"><div class="org-sn">Итоговая оценка и индикаторы</div>${radarSvg(rad.map(x=>({axis:x.dm.n,score:x.eff||0,prev:x.ind.lvl||0})))}<div class="str-leg"><span><i style="background:var(--accent)"></i>Итог (RTE или медиана голосов)</span><span><i class="dash" style="border-color:var(--muted)"></i>Индикаторы из данных</span></div></div>`
+ h+=`<div class="str-charts"><div class="card"><div class="org-sn">Итоговая оценка и индикаторы</div>${radarSvg(rad.map(x=>({axis:x.dm.n,score:x.eff||0,prev:x.ind.lvl||0})))}<div class="str-leg"><span><i style="background:var(--accent)"></i>Итог (команда управления или медиана голосов)</span><span><i class="dash" style="border-color:var(--muted)"></i>Индикаторы из данных</span></div></div>`
   +`<div class="card"><div class="org-sn">Динамика по PI</div><div class="str-chart" id="mat_dyn"></div><p class="org-note">Итоговый уровень стрима (медиана по измерениям) в каждом оценённом PI.</p></div></div>`;
  // практики стрима
- h+=`<div class="card"><div class="org-sn">Практики стрима — ${esc(pi.name)}</div><div class="org-scroll"><table class="cardt str-t mat-t"><thead><tr><th>Измерение и рубрика</th><th>Голосов</th><th>Медиана</th><th>Разброс</th><th>Итог RTE</th><th>Индикатор из данных</th><th>Сверка</th><th>Комментарий</th></tr></thead><tbody>`
+ h+=`<div class="card"><div class="org-sn">Практики стрима — ${esc(pi.name)}</div><div class="org-scroll"><table class="cardt str-t mat-t"><thead><tr><th>Измерение и рубрика</th><th>Голосов</th><th>Медиана</th><th>Разброс</th><th>Итог команды управления</th><th>Индикатор из данных</th><th>Сверка</th><th>Комментарий</th></tr></thead><tbody>`
   +R.map(x=>{const lv=x.eff;
    return `<tr data-dim="${esc(x.dm.id)}"><td data-label="Измерение"><details class="str-det"><summary><b>${esc(x.dm.n)}</b></summary>${x.dm.r.map((t,i)=>t?`<div class="${lv===i+1?'mat-cur':''}">${i+1}. ${esc(t)}</div>`:'').join('')}</details></td>`
     +`<td class="num" data-label="Голосов">${x.n} из ${states.length}</td>`
     +`<td class="num" data-label="Медиана">${x.med==null?'—':fmt(x.med,1)}</td><td class="num${x.spread>=2?' hm-crit':''}" data-label="Разброс">${x.spread==null?'—':x.spread}</td>`
-    +`<td data-label="Итог RTE">${ed?`<select data-mat="final">${sOpts([{v:'',l:x.med==null?'—':'медиана '+Math.round(x.med)}].concat([1,2,3,4,5].map(n=>({v:n,l:n+' — '+AGILE_LEVELS[n]}))),x.fin||'')}</select>`:(x.fin?x.fin+' — '+esc(AGILE_LEVELS[x.fin]):(x.med==null?'—':'медиана '+Math.round(x.med)))}</td>`
+    +`<td data-label="Итог команды управления">${ed?`<select data-mat="final">${sOpts([{v:'',l:x.med==null?'—':'медиана '+Math.round(x.med)}].concat([1,2,3,4,5].map(n=>({v:n,l:n+' — '+AGILE_LEVELS[n]}))),x.fin||'')}</select>`:(x.fin?x.fin+' — '+esc(AGILE_LEVELS[x.fin]):(x.med==null?'—':'медиана '+Math.round(x.med)))}</td>`
     +`<td data-label="Индикатор">${x.ind.lvl!=null?`<span class="pill p-${LVC(x.ind.lvl)}">${x.ind.lvl}</span> `:''}<span class="org-note">${esc(x.ind.val)}</span></td>`
     +`<td data-label="Сверка">${x.gap>=2?'<span class="pill p-warn">возможна переоценка</span>':x.gap<=-2?'<span class="pill p-neut">возможна недооценка</span>':(x.ind.lvl!=null&&lv!=null?'<span class="pill p-good">согласуется</span>':'—')}</td>`
     +`<td data-label="Комментарий">${ed?`<input data-mat="note" value="${esc(x.note)}" placeholder="Обоснование итога">`:esc(x.note)}</td></tr>`;}).join('')+`</tbody></table></div></div>`;
@@ -7058,7 +7089,7 @@ startAnalytics();setInterval(startAnalytics,30000);
     Пересобирается на каждой загрузке из NAV + DOM (h1/.lede каждого раздела) + TOUR + CHANGELOG,
     поэтому «обучение» помощника происходит само после каждого обновления приложения:
     новый или переименованный раздел, изменённое описание и новая версия подхватываются без правок. */
- const AKA={myday:'мой день мои задачи стартовая страница блокеры события сегодня',stream:'дашборд стрима обзор стрима сводка команд стрима метрики стрима показатели команд матрица команд срез тренды требует внимания burn-up бернап velocity по итерациям графики стрима',features:'фичи стрима фича wsjf бэклог стрима разбить на истории канбан фич',streampi:'pi планирование инкремента программная доска цели pi предсказуемость межкомандные зависимости',roam:'roam риски стрима resolved owned accepted mitigated',sos:'scrum of scrums скрам скрамов синхронизация команд повестка',smaturity:'зрелость стрима agile зрелость стрима art assessment оценка зрелости рубрика inspect adapt улучшения слабое звено',sysdemo:'system demo системное демо показ стрима приёмка фич отзывы стейкхолдеров',org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
+ const AKA={myday:'мой день мои задачи стартовая страница блокеры события сегодня',stream:'дашборд стрима обзор стрима сводка команд стрима метрики стрима показатели команд матрица команд срез тренды требует внимания burn-up бернап velocity по итерациям графики стрима',features:'фичи стрима фича wsjf бэклог стрима разбить на истории канбан фич',streampi:'pi планирование инкремента программная доска цели pi предсказуемость межкомандные зависимости',roam:'roam риски стрима resolved owned accepted mitigated',sos:'scrum of scrums скрам скрамов синхронизация команд повестка',smaturity:'зрелость стрима agile зрелость стрима art assessment оценка зрелости рубрика inspect adapt улучшения слабое звено',sysdemo:'system demo системное демо показ стрима приёмка фич отзывы стейкхолдеров',org:'стримы стрим команды оргструктура переключить команду art поток роли доступ создать команду команда управления стрима лидер стрима ит-лидер стрима ит лидер архитектор проектный менеджер должности',dash:'обзор kpi сводка панель главная',statusreport:'статус отчёт доклад сводка',portfolio:'портфель проектов программа',
   roadmap:'дорожная карта план спринтов график спринтов',quarters:'кварталы квартальный план',sprintGoals:'цель спринта обязательство ценность',
   kanban:'канбан доска статусы колонки карточки',board:'холст схемы стикеры мозговой штурм whiteboard рисование шаблоны ретро swot lean canvas карточки задач виджеты метрики отмена группировка мини-карта голосование презентация показ комментарии упоминания блок-схема майнд-карта mind map таблица дорожки swimlane',okr:'цели ключевые результаты objectives key results',
   backlog:'бэклог задачи список работ',wbs:'иерархия работ декомпозиция эпик фича история роллап',storymap:'карта историй активности',
@@ -7294,7 +7325,7 @@ const TOUR=[
  {v:'features',h:'Фичи стрима',p:'Бэклог фич с приоритетом WSJF — таблицей или канбаном по статусам. «＋ История» создаёт историю фичи прямо в бэклоге нужной команды; прогресс фичи считается по статусам историй.',d:10000},
  {v:'streampi',h:'PI стрима',p:'Программная доска «команды × итерации» строится из историй фич в бэклогах команд; цели PI с бизнес-ценностью дают предсказуемость, межкомандные зависимости подсвечивают конфликты сроков.',d:10000},
  {v:'sysdemo',h:'System Demo и Scrum of Scrums',p:'Повестки формируются из данных команд: на System Demo — фичи с готовыми историями итерации и решение «принято / доработать», на Scrum of Scrums — прогресс спринтов, импедименты и блокеры.',d:10000},
- {v:'smaturity',h:'Зрелость стрима',p:'Три слоя: зрелость команд, практики стрима по рубрике (команды голосуют, RTE фиксирует итог) и индикаторы из данных со сверкой «оценка ↔ факты». Радар, динамика по PI и бэклог улучшений из слабых измерений.',d:10000},
+ {v:'smaturity',h:'Зрелость стрима',p:'Три слоя: зрелость команд, практики стрима по рубрике (команды голосуют, команда управления фиксирует итог) и индикаторы из данных со сверкой «оценка ↔ факты». Радар, динамика по PI и бэклог улучшений из слабых измерений.',d:10000},
  {v:'dash',h:'Дашборд',p:'Сводка проекта: KPI с RAG-подсветкой, блок «Что требует внимания», кликабельные карточки и sparkline-тренды. Ниже — графики ёмкости, velocity, багов и Time to Market.',d:10000},
  {v:'roadmap',h:'Дорожная карта',p:'Спринты рассчитываются автоматически из параметров и состава команды: даты, рабочие дни, ёмкость, план, velocity и процент выполнения.',d:9000},
  {v:'quarters',h:'Кварталы',p:'Агрегация спринтов по кварталам и квартальный roadmap на шкале дат.',d:7000},

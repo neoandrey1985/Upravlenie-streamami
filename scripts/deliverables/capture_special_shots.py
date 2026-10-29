@@ -44,11 +44,11 @@ SHOTS = {
                  "const t=[...document.querySelectorAll('#v_audit .ctitle')].pop();if(t){t.scrollIntoView({block:'start'});window.scrollBy(0,-90);}}"],
 }
 MOCK = r"""()=>{AUTH.mode='server';AUTH.token='demo';AUTH.username='admin';AUTH.user='Администратор';AUTH.role='ADMIN';setPerm('admin');applyPerms();updateRoleBtn();
- const U=[{username:'admin',name:'Администратор',role:'ADMIN',active:true},{username:'rte',name:'Петрова М. (RTE)',role:'EDITOR',active:true},
+ const U=[{username:'admin',name:'Администратор',role:'ADMIN',active:true},{username:'lead',name:'Петрова М. (лидер стрима)',role:'EDITOR',active:true},
   {username:'po.pay',name:'Орлов Д.',role:'EDITOR',active:true},{username:'dev.search',name:'Смирнов К.',role:'EDITOR',active:true},{username:'viewer',name:'Наблюдатель',role:'VIEWER',active:true}];
- const now=Date.parse('2026-09-10T10:42:00Z'),E=[['AUTH','login','rte','POST','/api/auth/login',200,'Вход выполнен'],
-  ['DATA','state_saved','rte','PUT','/api/state',200,'Сохранение данных, версия 57 (команда t1)'],['CLIENT','switch_team','rte','UI','',null,'t4'],
-  ['ACCESS','PUT','rte','PUT','/api/org/streams/s1/doc',200,null],['ACCESS','POST','admin','POST','/api/org/teams',200,null],
+ const now=Date.parse('2026-09-10T10:42:00Z'),E=[['AUTH','login','lead','POST','/api/auth/login',200,'Вход выполнен'],
+  ['DATA','state_saved','lead','PUT','/api/state',200,'Сохранение данных, версия 57 (команда t1)'],['CLIENT','switch_team','lead','UI','',null,'t4'],
+  ['ACCESS','PUT','lead','PUT','/api/org/streams/s1/doc',200,null],['ACCESS','POST','admin','POST','/api/org/teams',200,null],
   ['ACCESS','POST','admin','POST','/api/org/memberships',200,null],['DENY','PUT','viewer','PUT','/api/state',403,null],
   ['DATA','state_saved','dev.search','PUT','/api/state',200,'Сохранение данных, версия 12 (команда t4)'],['CLIENT','import_team','admin','UI','',null,'streams_data.json']]
   .map((e,i)=>({ts:now-i*137000,category:e[0],action:e[1],username:e[2],method:e[3],path:e[4],status:e[5],detail:e[6]}));

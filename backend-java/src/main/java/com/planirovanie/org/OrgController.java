@@ -129,7 +129,7 @@ public class OrgController {
     @PostMapping("/memberships")
     public ResponseEntity<?> grant(@RequestBody Map<String, String> b) {
         try {
-            return ResponseEntity.ok(org.grant(b.get("username"), b.get("scopeType"), b.get("scopeId"), b.get("role")));
+            return ResponseEntity.ok(org.grant(b.get("username"), b.get("scopeType"), b.get("scopeId"), b.get("role"), b.get("position")));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

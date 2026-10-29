@@ -25,6 +25,10 @@ import java.util.*;
 @Service
 public class OrgService {
     public static final String DEFAULT_TEAM = "t1";
+    /** Должности команды управления стрима → название; LEAD/ITLEAD правят и команды стрима, ARCH/PM — только данные стрима. */
+    public static final Map<String, String> POSITIONS = new LinkedHashMap<>(Map.of());
+    static { POSITIONS.put("LEAD", "Лидер стрима"); POSITIONS.put("ITLEAD", "ИТ-лидер стрима"); POSITIONS.put("ARCH", "Архитектор"); POSITIONS.put("PM", "Проектный менеджер"); }
+    private static final Set<String> TEAM_EDIT_POSITIONS = Set.of("LEAD", "ITLEAD");
     private static final List<String> RANK = List.of("VIEWER", "EDITOR", "ADMIN");
 
     private final OrgStreamRepo streams;
@@ -33,12 +37,14 @@ public class OrgService {
     private final TeamSchemaManager schemas;
     private final StateService state;
     private final StreamDocService streamDocs;
+    private final com.planirovanie.repo.AppUserRepo users;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public OrgService(OrgStreamRepo streams, OrgTeamRepo teams, OrgMembershipRepo members,
-                      TeamSchemaManager schemas, StateService state, StreamDocService streamDocs) {
+                      TeamSchemaManager schemas, StateService state, StreamDocService streamDocs,
+                      com.planirovanie.repo.AppUserRepo users) {
         this.streams = streams; this.teams = teams; this.members = members; this.schemas = schemas; this.state = state;
-        this.streamDocs = streamDocs;
+        this.streamDocs = streamDocs; this.users = users;
     }
 
     /** First start: one stream with one team that owns the existing (default-schema) data. */
@@ -70,9 +76,9 @@ public class OrgService {
         if (mine.isEmpty()) return s.role;
         String best = null;
         for (OrgMembership m : mine) {
-            boolean hit = ("TEAM".equals(m.scopeType) && m.scopeId.equals(t.id))
-                    || ("STREAM".equals(m.scopeType) && m.scopeId.equals(t.streamId));
-            if (hit) best = max(best, m.role);
+            if ("TEAM".equals(m.scopeType) && m.scopeId.equals(t.id)) best = max(best, m.role);
+            else if ("STREAM".equals(m.scopeType) && m.scopeId.equals(t.streamId))
+                best = max(best, m.position == null || TEAM_EDIT_POSITIONS.contains(m.position) ? m.role : "VIEWER");   // ARCH/PM: команды — просмотр
         }
         return best;
     }
@@ -126,6 +132,15 @@ public class OrgService {
             if (!admin && !visibleStreams.contains(st.id)) continue;
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("id", st.id); m.put("name", st.name); m.put("descr", st.descr);
+            List<Map<String, Object>> mg = new ArrayList<>();
+            for (OrgMembership x : members.findByScopeTypeAndScopeId("STREAM", st.id)) {
+                if (x.position == null) continue;
+                Map<String, Object> p = new LinkedHashMap<>();
+                p.put("position", x.position); p.put("title", POSITIONS.get(x.position)); p.put("username", x.username);
+                p.put("name", users.findByUsername(x.username).map(u -> u.displayName).orElse(x.username));
+                mg.add(p);
+            }
+            m.put("mgmt", mg);
             sl.add(m);
         }
         Map<String, Object> r = new LinkedHashMap<>();
@@ -218,16 +233,25 @@ public class OrgService {
 
     public List<OrgMembership> memberships() { return members.findAll(); }
 
-    public OrgMembership grant(String username, String scopeType, String scopeId, String role) {
+    public OrgMembership grant(String username, String scopeType, String scopeId, String role) { return grant(username, scopeType, scopeId, role, null); }
+
+    /** Назначение; position — должность команды управления (только STREAM), при ней роль доступа — EDITOR (данные стрима). */
+    public OrgMembership grant(String username, String scopeType, String scopeId, String role, String position) {
         if (username == null || username.isBlank()) throw new IllegalArgumentException("username_required");
         if (!"STREAM".equals(scopeType) && !"TEAM".equals(scopeType)) throw new IllegalArgumentException("bad_scope");
+        if (position != null && position.isBlank()) position = null;
+        if (position != null) {
+            if (!POSITIONS.containsKey(position)) throw new IllegalArgumentException("bad_position");
+            if (!"STREAM".equals(scopeType)) throw new IllegalArgumentException("position_needs_stream");
+            role = "EDITOR";
+        }
         if (!"VIEWER".equals(role) && !"EDITOR".equals(role)) throw new IllegalArgumentException("bad_role");
         boolean exists = "STREAM".equals(scopeType) ? streams.existsById(scopeId) : teams.existsById(scopeId);
         if (!exists) throw new IllegalArgumentException("scope_not_found");
         OrgMembership m = members.findByUsername(username).stream()
                 .filter(x -> x.scopeType.equals(scopeType) && x.scopeId.equals(scopeId)).findFirst()
                 .orElseGet(OrgMembership::new);
-        m.username = username.trim(); m.scopeType = scopeType; m.scopeId = scopeId; m.role = role;
+        m.username = username.trim(); m.scopeType = scopeType; m.scopeId = scopeId; m.role = role; m.position = position;
         return members.save(m);
     }
 

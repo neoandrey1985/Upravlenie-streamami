@@ -13,6 +13,7 @@ DEMO_JS = r"""async()=>{
  setPerm('admin');applyPerms();updateRoleBtn();
  if(ORG.teams.length>1)return 'already';
  await orgRename('streams','s1','Стрим «Покупки»');await orgRename('teams','t1','Корзина и оплата');
+ orgStream('s1').mgmt={LEAD:'Петрова М.',ITLEAD:'Смирнов К.',ARCH:'Кузнецова Е.',PM:'Орлов Д.'};saveOrg();
  const mk=async(name,sid,k)=>{const id=await orgAddTeam(name,sid,'copy');const st=JSON.parse(localStorage.getItem(stKey(id)));
   st.team=st.team.slice(0,Math.max(5,st.team.length-2*k));
   st.tasks.forEach((t,i)=>{if((+t.sprint===1||+t.sprint===2)&&t.status==='Готово'&&(i+k)%4===0)t.status='В работе';
@@ -48,7 +49,7 @@ DEMO_JS = r"""async()=>{
  d.roam.push({id:'R-01',title:'Сертификация PCI DSS может не успеть к релизу',team:'t1',impact:'Высокое',roam:'Owned',owner:'Петрова М.',due:'2026-11-20',note:'Ранний аудит, выделенный инженер по безопасности'},
   {id:'R-02',title:'Нагрузка на поиск в распродажу',team:t4,impact:'Высокое',roam:'Mitigated',owner:'Смирнов К.',due:'2026-10-30',note:'Кэш и нагрузочное тестирование'},
   {id:'R-03',title:'Зависимость мобильной команды от API платежей',team:t5,impact:'Среднее',roam:'Accepted',owner:'Орлов Д.',due:'',note:'Заглушка API до итерации 4'},
-  {id:'R-04',title:'Нехватка дизайнера в стриме',team:'',impact:'Среднее',roam:'Resolved',owner:'RTE',due:'',note:'Дизайнер привлечён из «Логистики»'});
+  {id:'R-04',title:'Нехватка дизайнера в стриме',team:'',impact:'Среднее',roam:'Resolved',owner:'Орлов Д.',due:'',note:'Дизайнер привлечён из «Логистики»'});
  const st2=await streamTeamStates(true);
  d.sos=sosAgenda('2026-09-08',st2);d.sos.forEach((s,i)=>{s.next=['Довести СБП до стенда','Фильтры — в ревью','Макеты кабинета','Индекс — в прод','Экран оплаты на заглушке'][i]||'';});
  d.demos=demoAgenda(st2,1,'2026-08-14').concat(demoAgenda(st2,2,'2026-08-28'));
@@ -58,6 +59,6 @@ DEMO_JS = r"""async()=>{
  Object.keys(V).forEach(k=>{r1.votes[k]={};TT.forEach((tid,i)=>r1.votes[k][tid]=V[k][i]);});
  Object.assign(r1.final,{pi:4,cad:4,backlog:3,deps:3,demo:3,ia:2,roles:3,cd:4,tech:3});
  r1.notes.ia='Улучшения после I&A не доводятся до конца';r1.notes.pi='Предсказуемость 89%, цели с бизнес-ценностью у всех команд';
- d.mActions.push({id:'MA-01',dim:'ia',title:'Вести бэклог улучшений I&A с владельцами и сроками',owner:'RTE',pi:'PI-1',status:'В работе'},
+ d.mActions.push({id:'MA-01',dim:'ia',title:'Вести бэклог улучшений I&A с владельцами и сроками',owner:'Орлов Д. (ПМ)',pi:'PI-1',status:'В работе'},
   {id:'MA-02',dim:'tech',title:'Единый DoD стрима: автотесты и ревью обязательны',owner:'Архитектор',pi:'PI-1',status:'Запланировано'});
  sdocSave();STC.at=0;views();return 'ok';}"""
