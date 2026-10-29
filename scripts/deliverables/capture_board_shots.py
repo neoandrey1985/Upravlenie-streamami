@@ -12,6 +12,7 @@ from playwright.sync_api import sync_playwright
 from PIL import Image
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from build_video import SCENES  # noqa: E402
+from stream_demo import DEMO_JS  # noqa: E402  шапка «Стрим › Команда» как в остальных снимках
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "shots"; OUT.mkdir(parents=True, exist_ok=True)
@@ -51,10 +52,14 @@ with sync_playwright() as p:
         ctx = b.new_context(viewport={"width": 1440, "height": 810}, device_scale_factor=1.5)
         pg = ctx.new_page(); pg.goto(APP)
         pg.wait_for_function("()=>typeof activate==='function'&&typeof ST!=='undefined'"); pg.wait_for_timeout(400)
+        pg.evaluate(DEMO_JS)
         for js in SHOTS[name]: pg.evaluate(js)
         pg.wait_for_timeout(1900); pg.evaluate(CLEAN); pg.wait_for_timeout(300)
         raw = OUT / (name + "_raw.png"); pg.screenshot(path=str(raw))
         im = Image.open(raw).convert("RGB"); im = im.resize((2160, 1215)) if im.size != (2160, 1215) else im
-        im.save(OUT / (name + ".jpg"), quality=88); raw.unlink(); ctx.close()
+        im.save(OUT / (name + ".jpg"), quality=88); ctx.close()
+        for _ in range(20):
+            try: raw.unlink(); break
+            except PermissionError: __import__('time').sleep(0.25)
         print("captured", name + ".jpg")
     b.close()

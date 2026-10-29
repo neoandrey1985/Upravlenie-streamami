@@ -16,6 +16,8 @@ from playwright.sync_api import sync_playwright
 from PIL import Image, ImageDraw, ImageFont
 import imageio.v2 as imageio
 import numpy as np
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from stream_demo import DEMO_JS  # noqa: E402  демо-оргструктура для шагов уровня стрима
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
 APP = (REPO / "frontend" / "index.html").as_uri()
@@ -23,6 +25,7 @@ DEST = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else (REPO / "Обзор_�
 TMP = REPO / "build" / "vframes"
 TMP.mkdir(parents=True, exist_ok=True)
 W, H, FPS = 1920, 1080, 10
+STREAM_VIEWS = {"org", "stream", "features", "streampi", "roam", "sos", "sysdemo"}   # заполняются асинхронно
 
 # Демо-сцены для шагов TOUR с полем shot (встроенный тур их не строит — он не меняет доску пользователя).
 SCENES = {
@@ -93,13 +96,15 @@ def main():
         pg.goto(APP)
         pg.wait_for_function("() => typeof activate === 'function' && typeof TOUR !== 'undefined'")
         pg.wait_for_timeout(400)
+        pg.evaluate(DEMO_JS); pg.wait_for_timeout(300)   # только в браузере сборки
         tour = pg.evaluate("()=>TOUR.map(s=>({v:s.v,k:s.shot||s.v,h:s.h,p:s.p,d:s.d}))")
         for st in {s["k"]: s for s in tour}.values():
             pg.evaluate("(id)=>activate(id)", st["v"])
             pg.evaluate("()=>window.scrollTo(0,0)")
             if st["k"] in SCENES:   # демо-сцена только в браузере сборки — данные пользователя не трогаем
                 pg.evaluate(SCENES[st["k"]]); pg.evaluate(FIT_BOARD); pg.wait_for_timeout(900)
-            pg.wait_for_timeout(450)
+            pg.wait_for_timeout(1300 if st["v"] in STREAM_VIEWS else 450)
+            pg.evaluate("()=>{const t=document.getElementById('toast');if(t)t.classList.remove('show');}")
             path = TMP / ("shot_" + st["k"] + ".png")
             pg.screenshot(path=str(path))
             shots[st["k"]] = path

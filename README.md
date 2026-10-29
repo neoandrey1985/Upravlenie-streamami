@@ -108,7 +108,7 @@ docker compose up --build
 | `frontend/` | UI (`index.html`) + nginx reverse-proxy |
 | `docker-compose.yml` | Оркестрация: db + api + analytics + web |
 | `data/seed.json` | Исходные данные (из них генерируется Flyway-миграция) |
-| `Планирование_спринта_PRO.xlsx` | Книга-первоисточник (30 листов) |
+| `Управление_стримами_и_командами.xlsx` | Книга-первоисточник (30 листов) |
 | `*_описание_*.docx` | Описание листов/метрик |
 
 ## Локальная разработка (без Docker)

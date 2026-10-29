@@ -20,10 +20,11 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 ASSETS = pathlib.Path(__file__).resolve().parent / "arch_assets"
 MIGR_DIR = ROOT / "backend-java" / "src" / "main" / "resources" / "db" / "migration"
+PLAT_DIR = MIGR_DIR.parent / "platform"   # платформа стримов и команд (своя история Flyway)
 BUILD = ROOT / "build" / "arch"
 BUILD.mkdir(parents=True, exist_ok=True)
 OUT = ROOT / "Архитектура_приложения.docx"
-VER = "1.49.0"
+VER = re.search(r"const APP_VERSION='([^']+)'", (ROOT / "frontend" / "index.html").read_text(encoding="utf-8")).group(1)
 
 # domain + purpose per table (tables not listed fall back to «—»)
 PURPOSE = {
@@ -76,16 +77,22 @@ PURPOSE = {
  "team_health": ("Церемонии", "Team Health Check (Spotify Squad): оценки измерений здоровья команды"),
  "deployments": ("Выпуск", "Деплои — для DORA (частота, lead time, change failure rate)"),
  "incidents": ("Аналитика", "Прод-инциденты и постмортемы — MTTR для DORA"),
+ "ishikawa_cats": ("Аналитика", "Категории диаграммы Исикавы (причины срыва сроков)"),
+ "ishikawa": ("Аналитика", "Причины диаграммы Исикавы с весом и привязкой к категории"),
+ "org_streams": ("Платформа", "Стримы (потоки ценности): название, описание, порядок"),
+ "org_teams": ("Платформа", "Команды стримов; schema_name — схема БД с данными команды (пусто у первой — public)"),
+ "org_memberships": ("Платформа", "Роли пользователей в стримах и командах (VIEWER / EDITOR)"),
+ "org_stream_docs": ("Платформа", "Документ стрима (фичи, PI, цели, зависимости, ROAM, Scrum of Scrums, System Demo) с версией"),
 }
-DOMAIN_ORDER = ["Система", "Планирование", "Команда", "Выпуск", "Аналитика", "Церемонии", "Контроль"]
+DOMAIN_ORDER = ["Система", "Планирование", "Команда", "Выпуск", "Аналитика", "Церемонии", "Контроль", "Платформа"]
 DOMAIN_STYLE = {"Система": ("#E4EBFB", "#2D5BE3"), "Планирование": ("#E4EBFB", "#2D5BE3"),
                 "Команда": ("#EAF6F0", "#1F9D6B"), "Выпуск": ("#EAF6F0", "#1F9D6B"),
                 "Аналитика": ("#FBF3E0", "#C98A00"), "Церемонии": ("#FBF3E0", "#C98A00"),
-                "Контроль": ("#F2F5FA", "#5A6B82")}
+                "Контроль": ("#F2F5FA", "#5A6B82"), "Платформа": ("#F1ECFB", "#8A5BD6")}
 
 
-def parse_migrations():
-    files = sorted(glob.glob(str(MIGR_DIR / "V*.sql")),
+def parse_migrations(d=MIGR_DIR):
+    files = sorted(glob.glob(str(d / "V*.sql")),
                    key=lambda f: int(re.match(r"V(\d+)", pathlib.Path(f).name).group(1)))
     tables, order, migr = {}, [], []
     for f in files:
@@ -114,11 +121,11 @@ def db_svg(order):
         dom = PURPOSE.get(t, ("Контроль", ""))[0]
         groups.setdefault(dom, []).append(t)
     xs = [70, 590, 1110, 1630]; W = 490
-    layout = [(200, DOMAIN_ORDER[:4]), (630, DOMAIN_ORDER[4:])]
+    layout = [(190, DOMAIN_ORDER[:4]), (660, DOMAIN_ORDER[4:8])]
     s = ['<svg width="2160" height="1215" viewBox="0 0 2160 1215" xmlns="http://www.w3.org/2000/svg">',
          '<rect width="2160" height="1215" fill="#FFFFFF"/>',
          '<text x="80" y="76" font-size="46" font-weight="700" fill="#16202E" font-family="Segoe UI,Arial">Архитектура базы данных</text>',
-         '<text x="80" y="118" font-size="25" fill="#5A6B82" font-family="Segoe UI,Arial">%d таблиц PostgreSQL по доменам. Единый снимок состояния через PUT/GET /api/state; связи логические.</text>' % len(order)]
+         '<text x="80" y="118" font-size="25" fill="#5A6B82" font-family="Segoe UI,Arial">%d таблиц команды (своя схема у каждой команды) + %d табл. платформы в public. Состояние команды — GET/PUT /api/state (X-Team-Id).</text>' % (len([t for t in order if not t.startswith("org_")]), len([t for t in order if t.startswith("org_")]))]
     for y, doms in layout:
         for col, dom in enumerate(doms):
             x = xs[col]; bg, stroke = DOMAIN_STYLE[dom]; tbls = groups.get(dom, [])
@@ -127,11 +134,6 @@ def db_svg(order):
             s.append('<text x="%d" y="%d" font-size="25" font-weight="700" fill="#16202E" font-family="Segoe UI,Arial">%s</text>' % (x + 22, y + 42, html.escape(dom)))
             for i, t in enumerate(tbls):
                 s.append('<text x="%d" y="%d" font-size="22" fill="#16202E" font-family="Consolas,monospace">• %s</text>' % (x + 26, y + 80 + i * 34, t))
-    s.append('<rect x="1630" y="630" width="490" height="300" rx="14" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="2"/>')
-    s.append('<text x="1652" y="672" font-size="25" font-weight="700" fill="#16202E" font-family="Segoe UI,Arial">Паттерн состояния</text>')
-    for i, l in enumerate(["StateDto = снимок всех коллекций.", "PUT /api/state — полная замена", "с оптимистичной блокировкой (version).",
-                           "Доска: board_doc (JSON) +", "WebSocket /ws/board.", "Схема управляется Flyway."]):
-        s.append('<text x="1652" y="%d" font-size="21" fill="#5A6B82" font-family="Segoe UI,Arial">%s</text>' % (712 + i * 32, html.escape(l)))
     s.append('</svg>')
     return "".join(s)
 
@@ -168,9 +170,11 @@ def tbl(doc, headers, rows):
 
 def main():
     order, tables, migr = parse_migrations()
+    porder, ptables, pmigr = parse_migrations(PLAT_DIR)
+    order_all = order + porder; tables.update(ptables)
     render((ASSETS / "overall.svg").read_text(encoding="utf-8"), BUILD / "architecture.jpg")
     render((ASSETS / "microservices.svg").read_text(encoding="utf-8"), BUILD / "micro.jpg")
-    render(db_svg(order), BUILD / "db.jpg")
+    render(db_svg(order_all), BUILD / "db.jpg")
 
     doc = docx.Document()
     for s in doc.sections:
@@ -182,41 +186,51 @@ def main():
                       "Стек — полиглот (веб-SPA + Java + Python + PostgreSQL), разворачивается через docker-compose.")
 
     doc.add_heading("1. Общая архитектура", level=1)
-    doc.add_paragraph("Единственная публичная точка входа — nginx (:8080): раздаёт SPA и проксирует к сервисам. "
-                      "Бизнес-логика и данные — Java (Spring Boot), метрики — Python (FastAPI); общая PostgreSQL.")
+    doc.add_paragraph("Единственная публичная точка входа — nginx (:8090): раздаёт SPA и проксирует к сервисам. "
+                      "Бизнес-логика и данные — Java (Spring Boot), метрики — Python (FastAPI); общая PostgreSQL, в которой у каждой команды своя схема.")
     img(doc, BUILD / "architecture.jpg")
     doc.add_heading("Компоненты", level=2)
     tbl(doc, ["Компонент", "Технология", "Роль", "Доступ"], [
-        ["Веб-интерфейс (SPA)", "Vanilla JS, один index.html", "UI, офлайн, экспорт", "через nginx :8080"],
-        ["nginx (web)", "nginx", "reverse proxy, статика, /docs", ":8080 — публичный"],
+        ["Веб-интерфейс (SPA)", "Vanilla JS, один index.html", "UI, офлайн, экспорт", "через nginx :8090"],
+        ["nginx (web)", "nginx", "reverse proxy, статика, /docs", ":8090 — публичный"],
         ["API (api)", "Java 17, Spring Boot", "REST /api/state, авторизация, Flyway, WS, интеграции", "внутренний"],
         ["Analytics", "Python, FastAPI", "движок метрик (/analytics)", "внутренний"],
         ["БД (db)", "PostgreSQL 16", "хранение + журнал/аудит", "внутренний, pgdata"]])
 
     doc.add_heading("2. Архитектура микросервисов", level=1)
-    doc.add_paragraph("Четыре сервиса docker-compose в одной внутренней сети; наружу открыт только web (:8080).")
+    doc.add_paragraph("Четыре сервиса docker-compose в одной внутренней сети; наружу открыт только web (:8090).")
     img(doc, BUILD / "micro.jpg")
     doc.add_heading("Сервисы", level=2)
     tbl(doc, ["Сервис", "Образ / стек", "Зависит от", "Порт", "Назначение"], [
-        ["web", "./frontend (nginx)", "api, analytics", "8080:80", "SPA, /docs, reverse-proxy"],
+        ["web", "./frontend (nginx)", "api, analytics", "8090:80", "SPA, /docs, reverse-proxy"],
         ["api", "./backend-java (Spring Boot)", "db (healthy)", "внутр.", "REST, авторизация, Flyway, WS, интеграции"],
         ["analytics", "./analytics-python (FastAPI)", "db (healthy)", "внутр.", "метрики (read-only к БД)"],
         ["db", "postgres:16", "—", "внутр.", "PostgreSQL, pgdata, healthcheck"]])
 
     doc.add_heading("3. Архитектура базы данных", level=1)
-    doc.add_paragraph("PostgreSQL хранит %d таблиц по доменам. Всё состояние — единый снимок GET/PUT /api/state с "
+    doc.add_paragraph("PostgreSQL хранит %d таблиц команды по доменам и %d таблицы платформы. Всё состояние — единый снимок GET/PUT /api/state с "
                       "оптимистичной блокировкой (app_meta). Связи логические (по строковым id). Схема — Flyway %s."
-                      % (len(order), "–".join([migr[0], migr[-1]])))
+                      % (len(order), len(porder), "–".join([migr[0], migr[-1]])))
     img(doc, BUILD / "db.jpg")
     doc.add_heading("Миграции Flyway", level=2)
     MDESC = {"V1": "начальная схема и демо-данные", "V2": "пользователи и сессии", "V3": "поля задач и Kanban-доски",
              "V4": "холст доски", "V5": "компетенции (skills)", "V6": "Agile-зрелость", "V7": "Scrum-мастер",
              "V8": "цели спринтов и WSJF", "V9": "WIP, DoR, scope-лог, OKR-связь", "V10": "пакеты PM + иерархия работ (WBS)",
-             "V11": "Team Health Check, деплои и инциденты (DORA)"}
+             "V11": "Team Health Check, деплои и инциденты (DORA)", "V12": "диаграмма Исикавы (категории и причины)"}
     tbl(doc, ["Версия", "Что добавляет"], [[v, MDESC.get(v, "")] for v in migr])
+    doc.add_heading("Платформа стримов и команд", level=2)
+    doc.add_paragraph("Платформенные таблицы живут только в схеме public и мигрируются отдельно (db/platform, история "
+                      "platform_schema_history), поэтому их версии не пересекаются с миграциями команды, приходящими из базового проекта.")
+    PDESC = {"V1": "стримы, команды, роли (org_streams, org_teams, org_memberships)", "V2": "документ стрима (org_stream_docs)"}
+    tbl(doc, ["Версия платформы", "Что добавляет"], [[v, PDESC.get(v, "")] for v in pmigr])
+    for line in ["Схема на команду: первая команда (t1) — public, каждая новая — team_<id>; набор таблиц команды одинаков и мигрируется теми же V1…V%s." % migr[-1][1:],
+                 "Hibernate SCHEMA multi-tenancy: схема выбирается по команде запроса (TenantContext), код сущностей и StateService не меняется.",
+                 "Доступ: эффективная роль на команде = роль ADMIN, или общая роль (если назначений нет), или максимум из ролей в команде и в её стриме.",
+                 "Данные стрима — один JSON-документ на стрим с версией (409 при конфликте); сводки по стриму считаются по данным команд."]:
+        doc.add_paragraph(line, style="List Bullet")
     doc.add_heading("Каталог таблиц", level=2)
     rows = []
-    for name in order:
+    for name in order_all:
         dom, purp = PURPOSE.get(name, ("—", "—"))
         cols = tables.get(name, [])
         key = ", ".join(cols[:6]) + (" …" if len(cols) > 6 else "")
@@ -224,10 +238,11 @@ def main():
     tbl(doc, ["Таблица", "Домен", "Колонок", "Ключевые поля", "Назначение"], rows)
 
     doc.add_heading("4. Зависимости и потоки данных", level=1)
-    for line in ["Браузер → nginx (:8080) → SPA и проксирование API/Analytics.",
-                 "SPA ↔ API: GET/PUT /api/state (полный снимок, блокировка версии).",
-                 "SPA ↔ API: WebSocket /ws/board — доска в реальном времени.",
-                 "SPA → Analytics: /analytics — метрики (тот же токен).",
+    for line in ["Браузер → nginx (:8090) → SPA и проксирование API/Analytics.",
+                 "SPA ↔ API: GET/PUT /api/state (полный снимок команды из заголовка X-Team-Id, блокировка версии).",
+                 "SPA ↔ API: /api/org — стримы, команды, роли; /api/org/streams/{id}/doc — документ стрима.",
+                 "SPA ↔ API: WebSocket /ws/board?team=<id> — доска в реальном времени, отдельная комната у каждой команды.",
+                 "SPA → Analytics: /analytics — метрики выбранной команды (тот же токен и X-Team-Id).",
                  "API → PostgreSQL (CRUD + Flyway); Analytics → PostgreSQL (чтение).",
                  "API → внешние (исходящие): Atlassian (Jira, Confluence, Opsgenie, Bitbucket, Trello, JSM, Bamboo, Statuspage), Slack."]:
         doc.add_paragraph(line, style="List Bullet")

@@ -18,7 +18,7 @@ python -m playwright install chromium
 |---|---|---|
 | `capture_shots.py` | Скриншот каждого раздела из `NAV` → `build/shots/<id>.jpg` (2160×1215). | `python scripts/deliverables/capture_shots.py` |
 | `build_video.py` | Видео-обзор `Обзор_приложения.mp4` по массиву `TOUR` (кадры + подписи + H.264). Шаг с полем `shot` снимается с демо-сценой из словаря `SCENES` (так в видео два кадра доски: шаблоны/живые данные и сессии/схемы); встроенный тур поле `shot` игнорирует и доску пользователя не меняет. | `python scripts/deliverables/build_video.py` |
-| `gen_xlsx.py` | `Планирование_спринта_PRO.xlsx` через встроенный экспорт приложения. | `python scripts/deliverables/gen_xlsx.py` |
+| `gen_xlsx.py` | `Управление_стримами_и_командами.xlsx` через встроенный экспорт приложения. | `python scripts/deliverables/gen_xlsx.py` |
 | `build_architecture_doc.py` | `Архитектура_приложения.docx`: общая архитектура, микросервисы и БД. Каталог таблиц и диаграмма БД строятся парсингом миграций `V*.sql` (новые таблицы подхватываются сами). Рисунки — `arch_assets/*.svg`. | `python scripts/deliverables/build_architecture_doc.py` |
 | `build_test_docs.py` | `Тестовая документация/Тестовая_документация_..._PRO.docx`: тест-план, тестовые сценарии и тест-кейсы. Кейсы парсятся из реальных тестов — `run_e2e.py` (`case('…')` + разделы `NAV`), backend `@Test`, `analytics-python/tests/*` — поэтому не устаревают. | `python scripts/deliverables/build_test_docs.py` |
 
@@ -29,6 +29,39 @@ python -m playwright install chromium
 обновляет обзорный слайд «Доска — интерактивный бесконечный холст» и пять слайдов за ним
 (эргономика, шаблоны, живые данные, сессии, схемы). Оба скрипта идемпотентны — запускайте
 их при каждом изменении доски.
+
+## Снимки и демо-данные «Управления стримами и командами»
+
+Все генераторы снимков и видео поднимают в браузере сборки одну и ту же демо-оргструктуру
+`stream_demo.DEMO_JS` (2 стрима, 7 команд, фичи с историями, цели PI, зависимости, ROAM, Scrum of Scrums,
+System Demo) — данные пользователя не трогаются.
+
+| Скрипт | Что делает |
+|---|---|
+| `capture_shots.py` | все разделы `NAV` → `build/shots/<id>.jpg` (с демо-стримом) |
+| `capture_stream_shots.py` | уровень стрима и оргструктура → `build/shots/s_*.jpg` (обзор, графики, канбан, PI, ROAM, SoS, System Demo) |
+| `capture_special_shots.py` | окно входа, пользователи и журнал (на подменённых ответах сервера), помощник, фрагменты разделов, отчёт |
+| `capture_board_shots.py` | кадры доски |
+| `refresh_images.py` | заменяет снимки во всех `.docx` и в презентации свежими: картинка опознаётся по хэшу (`shot_hashes.json`) |
+| `release_v23_streams.py` | главы о стримах и командах в руководствах и описаниях, замены продукта/портов/БД (идемпотентно) |
+| `release_v23_slides.py` | слайды уровня стрима, титульный и итоговый слайды (идемпотентно) |
+
+Полный цикл обновления комплекта:
+
+```bash
+python scripts/deliverables/capture_shots.py
+python scripts/deliverables/capture_stream_shots.py
+python scripts/deliverables/capture_special_shots.py
+python scripts/deliverables/capture_board_shots.py
+python scripts/deliverables/release_v23_streams.py      # или скрипт следующего релиза
+python scripts/deliverables/release_v23_slides.py
+python scripts/deliverables/refresh_images.py           # все снимки в docx/pptx → свежие
+python scripts/deliverables/gen_xlsx.py
+python scripts/deliverables/build_video.py
+python scripts/deliverables/build_architecture_doc.py
+python scripts/deliverables/build_test_docs.py
+python scripts/deliverables/sync_served_docs.py
+```
 
 ## Документы и презентация (обновление по релизу)
 

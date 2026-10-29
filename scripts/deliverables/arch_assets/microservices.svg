@@ -2,7 +2,7 @@
  <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#5A6B82"/></marker>
  <style>.lbl{font-size:30px;font-weight:700;fill:#16202E}.sub{font-size:21px;fill:#5A6B82}.edge{stroke:#5A6B82;stroke-width:2.5;fill:none;marker-end:url(#ar)}.el{font-size:19px;fill:#5A6B82}.port{font-size:20px;font-weight:700;fill:#1F9D6B}</style></defs>
  <text x="80" y="76" font-size="46" font-weight="700" fill="#16202E">Архитектура микросервисов (docker-compose)</text>
- <text x="80" y="118" font-size="25" fill="#5A6B82">Четыре сервиса в одной внутренней сети; наружу открыт только порт 8080 (web/nginx).</text>
+ <text x="80" y="118" font-size="25" fill="#5A6B82">Четыре сервиса в одной внутренней сети; наружу открыт только порт 8090 (web/nginx).</text>
 
  <!-- External browser -->
  <rect x="80" y="180" width="360" height="86" rx="14" fill="#E4EBFB" stroke="#2D5BE3" stroke-width="2"/>
@@ -15,7 +15,7 @@
  <!-- web / nginx -->
  <rect x="130" y="390" width="520" height="250" rx="16" fill="#F2F5FA" stroke="#2D5BE3" stroke-width="2.5"/>
  <text x="160" y="442" class="lbl">web · nginx</text>
- <text x="160" y="480" class="port">порт 8080:80 (единственный публичный)</text>
+ <text x="160" y="480" class="port">порт 8090:80 (единственный публичный)</text>
  <text x="160" y="516" class="sub">раздаёт SPA (index.html) и /docs</text>
  <text x="160" y="548" class="sub">reverse-proxy: /api, /analytics, /ws/board</text>
  <text x="160" y="580" class="sub">образ: ./frontend</text>
@@ -26,7 +26,7 @@
  <text x="750" y="442" class="lbl">api · Java / Spring Boot</text>
  <text x="750" y="480" class="sub">REST /api/state (оптим. блокировка)</text>
  <text x="750" y="512" class="sub">авторизация (сессии), роли, аудит</text>
- <text x="750" y="544" class="sub">Flyway V1–V10 (JPA_DDL_AUTO=none)</text>
+ <text x="750" y="544" class="sub">Flyway V1–V12 + db/platform; схема на команду</text>
  <text x="750" y="576" class="sub">WebSocket /ws/board; интеграции</text>
  <text x="750" y="612" class="sub">внутренний порт · depends_on: db (healthy)</text>
 
@@ -65,5 +65,5 @@
 
  <rect x="80" y="1060" width="2000" height="110" rx="16" fill="#F2F5FA" stroke="#DCE3EC" stroke-width="2"/>
  <text x="1080" y="1104" text-anchor="middle" font-size="25" font-weight="700" fill="#16202E">Запуск: make up → docker compose up (db → api → analytics → web)</text>
- <text x="1080" y="1140" text-anchor="middle" font-size="22" fill="#5A6B82">Безопасность: наружу только :8080; БД и сервисы api/analytics доступны лишь внутри сети; секреты — через переменные окружения</text>
+ <text x="1080" y="1140" text-anchor="middle" font-size="22" fill="#5A6B82">Безопасность: наружу только :8090; БД и сервисы api/analytics доступны лишь внутри сети; секреты — через переменные окружения</text>
 </svg>

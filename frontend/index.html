@@ -3804,8 +3804,8 @@ function auditView(){const w=document.createElement('div');
  load();return w;}
 /* ---------- Support: центр загрузки документов и каналы поддержки ---------- */
 var SUPPORT_DOCS=[
- {ic:'📘',t:'Руководство пользователя',d:'Полное описание всех разделов, страниц и кнопок приложения с логикой их работы.',f:'Руководство_пользователя_Планирование_спринта_PRO.docx',type:'DOCX'},
- {ic:'🖼️',t:'Иллюстрированное описание',d:'То же описание со скриншотами каждого раздела.',f:'Иллюстрированное_описание_Планирование_спринта_PRO.docx',type:'DOCX'},
+ {ic:'📘',t:'Руководство пользователя',d:'Полное описание всех разделов, страниц и кнопок приложения с логикой их работы.',f:'Руководство_пользователя_Управление_стримами_и_командами.docx',type:'DOCX'},
+ {ic:'🖼️',t:'Иллюстрированное описание',d:'То же описание со скриншотами каждого раздела.',f:'Иллюстрированное_описание_Управление_стримами_и_командами.docx',type:'DOCX'},
  {ic:'📊',t:'Презентация приложения',d:'Слайд-обзор приложения: возможности, разделы, архитектура.',f:'Презентация_приложения.pptx',type:'PPTX'},
  {ic:'🎬',t:'Видео-обзор',d:'Короткий видео-тур по основным разделам приложения.',f:'Обзор_приложения.mp4',type:'MP4'},
 ];
@@ -5251,6 +5251,7 @@ function exportXlsx(){const C=compute();const s=[];
  s.push({name:'Story Map',aoa:[['ID','Активность','Релиз','История','Задача']].concat((ST.storyMap||[]).map(x=>[x.id,x.activity,x.release,x.story,x.task]))});
  s.push({name:'Planning Poker',aoa:[['ID','Задача','История','Голоса','Итог','Статус']].concat((ST.poker||[]).map(x=>[x.id,x.task,x.title,x.votes,x.result,x.status]))});
  s.push({name:'Портфель',aoa:[['ID','Проект','RAG','Health','Velocity','Бюджет','Потрачено','Прогресс','Владелец','Комментарий']].concat((ST.portfolio||[]).map(x=>[x.id,x.name,x.status,num(x.health),num(x.velocity),num(x.budget),num(x.spent),num(x.progress),x.owner,x.note]))});
+ if(typeof ORG!=='undefined')streamSheets().forEach(x=>s.push(x));
  s.push({name:'Team Health Check',aoa:[['ID','Дата','Спринт','Измерение','Оценка','Тренд','Комментарий']].concat((ST.teamHealth||[]).map(x=>[x.id,x.date,num(x.sprint),x.dimension,x.rating,x.trend,x.note]))});
  s.push({name:'Деплои',aoa:[['ID','Дата','Релиз','Среда','Статус','Lead time (дн)','Комментарий']].concat((ST.deployments||[]).map(x=>[x.id,x.date,x.release,x.env,x.status,num(x.leadDays),x.note]))});
  s.push({name:'Инциденты',aoa:[['ID','Дата','Инцидент','Серьёзность','Восстановление (ч)','Причина','Статус','Постмортем']].concat((ST.incidents||[]).map(x=>[x.id,x.date,x.title,x.severity,num(x.downHours),x.cause,x.status,x.postmortem]))});
@@ -5770,7 +5771,7 @@ document.getElementById('pptxmodal').addEventListener('click',e=>{if(e.target.id
  pop.addEventListener('click',()=>setTimeout(()=>setOpen(false),0));   // close after an action is chosen
  document.addEventListener('click',e=>{if(!dm.contains(e.target))setOpen(false);});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});})();
-document.getElementById('exp').onclick=()=>{const b=new Blob([JSON.stringify(ST,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='planirovanie_data.json';a.click();toast('Экспортировано');auditClient('export_json');};
+document.getElementById('exp').onclick=()=>{const b=new Blob([JSON.stringify(ST,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='streams_data.json';a.click();toast('Экспортировано');auditClient('export_json');};
 document.getElementById('imp').onclick=()=>{if(!PERM.canAdmin){toast('Только для администратора');return;}document.getElementById('file').click();};
 document.getElementById('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||typeof d!=='object'||Array.isArray(d))throw new Error('bad shape');ST=migrate(d);save();views();activate(CURV);toast('Импортировано');auditClient('import_json',f.name);}catch(err){toast('Ошибка файла');}};r.readAsText(f);};
 document.getElementById('impcsv').onclick=()=>{if(!PERM.canEdit){toast('Только для редактора/администратора');return;}document.getElementById('filecsv').click();};
@@ -6278,6 +6279,18 @@ function demoAgenda(states,k,date){const pi=piCur(),d=SDOC.data,out=[];
    if(t&&t.status==='Готово'&&iterOfSprint(x.st,t.sprint,pi)===k)teams.add(x.team.name);});
   if(teams.size&&!d.demos.some(m=>m.pi===pi.id&&+m.iter===k&&m.feature===f.id))out.push({id:genId(d.demos.concat(out),'id','SD-'),pi:pi.id,iter:k,date:date,feature:f.id,teams:[...teams].join(', '),presenter:f.owner||'',status:'Запланировано',feedback:''});});
  return out;}
+/* Листы Excel уровня стрима: оргструктура и документ текущего стрима (если он загружен или хранится локально). */
+function streamSheets(){const out=[{name:'Стримы и команды',aoa:[['Стрим','Команда','ID команды','Текущая']].concat(ORG.teams.map(t=>[(orgStream(t.streamId)||{}).name||t.streamId,t.name,t.id,t.id===curTeam()?'да':'']))}];
+ let d=(SDOC.loaded&&SDOC.sid===curStream())?SDOC.data:null;
+ if(!d&&!orgServer()){try{const raw=localStorage.getItem(sdocKey());if(raw)d=sdocNorm(JSON.parse(raw));}catch(e){}}
+ if(!d)return out;const tn=id=>id?(orgTeam(id)||{name:id}).name:'Стрим',pn=id=>(d.pis.find(p=>p.id===id)||{name:id||''}).name,nv=v=>v===''||v==null?'':num(v);
+ out.push({name:'Фичи стрима',aoa:[['ID','Фича','Статус','PI','Владелец','BV','TC','RR','Размер','WSJF','Историй']].concat(d.features.map(f=>[f.id,f.name,f.status,pn(f.pi),f.owner,num(f.bv),num(f.tc),num(f.rr),num(f.size),Math.round(featWsjf(f)*10)/10,(f.links||[]).length]))});
+ out.push({name:'Цели PI',aoa:[['ID','PI','Команда','Цель','BV план','BV факт','Обязательная']].concat(d.objectives.map(o=>[o.id,pn(o.pi),tn(o.team),o.text,nv(o.bv),nv(o.actual),o.committed===false?'нет':'да']))});
+ out.push({name:'Зависимости стрима',aoa:[['ID','Кто ждёт','Кто делает','Фича','Что нужно','Нужно к итерации','План итерации','Статус']].concat(d.deps.map(x=>[x.id,tn(x.from),tn(x.to),x.feature,x.item,nv(x.need),nv(x.plan),x.status]))});
+ out.push({name:'ROAM',aoa:[['ID','Риск','Команда','Влияние','ROAM','Владелец','Срок','Решение']].concat(d.roam.map(r=>[r.id,r.title,tn(r.team),r.impact,r.roam,r.owner,r.due,r.note]))});
+ out.push({name:'Scrum of Scrums',aoa:[['Дата','Команда','Сделано / прогресс','Планы','Блокеры','Нужна помощь от']].concat(d.sos.map(x=>[x.date,tn(x.team),x.done,x.next,x.blockers,x.help]))});
+ out.push({name:'System Demo',aoa:[['ID','PI','Итерация','Дата','Фича','Команды','Докладчик','Итог','Отзывы']].concat(d.demos.map(x=>[x.id,pn(x.pi),nv(x.iter),x.date,x.feature,x.teams,x.presenter,x.status,x.feedback]))});
+ return out;}
 /* ---- Фичи стрима ---- */
 function sFeatures(states){const d=SDOC.data,ed=sdocCanEdit();
  const idx=d.features.map((f,i)=>i).sort((a,b)=>featWsjf(d.features[b])-featWsjf(d.features[a]));
@@ -6670,11 +6683,11 @@ startAnalytics();setInterval(startAnalytics,30000);
 })();
 /* ---------- guided tour (video-style walkthrough) ---------- */
 const TOUR=[
- {v:'dash',h:'Управление стримами и командами — обзор',p:'Веб-приложение для планирования работы кросс-функциональной команды по двухнедельным спринтам: данные, метрики и диаграммы в одном месте. Пройдёмся по всем разделам.',d:8000},
+ {v:'dash',h:'Управление стримами и командами — обзор',p:'Веб-приложение для планирования работы стримов из нескольких кросс-функциональных команд по двухнедельным спринтам: данные, метрики и диаграммы в одном месте. Пройдёмся по всем разделам.',d:8000},
  {v:'org',h:'Стримы и команды',p:'Оргструктура «Стрим → Команда»: у каждой команды свои бэклог, спринты, доска и метрики. Команда переключается в шапке; новые команды создаются пустыми или копией, импортируются из JSON; роли назначаются на стрим или команду.',d:10000},
  {v:'stream',h:'Обзор стрима',p:'Сводка по всем командам стрима: velocity, health, риск срыва спринта, say/do, баги и блокеры, предсказуемость PI и фичи текущего инкремента по WSJF.',d:10000},
- {v:'streampi',h:'PI стрима',p:'Программная доска «команды × итерации» строится из историй фич в бэклогах команд; цели PI с бизнес-ценностью дают предсказуемость, межкомандные зависимости подсвечивают конфликты сроков.',d:10000},
  {v:'features',h:'Фичи стрима',p:'Бэклог фич с приоритетом WSJF — таблицей или канбаном по статусам. «＋ История» создаёт историю фичи прямо в бэклоге нужной команды; прогресс фичи считается по статусам историй.',d:10000},
+ {v:'streampi',h:'PI стрима',p:'Программная доска «команды × итерации» строится из историй фич в бэклогах команд; цели PI с бизнес-ценностью дают предсказуемость, межкомандные зависимости подсвечивают конфликты сроков.',d:10000},
  {v:'sysdemo',h:'System Demo и Scrum of Scrums',p:'Повестки формируются из данных команд: на System Demo — фичи с готовыми историями итерации и решение «принято / доработать», на Scrum of Scrums — прогресс спринтов, импедименты и блокеры.',d:10000},
  {v:'dash',h:'Дашборд',p:'Сводка проекта: KPI с RAG-подсветкой, блок «Что требует внимания», кликабельные карточки и sparkline-тренды. Ниже — графики ёмкости, velocity, багов и Time to Market.',d:10000},
  {v:'roadmap',h:'Дорожная карта',p:'Спринты рассчитываются автоматически из параметров и состава команды: даты, рабочие дни, ёмкость, план, velocity и процент выполнения.',d:9000},

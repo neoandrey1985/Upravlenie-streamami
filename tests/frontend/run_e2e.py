@@ -1029,13 +1029,14 @@ def main():
               const moved=SDOC.data.features[0].status==='Бэклог';localStorage.setItem('str_fview','table');
               // System Demo: повестка из фич с готовыми историями итерации 2 (повторно не дублируется)
               activate('sysdemo');await streamFill('sysdemo',true);
-              const st2=await streamTeamStates(true);const rows=demoAgenda(st2,2,'2026-08-28');const again=(SDOC.data.demos=SDOC.data.demos.concat(rows),demoAgenda(st2,2,'2026-08-28').length);
+              const st2=await streamTeamStates(true);const rows=demoAgenda(st2,2,'2026-08-28');const again=(SDOC.data.demos=SDOC.data.demos.concat(rows),sdocSave(),demoAgenda(st2,2,'2026-08-28').length);
               const none=demoAgenda(st2,1,'2026-08-14').length;
               // графики обзора стрима
               const B=streamBurnup(st2,pi);activate('stream');await streamFill('stream',true);
               const charts=!!document.querySelector('#str_bu svg')&&!!document.querySelector('#str_vel svg');
+              const sheets=streamSheets().map(x=>x.name+':'+(x.aoa.length-1));
               await orgDelTeam(a);localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;activate('dash');
-              return {cols,moved,demo:rows.length,demoTeams:rows[0]&&rows[0].teams,again,none,scope:B.scope,done2:B.done[1],charts};
+              return {sheets,cols,moved,demo:rows.length,demoTeams:rows[0]&&rows[0].teams,again,none,scope:B.scope,done2:B.done[1],charts};
             }catch(e){return 'ERR:'+e.message;}}""")
             assert isinstance(r, dict), 'kanban/demo flow failed: ' + str(r)
             assert r['cols'] == 5, 'feature kanban needs 5 status columns'
@@ -1044,6 +1045,8 @@ def main():
             assert r['again'] == 0 and r['none'] == 0, 'agenda must not duplicate / must skip iterations without done stories'
             assert r['scope'] == 8 and r['done2'] == 8, 'burn-up: scope and cumulative done by iteration 2: ' + str(r)
             assert r['charts'], 'stream overview charts not rendered'
+            for sh in ('Стримы и команды:2', 'Фичи стрима:1', 'System Demo:1'):
+                assert sh in r['sheets'], 'Excel stream sheet missing: ' + sh + ' in ' + str(r['sheets'])
         case('stream: feature kanban, System Demo agenda, burn-up charts', t_stream_kanban_demo)
 
         br.close()

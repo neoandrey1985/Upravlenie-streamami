@@ -14,9 +14,12 @@ via file:// (no server needed). Requires: playwright (chromium), pillow.
 import sys, pathlib, argparse
 from playwright.sync_api import sync_playwright
 from PIL import Image
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from stream_demo import DEMO_JS  # noqa: E402
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
 APP = (REPO / "frontend" / "index.html").as_uri()
+STREAM_VIEWS = {"org", "stream", "features", "streampi", "roam", "sos", "sysdemo"}   # заполняются асинхронно
 
 
 def main():
@@ -35,6 +38,8 @@ def main():
         pg.goto(APP)
         pg.wait_for_function("() => typeof activate === 'function' && typeof NAV !== 'undefined'")
         pg.wait_for_timeout(400)
+        pg.evaluate(DEMO_JS)                     # демо-оргструктура: 2 стрима, 7 команд, данные стрима
+        pg.wait_for_timeout(300)
         sections = pg.evaluate("()=>NAV.flatMap(g=>g.items.map(i=>i[0]))")
         if only:
             sections = [s for s in sections if s in only]
@@ -42,14 +47,16 @@ def main():
         for sid in sections:
             pg.evaluate("(id)=>activate(id)", sid)
             pg.evaluate("()=>window.scrollTo(0,0)")
-            pg.wait_for_timeout(450)
+            pg.wait_for_timeout(1100 if sid in STREAM_VIEWS else 450)
             raw = out / (sid + "_raw.png")
             pg.screenshot(path=str(raw))
             im = Image.open(raw).convert("RGB")
             if im.size != (2160, 1215):
                 im = im.resize((2160, 1215))
             im.save(out / (sid + ".jpg"), quality=88)
-            raw.unlink()
+            for _ in range(20):                  # файл может держать синхронизация (Dropbox) — повторяем
+                try: raw.unlink(); break
+                except PermissionError: pg.wait_for_timeout(250)
             done += 1
             print("captured", sid)
         ctx.close(); b.close()
