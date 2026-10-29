@@ -281,7 +281,7 @@ def main():
 
         # ---- 4e. Smart sidebar (collapse / pin / filter / recent) ----
         def t_nav():
-            page.evaluate("()=>{try{localStorage.removeItem('navui');}catch(e){}}")
+            page.evaluate("()=>{try{localStorage.removeItem('navui');}catch(e){}NAVS.mode='all';buildNav();}")
             r = page.evaluate("""()=>{
               const nav=document.getElementById('nav');
               const hasSearch=!!document.getElementById('navsearch');
@@ -295,6 +295,7 @@ def main():
               const matches=[...nav.querySelectorAll('.nav-row')].filter(x=>x.style.display!=='none').map(x=>x.querySelector('.nav-lbl').textContent);
               navFilter('');
               togglePin('backlog');  // cleanup
+              NAVS.mode='compact';buildNav();
               return {hasSearch,fav,pinned,toggled,matches};}""")
             assert r['hasSearch'], 'nav search box missing'
             assert r['fav'] and r['pinned'], 'pin → favorites did not work'
@@ -305,14 +306,16 @@ def main():
         # ---- 4f. Top toolbar: data actions consolidated into one menu ----
         def t_toolbar():
             r = page.evaluate("""()=>{
-              const visible=[...document.querySelector('.tools').children].map(c=>c.id);
-              document.getElementById('datamenu').click();
-              const opened=document.getElementById('dmenu').classList.contains('open');
-              const items=[...document.querySelectorAll('#datapop .btn')].map(b=>b.id);
+              const visible=[...document.querySelector('.tools').children].filter(c=>c.offsetParent!==null).map(c=>c.id);
+              document.getElementById('ubtn').click();
+              const opened=document.getElementById('umenu').classList.contains('open');
+              const items=[...document.querySelectorAll('#upop .btn')].map(b=>b.id);
               document.body.click();
-              const closed=!document.getElementById('dmenu').classList.contains('open');
+              const closed=!document.getElementById('umenu').classList.contains('open');
               return {visible,opened,items,closed};}""")
-            assert 'dmenu' in r['visible'], 'data menu button not in toolbar'
+            assert all(x in r['visible'] for x in ('qcdm', 'stdot', 'umenu')), 'compact header: ＋ Создать, status dot, user menu: ' + str(r['visible'])
+            for x in ('rolebtn', 'tourbtn', 'themebtn', 'densbtn', 'startbtn'):
+                assert x in r['items'], 'user menu missing ' + x
             for old in ('xls', 'pptxbtn', 'exp', 'imp', 'impcsv', 'rst'):
                 assert old not in r['visible'], old + ' should be inside the menu, not the top bar'
                 assert old in r['items'], 'menu missing action ' + old
@@ -762,11 +765,11 @@ def main():
 
         # ---- 25. EVM: earned value indices and forecast ----
         def t_evm():
-            r = page.evaluate("""()=>{const C=compute();const E=evm(C);
+            r = page.evaluate("""async()=>{const C=compute();const E=evm(C);activate('evm');await new Promise(r=>setTimeout(r,60));
               return {bac:E.BAC>0, rows:E.rows.length===C.sp.length,
                       cpiOk:E.CPI===null||E.CPI>0, spiOk:E.SPI===null||E.SPI>0,
                       eacOk:E.EAC===null||(E.CPI&&Math.abs(E.EAC-E.BAC/E.CPI)<1),
-                      chart:(activate('evm'),!!document.querySelector('#v_evm svg'))};}""")
+                      chart:!!document.querySelector('#v_evm svg')};}""")
             assert r['bac'] and r['rows'], 'EVM rows/BAC invalid'
             assert r['cpiOk'] and r['spiOk'], 'EVM indices out of range'
             assert r['eacOk'], 'EAC != BAC/CPI'
@@ -1128,6 +1131,67 @@ def main():
             assert r['sheet'], 'Excel sheet «Зрелость стрима»'
             assert r['denied'], 'viewer must not vote'
         case('stream maturity: votes, RTE final, indicators, mismatch, config, improvements', t_stream_maturity)
+
+        # ---- 40. Ergonomics: lazy views, compact nav (levels, hubs, tabs, search), quick create ----
+        def t_ergonomics():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);
+             try{setPerm('admin');applyPerms();NAVS.mode='compact';activate('dash');views();
+              const lazyBefore=document.querySelectorAll('#v_backlog .lazy-ph').length;activate('backlog');const lazyAfter=document.querySelectorAll('#v_backlog .lazy-ph').length;
+              const allTitles=NAV.flatMap(g=>g.items.map(i=>i[0])).every(id=>{const v=document.getElementById('v_'+id);return v&&v.querySelector('h1');});
+              const navIds=NAV.flatMap(g=>g.items.map(i=>i[0])),mapped=new Set(Object.values(NAV2).flatMap(l=>l.flatMap(e=>e[3])));
+              const covered=navIds.every(id=>mapped.has(id));
+              activate('wsjf');const tabs=[...document.querySelectorAll('#v_wsjf > .hub-tabs [data-hubv]')].map(b=>b.dataset.hubv);
+              const lvlTeam=NAVS.level==='team';document.querySelector('#v_wsjf > .hub-tabs [data-hubv=moscow]').click();const tabGo=CURV==='moscow';
+              const entries=document.querySelectorAll('#nav .nav-hubs:not(.nav-smart) .nav-item').length;
+              document.querySelector('#nav [data-lvl=stream]').click();const toStream=NAVS.level==='stream'&&NAV2.stream.some(e=>e[3].includes(CURV));
+              navFilter('гант');const found=[...document.querySelectorAll('#nav .nav-allg .nav-row')].filter(x=>x.style.display!=='none').map(x=>x.querySelector('.nav-lbl').textContent);navFilter('');
+              activate('dash');
+              const n0=ST.tasks.length;await qcOpen('task');const m=document.getElementById('qcmodal');m.querySelector('[data-q=title]').value='Быстрая задача';qcSubmit(QC[0]);
+              const last=ST.tasks[ST.tasks.length-1];const qcOk=ST.tasks.length===n0+1&&last.title==='Быстрая задача'&&+last.sprint===compute().cur;
+              ST.tasks.pop();save();
+              return {lazyBefore,lazyAfter,allTitles,covered,tabs,lvlTeam,tabGo,entries,toStream,found,qcOk,errs};
+             }catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);}}""")
+            assert isinstance(r, dict), 'ergonomics failed: ' + str(r)
+            assert not r['errs'], 'page errors: ' + str(r['errs'][:3])
+            assert r['lazyBefore'] > 0 and r['lazyAfter'] == 0, 'hidden sections must build on open: ' + str(r)
+            assert r['allTitles'], 'every section keeps its title (assistant/search) without being built'
+            assert r['covered'], 'every NAV section must be reachable from the compact menu'
+            assert r['tabs'] == ['rice', 'wsjf', 'moscow'] and r['lvlTeam'] and r['tabGo'], 'hub tabs: ' + str(r)
+            assert 10 <= r['entries'] <= 20, 'compact team menu should have 10-20 entries, got ' + str(r['entries'])
+            assert r['toStream'], 'level switch must open a stream section'
+            assert r['found'] == ['Гант'], 'search must find sections inside hubs: ' + str(r['found'])
+            assert r['qcOk'], 'quick create must add a task to the current sprint'
+        case('ergonomics: lazy views, compact nav levels/hubs/tabs/search, quick create', t_ergonomics)
+
+        # ---- 41. Scenarios: «Мой день», first steps for an empty team, new stream wizard ----
+        def t_scenarios():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);
+             try{setPerm('admin');applyPerms();if(curTeam()!=='t1')await switchTeam('t1');
+              const me=ST.team[0].name;lsSetS('me:'+curTeam(),me);views();activate('myday');
+              const cur=compute().cur,mine=ST.tasks.filter(t=>+t.sprint===cur&&t.assignee===me&&t.type!=='Эпик');
+              const rows=document.querySelectorAll('#myday_root .md-task').length;
+              const todo=mine.find(t=>t.status==='To Do');let started=true;
+              if(todo){const st0=todo.status;document.querySelector('#myday_root [data-md=start][data-id="'+todo.id+'"]').click();started=ST.tasks.find(t=>t.id===todo.id).status==='В работе';ST.tasks.find(t=>t.id===todo.id).status=st0;save();}
+              lsSetS('me:'+curTeam(),'');
+              const nOrg=ORG.teams.length;
+              const e=await orgAddTeam('Новая','s1','empty');await switchTeam(e);views();activate('myday');
+              const onb=!!document.querySelector('#myday_root .onb');activate('dash');const onbDash=!!document.querySelector('#v_dash > .onb-wrap .onb');
+              const steps=onbSteps().filter(s=>s[2]).length;
+              await switchTeam('t1');await orgDelTeam(e);
+              wizOpen();const m=document.getElementById('wizmodal');m.querySelector('[data-w=name]').value='Стрим «Тест»';m.querySelector('[data-w=teams]').value=['А','Б','В'].join(String.fromCharCode(10));
+              m.querySelector('[data-w=pi]').value='PI 7';await wizRun();
+              const s=ORG.streams.find(x=>x.name==='Стрим «Тест»'),ts=s?ORG.teams.filter(t=>t.streamId===s.id):[];
+              const wiz=!!s&&ts.length===3&&curStream()===s.id&&SDOC.data.pis[0].name==='PI 7'&&CURV==='stream';
+              await switchTeam('t1');for(const x of ts)await orgDelTeam(x.id);if(s){localStorage.removeItem(sdocKey(s.id));await orgDelStream(s.id);}activate('dash');
+              return {mine:mine.length,rows,started,onb,onbDash,steps,wiz,back:ORG.teams.length===nOrg,errs};
+             }catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);}}""")
+            assert isinstance(r, dict), 'scenarios failed: ' + str(r)
+            assert not r['errs'], 'page errors: ' + str(r['errs'][:3])
+            assert r['rows'] == r['mine'], 'my day lists my tasks of the current sprint: ' + str(r)
+            assert r['started'], 'start button must change the task status'
+            assert r['onb'] and r['onbDash'] and r['steps'] < 6, 'empty team shows first steps: ' + str(r)
+            assert r['wiz'] and r['back'], 'wizard creates stream, 3 teams and PI: ' + str(r)
+        case('scenarios: my day, first steps, new stream wizard', t_scenarios)
 
         br.close()
     httpd.shutdown()

@@ -45,6 +45,7 @@ System Demo) — данные пользователя не трогаются.
 | `refresh_images.py` | заменяет снимки во всех `.docx` и в презентации свежими: картинка опознаётся по хэшу (`shot_hashes.json`) |
 | `release_v23_streams.py` | главы о стримах и командах в руководствах и описаниях, замены продукта/портов/БД (идемпотентно) |
 | `release_v23_slides.py` | слайды уровня стрима, титульный и итоговый слайды (идемпотентно) |
+| `release_v26_ux.py` | глава 22 «Навигация, «Мой день» и быстрые действия», раздел «Мой день» в описаниях, версия (идемпотентно) |
 | `release_v25_maturity.py` | раздел «Зрелость стрима» в руководствах и описаниях, API голосования, версия (идемпотентно) |
 | `release_v24_dashboard.py` | раздел «Дашборд стрима» (вместо «Обзора стрима») в руководстве и описаниях, версия (идемпотентно) |
 
@@ -58,6 +59,7 @@ python scripts/deliverables/capture_board_shots.py
 python scripts/deliverables/release_v23_streams.py      # или скрипт следующего релиза
 python scripts/deliverables/release_v24_dashboard.py
 python scripts/deliverables/release_v25_maturity.py
+python scripts/deliverables/release_v26_ux.py
 python scripts/deliverables/release_v23_slides.py
 python scripts/deliverables/refresh_images.py           # все снимки в docx/pptx → свежие
 python scripts/deliverables/gen_xlsx.py

@@ -31,6 +31,13 @@ SHOTS = {
  "kanban_release": ["()=>{UI.kanBoard='b-release';views();activate('kanban');window.scrollTo(0,0);}"],
  "kanban_compose": ["()=>{UI.kanBoard='b-release-compose';views();activate('kanban');window.scrollTo(0,0);}"],
  "report": ["()=>{activate('dash');window.scrollTo(0,0);const C=compute();const n=(typeof doneSprintForReport==='function'&&doneSprintForReport(C))||C.cur;openPptxModalFor(n);}"],
+ # эргономика v2.6: «Мой день», вкладки хаба и компактное меню, меню «＋ Создать» и пользователя, первые шаги, мастер стрима
+ "s_myday": ["()=>{lsSetS('me:t1',ST.team[0].name);views();activate('myday');window.scrollTo(0,0);}"],
+ "s_hubs": ["()=>{activate('wsjf');window.scrollTo(0,0);}"],
+ "s_menus": ["()=>{activate('dash');window.scrollTo(0,0);}", "()=>{document.getElementById('qcbtn').click();}"],
+ "s_umenu": ["()=>{activate('dash');window.scrollTo(0,0);}", "()=>{document.getElementById('ubtn').click();}"],
+ "s_onb": ["async()=>{const id=await orgAddTeam('Новая команда','s1','empty');await switchTeam(id);views();activate('dash');window.scrollTo(0,0);}"],
+ "s_wizard": ["()=>{activate('org');window.scrollTo(0,0);wizOpen();}"],
  # серверные окна администратора — на подменённых ответах сервера (демо-учётки, без реальных данных)
  "admin_users": ["MOCK", "async()=>{activate('dash');window.scrollTo(0,0);await openUsers();}"],
  "admin_audit": ["MOCK", "async()=>{views();activate('audit');await new Promise(r=>setTimeout(r,600));"
