@@ -3,8 +3,10 @@
 (1440×810 @1.5 → 2160×1215, build/shots/s_*.jpg) на демо-оргструктуре из stream_demo.DEMO_JS:
   s_org.jpg        — раздел «Стримы и команды» (2 стрима, 7 команд);
   s_switch.jpg     — переключатель «Стрим › Команда» в шапке (раскрыт);
-  s_stream.jpg     — обзор стрима: KPI и таблица команд;
-  s_charts.jpg     — обзор стрима: burn-up PI и velocity команд по итерациям;
+  s_stream.jpg     — дашборд стрима: сигналы «Требует внимания» и KPI;
+  s_charts.jpg     — дашборд стрима: burn-up PI и velocity команд по итерациям;
+  s_matrix.jpg     — дашборд стрима: тепловая матрица команд;  s_cards.jpg — карточки команд и боковая панель;
+  s_flow.jpg / s_quality.jpg — вкладки «Поток» и «Качество»;
   s_features.jpg   — фичи стрима (таблица с WSJF и прогрессом);
   s_kanban.jpg     — канбан фич по статусам;
   s_pi.jpg         — программная доска PI и цели команд;
@@ -31,8 +33,13 @@ def to(sel, dy=-90):
 SHOTS = {
  "s_org": ["()=>{activate('org');window.scrollTo(0,0);}"],
  "s_switch": ["()=>{activate('stream');window.scrollTo(0,0);}", "async()=>{await new Promise(r=>setTimeout(r,900));document.getElementById('teamsw').click();}"],
- "s_stream": ["()=>{activate('stream');}", to("#str_stream .grid.kpis", -150)],
- "s_charts": ["()=>{activate('stream');}", to("#str_stream .str-charts", -110)],
+ "s_stream": ["()=>{localStorage.setItem('str_dtab','sum');activate('stream');streamRerender();}", to("#str_stream .str-alerts", -150)],
+ "s_charts": ["()=>{localStorage.setItem('str_dtab','sum');activate('stream');streamRerender();}", to("#str_stream .str-charts", -110)],
+ "s_matrix": ["()=>{localStorage.setItem('str_dtab','teams');localStorage.setItem('str_tview','matrix');activate('stream');streamRerender();}", to("#str_stream .str-tabs", -40)],
+ "s_cards": ["()=>{localStorage.setItem('str_dtab','teams');localStorage.setItem('str_tview','cards');activate('stream');streamRerender();}", to("#str_stream .str-tabs", -40),
+             "()=>{const c=document.querySelector('#str_stream .str-tc[data-sact=teamPanel]');if(c)c.click();}"],
+ "s_flow": ["()=>{localStorage.setItem('str_dtab','flow');activate('stream');streamRerender();}", to("#str_stream .str-tabs", -40)],
+ "s_quality": ["()=>{localStorage.setItem('str_dtab','qual');activate('stream');streamRerender();}", to("#str_stream .str-tabs", -40)],
  "s_features": ["()=>{try{localStorage.setItem('str_fview','table');}catch(e){}activate('features');streamRerender();window.scrollTo(0,0);}"],
  "s_kanban": ["()=>{try{localStorage.setItem('str_fview','kanban');}catch(e){}activate('features');streamRerender();window.scrollTo(0,0);}"],
  "s_pi": ["()=>{activate('streampi');window.scrollTo(0,0);}"],
@@ -61,5 +68,5 @@ with sync_playwright() as p:
             try: raw.unlink(); break
             except PermissionError: pg.wait_for_timeout(250)
         print("captured", name + ".jpg")
-    pg.evaluate("()=>{try{localStorage.setItem('str_fview','table');}catch(e){}}")
+    pg.evaluate("()=>{try{localStorage.setItem('str_fview','table');localStorage.setItem('str_dtab','sum');localStorage.setItem('str_tview','matrix');}catch(e){}}")
     ctx.close(); b.close()

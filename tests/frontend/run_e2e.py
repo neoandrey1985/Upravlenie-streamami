@@ -999,8 +999,7 @@ def main():
                       saved:!!saved&&saved.features.length===1&&saved.features[0].links.length===1,roNoAdd};
             }catch(e){return 'ERR:'+e.message+' '+(e.stack||'').split('\\n')[1];}}""")
             assert isinstance(r, dict), 'stream flow failed: ' + str(r)
-            assert r['kpiTeams'] == '3' and r['rows'] == 3, 'stream should aggregate 3 teams: ' + str(r)
-            assert r['kpiPeople'] == str(r['people']), 'people KPI must be the sum over teams: ' + str(r)
+            assert r['kpiTeams'] == '3 · %d' % r['people'] and r['rows'] == 3, 'stream KPI «команд · людей» must sum over 3 teams: ' + str(r)
             assert r['storyOk'] and r['notInT1'], 'feature story must land in the chosen team backlog: ' + str(r)
             assert r['chipOk'], 'program board should show the feature in team row / iteration 2'
             assert abs(r['pred'] - 13 / 15) < 1e-9, 'PI predictability = actual/plan BV of committed objectives: ' + str(r['pred'])
@@ -1048,6 +1047,50 @@ def main():
             for sh in ('Стримы и команды:2', 'Фичи стрима:1', 'System Demo:1'):
                 assert sh in r['sheets'], 'Excel stream sheet missing: ' + sh + ' in ' + str(r['sheets'])
         case('stream: feature kanban, System Demo agenda, burn-up charts', t_stream_kanban_demo)
+
+        # ---- 38. Stream dashboard: aggregates, alerts, tabs, matrix/cards, team panel, snapshots & trends ----
+        def t_stream_dashboard():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);
+             try{setPerm('admin');applyPerms();if(curTeam()!=='t1')await switchTeam('t1');
+              localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;STC.at=0;
+              const a=await orgAddTeam('Дельта','s1','copy'),b=await orgAddTeam('Эпсилон','s1','empty');
+              await sdocLoad(true);SDOC.data.deps.push({id:'XD-01',from:a,to:b,feature:'',item:'API',need:2,plan:4,status:'Открыта'});sdocSave();
+              const states=await streamTeamStates(true);const people=states.reduce((s,x)=>s+((x.st&&x.st.team)||[]).length,0);
+              const res={};
+              for(const tab of ['sum','teams','flow','qual','people','trend']){localStorage.setItem('str_dtab',tab);localStorage.setItem('str_tview','matrix');
+                activate('stream');await streamFill('stream',true);
+                res[tab]={rows:document.querySelectorAll('#str_stream tr[data-sact=teamPanel]').length,svg:document.querySelectorAll('#str_stream .str-chart svg').length};}
+              const agg=streamAgg(STM,states,piCur());const alerts=streamAlerts(STM,agg,piCur());
+              localStorage.setItem('str_dtab','teams');localStorage.setItem('str_tview','cards');await streamFill('stream',true);
+              const cards=document.querySelectorAll('#str_stream .str-tc[data-sact=teamPanel]').length;
+              document.querySelector('#str_stream .str-tc[data-sact=teamPanel]').click();
+              const dr=document.getElementById('str_drawer');const panel=!dr.hidden&&dr.textContent.includes(STM[0].x.team.name);
+              // срезы: авто при открытии (1 на итерацию), ручной — перезапись той же итерации, второй срез → графики трендов
+              const pi=piCur(),k=piIterNow(pi);const snapsAuto=(SDOC.data.snaps||[]).filter(s=>s.pi===pi.id).length;
+              localStorage.setItem('str_dtab','sum');await streamFill('stream',true);document.querySelector('#str_stream [data-sact=snap]').click();
+              await new Promise(r=>setTimeout(r,300));const snapsManual=(SDOC.data.snaps||[]).filter(s=>s.pi===pi.id&&s.iter===k).length;
+              const s0=JSON.parse(JSON.stringify(SDOC.data.snaps[0]));s0.iter=k-1;s0.s.vel=10;SDOC.data.snaps.push(s0);sdocSave();
+              localStorage.setItem('str_dtab','trend');await streamFill('stream',true);const trendSvg=document.querySelectorAll('#str_stream .str-chart svg').length;
+              const sheet=streamSheets().find(x=>x.name==='Срезы стрима');
+              localStorage.setItem('str_dtab','sum');localStorage.setItem('str_tview','matrix');
+              await orgDelTeam(a);await orgDelTeam(b);localStorage.removeItem(sdocKey('s1'));SDOC.loaded=false;activate('dash');
+              return {res,teams:agg.teams,aggPeople:agg.people,people,conf:agg.conf,depAlert:alerts.some(x=>x.act.view==='streampi'),
+                      alertsSorted:alerts.every((x,i)=>i===0||!(x.lvl==='crit'&&alerts[i-1].lvl!=='crit')),cards,panel,k,snapsAuto,snapsManual,trendSvg,
+                      sheetRows:sheet?sheet.aoa.length-1:-1,errs};
+             }catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);}}""")
+            assert isinstance(r, dict), 'stream dashboard failed: ' + str(r)
+            assert not r['errs'], 'page errors: ' + str(r['errs'][:3])
+            assert r['teams'] == 3 and r['aggPeople'] == r['people'], 'aggregates over 3 teams: ' + str(r)
+            for tab in ('sum', 'teams', 'flow', 'qual', 'people'):
+                assert r['res'][tab]['rows'] == 3, tab + ' matrix should list 3 teams: ' + str(r['res'])
+            assert r['res']['sum']['svg'] >= 1 and r['res']['flow']['svg'] == 2 and r['res']['qual']['svg'] == 2, 'charts missing: ' + str(r['res'])
+            assert r['conf'] == 1 and r['depAlert'] and r['alertsSorted'], 'dependency conflict must raise a sorted alert: ' + str(r)
+            assert r['cards'] == 3 and r['panel'], 'cards view and team panel'
+            if r['k']:
+                assert r['snapsAuto'] == 1 and r['snapsManual'] == 1, 'one snapshot per iteration (auto + manual overwrite): ' + str(r)
+                assert r['trendSvg'] == 3, 'trend charts with 2 snapshots: ' + str(r['trendSvg'])
+                assert r['sheetRows'] >= 2, 'Excel sheet «Срезы стрима»'
+        case('stream dashboard: aggregates, alerts, tabs, matrix/cards, panel, snapshots', t_stream_dashboard)
 
         br.close()
     httpd.shutdown()
