@@ -121,6 +121,10 @@ jobs:
           curl -fs -H "$AUTH" http://localhost:8090/api/org/streams/$SID/doc | grep -q 'CI feature'
           test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H "$AUTH" -H 'Content-Type: application/json'             http://localhost:8090/api/org/streams/$SID/doc -d '{"baseVersion":0,"data":{}}')" = "409"
           # security headers present
+          # «Мой профиль»: привязка к участнику хранится в public.app_users (платформенная миграция V4)
+          curl -fs -X PUT -H "$AUTH" -H 'Content-Type: application/json' http://localhost:8090/api/auth/me -d '{"member":"CI member"}' | grep -q '"member":"CI member"'
+          curl -fs -H "$AUTH" http://localhost:8090/api/auth/me | grep -q '"member":"CI member"'
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H "$AUTH" -H 'Content-Type: application/json' http://localhost:8090/api/auth/me/password -d '{"oldPassword":"wrong","newPassword":"Another-pass-1"}')" = "403"
           curl -sI http://localhost:8090/ | grep -qi 'X-Frame-Options: DENY'
           curl -sI http://localhost:8090/ | grep -qi 'Content-Security-Policy'
       - name: Dump logs on failure

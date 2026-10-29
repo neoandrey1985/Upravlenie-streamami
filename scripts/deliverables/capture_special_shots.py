@@ -38,6 +38,12 @@ SHOTS = {
  "s_umenu": ["()=>{activate('dash');window.scrollTo(0,0);}", "()=>{document.getElementById('ubtn').click();}"],
  "s_onb": ["async()=>{const id=await orgAddTeam('Новая команда','s1','empty');await switchTeam(id);views();activate('dash');window.scrollTo(0,0);}"],
  "s_wizard": ["()=>{activate('org');window.scrollTo(0,0);wizOpen();}"],
+ # «Мой профиль» (v2.8): серверный сеанс на подменённых ответах — логин, привязка, должность в стриме, смена пароля
+ "s_profile": ["MOCK", "async()=>{AUTH.username='lead';AUTH.user='Петрова Мария';AUTH.role='EDITOR';AUTH.member='Петрова М.';setPerm('editor');applyPerms();updateRoleBtn();"
+               "ST.board.items=ST.board.items||[];ST.board.items.push({id:'pf1',t:'sticky',x:0,y:0,w:100,h:80,text:'Ретро',comments:[{id:'c1',a:'Иванов А.',"
+               "t:'@Петрова М. проверь, пожалуйста, макет корзины',ts:'2026-09-09T10:00:00Z',m:['Петрова М.']}]});views();activate('profile');window.scrollTo(0,0);}"],
+ "s_profile2": ["MOCK", "async()=>{AUTH.username='lead';AUTH.user='Петрова Мария';AUTH.role='EDITOR';AUTH.member='Петрова М.';setPerm('editor');applyPerms();updateRoleBtn();"
+                "views();activate('profile');await new Promise(r=>setTimeout(r,500));const c=document.getElementById('pf_stream');if(c){c.scrollIntoView({block:'start'});window.scrollBy(0,-120);}}"],
  # серверные окна администратора — на подменённых ответах сервера (демо-учётки, без реальных данных)
  "admin_users": ["MOCK", "async()=>{activate('dash');window.scrollTo(0,0);await openUsers();}"],
  "admin_audit": ["MOCK", "async()=>{views();activate('audit');await new Promise(r=>setTimeout(r,600));"

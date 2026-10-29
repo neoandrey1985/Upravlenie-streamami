@@ -171,6 +171,10 @@ def tbl(doc, headers, rows):
 def main():
     order, tables, migr = parse_migrations()
     porder, ptables, pmigr = parse_migrations(PLAT_DIR)
+    # платформенные миграции могут дополнять общие таблицы public (например, app_users.member_name — V4)
+    for f in sorted(glob.glob(str(PLAT_DIR / "V*.sql"))):
+        for m in re.finditer(r"ALTER TABLE\s+(\w+)\s+ADD COLUMN IF NOT EXISTS\s+(\w+)", open(f, encoding="utf-8").read(), re.I):
+            if m.group(1) in tables and m.group(2) not in tables[m.group(1)]: tables[m.group(1)].append(m.group(2))
     order_all = order + porder; tables.update(ptables)
     render((ASSETS / "overall.svg").read_text(encoding="utf-8"), BUILD / "architecture.jpg")
     render((ASSETS / "microservices.svg").read_text(encoding="utf-8"), BUILD / "micro.jpg")

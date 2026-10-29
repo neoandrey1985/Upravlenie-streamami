@@ -34,6 +34,8 @@
 - Тесты (H2, без Flyway) создают схему команды копией `public` (`SCRIPT NODATA`); путь PostgreSQL+Flyway
   проверяет только CI-шаг «Stack smoke test» (создание команды на живом стеке).
 - `migrate()` добавляет демо-эпики только при наличии демо-задачи `T-01` — пустые команды остаются пустыми.
+- «Мой профиль»: привязка учётной записи к участнику — `public.app_users.member_name` (платформенная миграция V4,
+  одна на все команды); `PUT /api/auth/me` и `/api/auth/me/password` доступны любой роли (свой профиль).
 
 Перенос исправлений из базового проекта: `git fetch upstream && git merge upstream/main`
 (или `git cherry-pick <sha>`), затем `make test`.
