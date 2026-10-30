@@ -300,7 +300,7 @@ def main():
             assert r['hasSearch'], 'nav search box missing'
             assert r['fav'] and r['pinned'], 'pin → favorites did not work'
             assert r['toggled'], 'group collapse toggle did not work'
-            assert r['matches'] == ['Гант', 'Гант по иерархии'], 'filter did not narrow to the matches: ' + str(r['matches'])
+            assert r['matches'] == ['Гант стрима', 'Гант', 'Гант по иерархии'], 'filter did not narrow to the matches: ' + str(r['matches'])
         case('sidebar: collapse/pin/filter smart nav', t_nav)
 
         # ---- 4f. Top toolbar: data actions consolidated into one menu ----
@@ -1012,6 +1012,33 @@ def main():
             assert r['sheetCols'] == 33, 'Excel sheet columns (21 + 12 stage marks): ' + str(r['sheetCols'])
         case('hgplus: scale/scroll, milestones, filters, columns, drag, baseline, forecast, load, export', t_hgplus)
 
+        # ---- Stream Gantt: stream features → teams → stories, PI iterations, cross-team dependency arrows ----
+        def t_sgantt():
+            r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);let keepF=null,keepD=null;
+             try{setPerm('admin');applyPerms();await sdocLoad(true);keepF=JSON.stringify(SDOC.data.features);keepD=JSON.stringify(SDOC.data.deps);const team=curTeam(),pi=SDOC.data.curPi;
+              SDOC.data.features.push({id:'F-91',name:'Гант стрима',status:'В работе',pi,links:[{team,task:'T-12'},{team,task:'T-13'},{team:'t-x',task:'T-1'}]});
+              SDOC.data.deps.push({id:'XD-91',from:team,to:team,feature:'F-91',item:'API',need:1,plan:2,status:'Открыта'});
+              SG.level=3;SG.pi='';activate('sgantt');await streamFill('sgantt');await new Promise(r=>setTimeout(r,80));sGanttLinks();
+              const tabs=[...document.querySelectorAll('#v_sgantt > .hub-tabs [data-hubv]')].map(b=>b.dataset.hubv);
+              const rows=[...document.querySelectorAll('#str_sgantt .hg-row[data-sgrow]')].map(x=>x.dataset.sgrow).filter(x=>x.startsWith('F-91'));
+              const ticks=[...document.querySelectorAll('#str_sgantt .hg-head .hg-tick b')].map(x=>x.textContent);
+              const links=+(document.querySelector('#str_sgantt .sg-grid').dataset.links||0),conf=!!document.querySelector('#str_sgantt .hg-ln.conf');
+              const kpi=[...document.querySelectorAll('#str_sgantt .kpi')].map(k=>k.textContent).find(s=>s.includes('Межкомандные'))||'';
+              document.querySelector('#str_sgantt [data-sglv="1"]').click();await new Promise(r=>setTimeout(r,200));
+              const l1=[...document.querySelectorAll('#str_sgantt .hg-row[data-sgrow]')].map(x=>x.dataset.sgrow).filter(x=>x.startsWith('F-91'));
+              SG.level=3;await streamFill('sgantt');document.querySelector('#str_sgantt [data-sgo="'+team+'|T-12"]').click();await new Promise(r=>setTimeout(r,150));
+              const opened=CURV==='backlog'&&UI.search.tasks==='T-12';UI.search.tasks='';
+              return {tabs,rows,ticks,links,conf,kpi,l1,opened,errs};}
+             catch(e){return 'ERR:'+e.message;}finally{window.removeEventListener('error',h);if(keepF)SDOC.data.features=JSON.parse(keepF);if(keepD)SDOC.data.deps=JSON.parse(keepD);SG.level=2;activate('dash');}}""")
+            assert isinstance(r, dict), 'sgantt failed: ' + str(r)
+            assert not r['errs'], 'page errors: ' + str(r['errs'][:3])
+            assert r['tabs'] == ['streampi', 'sgantt'], 'Stream Gantt is a tab next to «PI стрима»: ' + str(r['tabs'])
+            assert len(r['rows']) == 4 and r['rows'][0] == 'F-91', 'feature → team → 2 stories (unknown team skipped): ' + str(r['rows'])
+            assert r['ticks'][:2] == ['И1', 'И2'], 'PI iterations on the scale: ' + str(r['ticks'])
+            assert r['links'] == 1 and r['conf'] and 'конфликтов: 1' in r['kpi'], 'cross-team dependency arrow, conflict red: ' + str(r)
+            assert r['l1'] == ['F-91'] and r['opened'], 'levels; story opens in the team backlog: ' + str(r)
+        case('sgantt: stream Gantt — features → teams → stories, PI iterations, cross-team arrows', t_sgantt)
+
         # ---- Hierarchy Gantt in a stream: stories created from stream features grouped under the feature ----
         def t_hgstream():
             r = page.evaluate("""async()=>{const errs=[];const h=e=>errs.push(String(e.message||e.reason||e));window.addEventListener('error',h);
@@ -1408,7 +1435,7 @@ def main():
             assert r['tabs'] == ['rice', 'wsjf', 'moscow'] and r['lvlTeam'] and r['tabGo'], 'hub tabs: ' + str(r)
             assert 10 <= r['entries'] <= 20, 'compact team menu should have 10-20 entries, got ' + str(r['entries'])
             assert r['toStream'], 'level switch must open a stream section'
-            assert r['found'] == ['Гант', 'Гант по иерархии'], 'search must find sections inside hubs: ' + str(r['found'])
+            assert r['found'] == ['Гант стрима', 'Гант', 'Гант по иерархии'], 'search must find sections inside hubs: ' + str(r['found'])
             assert r['qcOk'], 'quick create must add a task to the current sprint'
         case('ergonomics: lazy views, compact nav levels/hubs/tabs/search, quick create', t_ergonomics)
 
