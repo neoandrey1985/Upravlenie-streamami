@@ -46,6 +46,7 @@ System Demo) — данные пользователя не трогаются.
 | `release_v23_streams.py` | главы о стримах и командах в руководствах и описаниях, замены продукта/портов/БД (идемпотентно) |
 | `release_v23_slides.py` | слайды уровня стрима, титульный и итоговый слайды (идемпотентно) |
 | `release_v212_hgplus.py` | «Гант по иерархии»: масштаб, фильтры, планирование, экспорт; «Гант стрима»; миграция V14 в руководстве администратора и инструкции, слайды, версия (идемпотентно) |
+| `release_v213_hglight.py` | «Гант по иерархии»: режимы вида, одна строка инструментов, показатели строкой, легенда по кнопке, фокус, плотность, PPTX по эпикам; PPTX «Ганта стрима» (кадры `s_hglight`, `s_hgfocus`, `s_hgmenu`). Миграций нет. | `python scripts/deliverables/release_v213_hglight.py` |
 | `release_v211_links.py` | раздел «Зависимости на «Ганте по иерархии»» (⇄ межкомандные зависимости), уточнение 17.10, описания, слайд, версия (идемпотентно) |
 | `release_v210_stages.py` | раздел «Метки этапов» (и группировка историй под фичами стрима) в руководстве и описаниях, миграция V13 в руководстве администратора и инструкции, слайд, версия (идемпотентно) |
 | `release_v29_hgantt.py` | раздел «Гант по иерархии» в руководстве и описаниях, слайд после «Диаграммы Ганта», версия (идемпотентно) |
@@ -72,6 +73,7 @@ python scripts/deliverables/release_v29_hgantt.py
 python scripts/deliverables/release_v210_stages.py
 python scripts/deliverables/release_v211_links.py
 python scripts/deliverables/release_v212_hgplus.py
+python scripts/deliverables/release_v213_hglight.py
 python scripts/deliverables/release_v23_slides.py
 python scripts/deliverables/refresh_images.py           # все снимки в docx/pptx → свежие
 python scripts/deliverables/gen_xlsx.py
