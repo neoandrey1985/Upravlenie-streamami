@@ -99,4 +99,15 @@ make test-frontend   # frontend:  python tests/frontend/run_e2e.py     (Playwrig
   проверяет e2e-тест `assistant: knows every NAV section` (через хук `window.assistantAsk`/`assistantKB`).
 - После изменения приложения обновляй сопутствующие документы (руководства, презентация, инструкция по
   развёртыванию) и перезаписывай скриншоты, затем пушь в GitHub.
+- **Обязательно синхронизируй Dropbox** `C:\Users\Андрей\Dropbox\Upravlenie-streamami` (облачный путь `/Upravlenie-streamami`)
+  после каждого релиза/обновления — в том же цикле, что и документы. Релиз не завершён, пока Dropbox
+  не совпадает с выпущенной версией. Текстовые исходники (`frontend/index.html`, тесты, скрипты, `AGENTS.md`)
+  обновляй через Dropbox MCP; бинарные deliverables (`.docx`/`.pptx`/`.mp4`/`.xlsx`) и полный снимок —
+  через `git pull` в этом клоне (после merge в `main` или checkout ветки релиза). Папка уже git-репозиторий
+  (`origin` → `github.com/neoandrey1985/Upravlenie-streamami`).
+- **Обязательно обновляй локально развёрнутое приложение** до только что выпущенной версии в том же цикле:
+  пересобери и перезапусти стек (`docker compose up -d --build`), убедись что UI на
+  http://localhost:8090 отдаёт новый `APP_VERSION`. Релиз не завершён, пока локальный инстанс не обновлён.
+  В Cloud Agent VM, если bridge между контейнерами не работает:  
+  `docker compose -f docker-compose.yml -f docker-compose.host.yml up -d --build`.
 - Ветка по умолчанию — `main`; CI обязателен к прохождению до merge.

@@ -9,5 +9,8 @@ backend-java/target/
 **/__pycache__/
 *.pyc
 
+# local secrets (copy from .env.example)
+.env
+
 # deliverable build intermediates
 build/

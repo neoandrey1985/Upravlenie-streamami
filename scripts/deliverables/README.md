@@ -122,7 +122,22 @@ python scripts/deliverables/sync_served_docs.py
 
 # 6. прогнать регрессию и запушить
 make test
+
+# 7. ОБЯЗАТЕЛЬНО: синхронизировать Dropbox C:\Users\Андрей\Dropbox\Upravlenie-streamami (/Upravlenie-streamami)
+#    текст — Dropbox MCP; бинарные .docx/.pptx/.mp4/.xlsx и полный снимок — git pull в клоне
+
+# 8. ОБЯЗАТЕЛЬНО: обновить локально развёрнутый стек до новой версии
+docker compose up -d --build
+# в Cloud Agent VM при сломанном bridge:
+# docker compose -f docker-compose.yml -f docker-compose.host.yml up -d --build
+# проверить http://localhost:8090 — APP_VERSION совпадает с релизом
 ```
+
+> **Dropbox:** после каждого релиза обновляй `/Upravlenie-streamami` до той же версии, что в GitHub.
+> Без этого цикл не завершён (правило владельца, см. `AGENTS.md`).
+
+> **Локальный инстанс:** после каждого релиза пересобери и перезапусти docker-стек и проверь
+> http://localhost:8090 на новый `APP_VERSION`. Без этого цикл не завершён.
 
 > **Постоянный набор документов на обновление** (обновляются при каждом изменении приложения):
 > руководство пользователя, иллюстрированное описание, описание, инструкция по развёртыванию,
