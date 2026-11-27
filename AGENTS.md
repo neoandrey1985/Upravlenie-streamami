@@ -108,4 +108,6 @@ make test-frontend   # frontend:  python tests/frontend/run_e2e.py     (Playwrig
 - **Обязательно обновляй локально развёрнутое приложение** до только что выпущенной версии в том же цикле:
   пересобери и перезапусти стек (`docker compose up -d --build`), убедись что UI на
   http://localhost:8090 отдаёт новый `APP_VERSION`. Релиз не завершён, пока локальный инстанс не обновлён.
+  В Cloud Agent VM, если bridge между контейнерами не работает:  
+  `docker compose -f docker-compose.yml -f docker-compose.host.yml up -d --build`.
 - Ветка по умолчанию — `main`; CI обязателен к прохождению до merge.

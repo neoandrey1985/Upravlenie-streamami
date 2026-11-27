@@ -128,6 +128,8 @@ make test
 
 # 8. ОБЯЗАТЕЛЬНО: обновить локально развёрнутый стек до новой версии
 docker compose up -d --build
+# в Cloud Agent VM при сломанном bridge:
+# docker compose -f docker-compose.yml -f docker-compose.host.yml up -d --build
 # проверить http://localhost:8090 — APP_VERSION совпадает с релизом
 ```
 
