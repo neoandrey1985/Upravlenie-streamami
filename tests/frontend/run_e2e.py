@@ -343,6 +343,35 @@ def main():
             page.evaluate("()=>{setPerm('viewer');applyPerms();views();activate('dash');}")
         case('kanban: multi-board renders task cards', t_kanban)
 
+        # ---- 6b. Kanban: reorder columns by drag (admin) ----
+        def t_kanban_col_reorder():
+            page.evaluate("()=>{setPerm('ADMIN');applyPerms();UI.kanBoard='b-all';views();activate('kanban');}")
+            page.wait_for_timeout(150)
+            res = page.evaluate("""()=>{
+              if(typeof kanReorderColumn!=='function')return {err:'no kanReorderColumn'};
+              const b=(typeof kanBoards==='function'?kanBoards():ST.boards||[]).find(x=>x.id==='b-all');
+              if(!b)return {err:'no board'};
+              b.cols=['To Do','В работе','Готово','Ревью'];
+              save();views();activate('kanban');
+              const ok=kanReorderColumn(b,'Ревью','To Do','before');
+              const cols=(b.cols||[]).slice();
+              const heads=[...document.querySelectorAll('#v_kanban .kan-col .kc-title')].map(x=>x.textContent.trim());
+              const draggable=document.querySelectorAll('#v_kanban .kc-head.kc-draggable[draggable=true]').length;
+              // viewer cannot reorder
+              setPerm('viewer');applyPerms();
+              const blocked=kanReorderColumn(b,'Ревью','Готово','after');
+              setPerm('ADMIN');applyPerms();
+              return {ok,cols,heads,draggable,blocked,first:cols[0]};
+            }""")
+            assert isinstance(res, dict) and not res.get('err'), 'kanban col reorder failed: ' + str(res)
+            assert res['ok'] is True, 'admin reorder should succeed'
+            assert res['blocked'] is False, 'viewer must not reorder columns'
+            assert res['first'] == 'Ревью' and res['cols'] == ['Ревью', 'To Do', 'В работе', 'Готово'], 'column order: ' + str(res['cols'])
+            assert res['heads'][:4] == ['Ревью', 'To Do', 'В работе', 'Готово'], 'DOM column order: ' + str(res['heads'])
+            assert res['draggable'] >= 4, 'configured columns should be draggable for admin'
+            page.evaluate("()=>{setPerm('viewer');applyPerms();views();activate('dash');}")
+        case('kanban: admin can reorder columns', t_kanban_col_reorder)
+
         # ---- 7. release composition ----
         def t_rel():
             ok = page.evaluate("""()=>{const rs=ST.releases||[];if(!rs.length)return true;
