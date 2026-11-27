@@ -66,6 +66,12 @@ h1{font-size:23px;margin:4px 0 4px;letter-spacing:-.01em}
 .kan-scroll{overflow-x:auto;padding-bottom:4px}
 .kan-col .kc-del{margin-left:2px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;line-height:1;padding:0 2px}
 .kan-col .kc-del:hover{color:var(--crit)}
+.kan-col .kc-head.kc-draggable{cursor:grab}
+.kan-col .kc-head.kc-draggable:active{cursor:grabbing}
+.kan-col .kc-grip{color:var(--muted);font-size:11px;letter-spacing:-1px;user-select:none;opacity:.55}
+.kan-col.col-dragging{opacity:.45}
+.kan-col.col-hl-before{box-shadow:-3px 0 0 0 var(--accent)}
+.kan-col.col-hl-after{box-shadow:3px 0 0 0 var(--accent)}
 @media(max-width:900px){.kan-board{grid-template-columns:1fr}}
 .kan-col{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:120px}
 .kan-col .kc-head{padding:11px 13px;border-top:3px solid var(--kc);display:flex;align-items:center;gap:8px}
@@ -3711,7 +3717,7 @@ function views(){
  // Roadmap (Дорожная карта): computed roadmap + editable эпики per sprint + chart
  renderRoadmap(C);
  // Kanban board (Планирование) — drag tasks to change status; syncs to Бэклог/Дорожная карта/Гант/аналитика
- setView('kanban','Kanban-доска','Доски по направлениям (Backend, Frontend, Тестировщики, Аналитики), релизная доска и «Состав релизов» — переключаются вкладками выше. Перетаскивайте карточки между колонками (статус синхронно меняется в «Бэклоге», Ганте и аналитике); на доске «Состав релизов» перетаскивание задачи в колонку релиза явно включает её в релиз. Администратор может создавать доски и добавлять колонки-статусы.',kanbanView());
+ setView('kanban','Kanban-доска','Доски по направлениям (Backend, Frontend, Тестировщики, Аналитики), релизная доска и «Состав релизов» — переключаются вкладками выше. Перетаскивайте карточки между колонками (статус синхронно меняется в «Бэклоге», Ганте и аналитике); на доске «Состав релизов» перетаскивание задачи в колонку релиза явно включает её в релиз. Администратор может создавать доски, добавлять колонки-статусы и менять их порядок перетаскиванием заголовка.',kanbanView());
  // Quarters (Кварталы) + quarterly roadmap
  renderQuarters(C);
  setView('rice','RICE','Приоритизация фич по методологии RICE = (Reach × Impact × Confidence) / Effort.',riceView());
@@ -4176,14 +4182,50 @@ function kanApplyMove(board,id,newStatus){
  save();views();activate('kanban');
  if(typeof auditClient==='function')auditClient('kanban_move',(t.id||'')+' → '+newStatus);
  toast('«'+(t.id||'')+'» → '+newStatus);}
-function wireKanbanDnD(board,def){let dragId=null;
- board.addEventListener('dragstart',e=>{const c=e.target.closest('.kan-card');if(!c||!PERM.canEdit){e.preventDefault();return;}
-  dragId=c.dataset.id;c.classList.add('dragging');try{e.dataTransfer.setData('text/plain',dragId);e.dataTransfer.effectAllowed='move';}catch(_){}});
- board.addEventListener('dragend',()=>{board.querySelectorAll('.kan-card').forEach(x=>x.classList.remove('dragging'));board.querySelectorAll('.kan-col').forEach(x=>x.classList.remove('drop-hl'));});
- board.addEventListener('dragover',e=>{const col=e.target.closest('.kan-col');if(col&&PERM.canEdit){e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}}});
- board.addEventListener('dragenter',e=>{const col=e.target.closest('.kan-col');if(col&&PERM.canEdit){board.querySelectorAll('.kan-col').forEach(x=>x.classList.remove('drop-hl'));col.classList.add('drop-hl');}});
- board.addEventListener('drop',e=>{const col=e.target.closest('.kan-col');if(!col||!PERM.canEdit)return;e.preventDefault();
-  let id=dragId;try{if(!id)id=e.dataTransfer.getData('text/plain');}catch(_){}dragId=null;if(id)kanApplyMove(def,id,col.dataset.status);});
+/* Переставить настроенную колонку (board.cols) относительно другой; только ADMIN, не для «Состав релизов». */
+function kanReorderColumn(board,fromSt,toSt,place){
+ if(!PERM.canAdmin){toast('Только для администратора');return false;}
+ if(!board||kanIsCompose(board)||!fromSt||!toSt||fromSt===toSt)return false;
+ const cols=board.cols||(board.cols=[]);
+ const fi=cols.indexOf(fromSt),ti=cols.indexOf(toSt);
+ if(fi<0||ti<0)return false;
+ cols.splice(fi,1);
+ let ni=cols.indexOf(toSt);if(ni<0)return false;
+ if(place==='after')ni++;
+ cols.splice(ni,0,fromSt);
+ save();views();activate('kanban');
+ if(typeof auditClient==='function')auditClient('kanban_col_move',(board.name||'')+': '+fromSt+' → '+(place==='after'?'после ':'перед ')+toSt);
+ toast('Колонка «'+fromSt+'» перемещена');return true;}
+function wireKanbanDnD(board,def){let dragId=null,dragCol=null,colPlace='before';
+ const clearColHl=()=>board.querySelectorAll('.kan-col').forEach(x=>{x.classList.remove('drop-hl','col-hl-before','col-hl-after','col-dragging');});
+ const colSide=(col,e)=>{const r=col.getBoundingClientRect();return (e.clientX-r.left)<r.width/2?'before':'after';};
+ board.addEventListener('dragstart',e=>{
+  if(e.target.closest('.kc-del')||e.target.closest('button[data-move]')||e.target.closest('.kn-item')){e.preventDefault();return;}
+  const head=e.target.closest('.kc-head.kc-draggable');
+  if(head){if(!PERM.canAdmin||kanIsCompose(def)){e.preventDefault();return;}
+   const col=head.closest('.kan-col');dragCol=col&&col.dataset.status;dragId=null;
+   if(!dragCol||(def.cols||[]).indexOf(dragCol)<0){e.preventDefault();return;}
+   col.classList.add('col-dragging');
+   try{e.dataTransfer.setData('text/col',dragCol);e.dataTransfer.setData('text/plain','col:'+dragCol);e.dataTransfer.effectAllowed='move';}catch(_){}
+   return;}
+  const c=e.target.closest('.kan-card');if(!c||!PERM.canEdit){e.preventDefault();return;}
+  dragId=c.dataset.id;dragCol=null;c.classList.add('dragging');
+  try{e.dataTransfer.setData('text/plain',dragId);e.dataTransfer.effectAllowed='move';}catch(_){}});
+ board.addEventListener('dragend',()=>{dragId=null;dragCol=null;board.querySelectorAll('.kan-card').forEach(x=>x.classList.remove('dragging'));clearColHl();});
+ board.addEventListener('dragover',e=>{const col=e.target.closest('.kan-col');if(!col)return;
+  if(dragCol&&PERM.canAdmin){e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}
+   colPlace=colSide(col,e);board.querySelectorAll('.kan-col').forEach(x=>x.classList.remove('col-hl-before','col-hl-after','drop-hl'));
+   if(col.dataset.status!==dragCol)col.classList.add(colPlace==='after'?'col-hl-after':'col-hl-before');return;}
+  if(PERM.canEdit){e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}}});
+ board.addEventListener('dragenter',e=>{const col=e.target.closest('.kan-col');if(!col)return;
+  if(dragCol&&PERM.canAdmin)return;
+  if(col&&PERM.canEdit){board.querySelectorAll('.kan-col').forEach(x=>x.classList.remove('drop-hl'));col.classList.add('drop-hl');}});
+ board.addEventListener('drop',e=>{const col=e.target.closest('.kan-col');if(!col)return;e.preventDefault();
+  if(dragCol&&PERM.canAdmin){const from=dragCol,to=col.dataset.status;const place=colSide(col,e);dragCol=null;clearColHl();
+   if(from&&to&&from!==to)kanReorderColumn(def,from,to,place);return;}
+  if(!PERM.canEdit)return;
+  let id=dragId;try{if(!id){const raw=e.dataTransfer.getData('text/plain')||'';if(raw.indexOf('col:')===0)return;id=raw;}}catch(_){}
+  dragId=null;clearColHl();if(id)kanApplyMove(def,id,col.dataset.status);});
  board.addEventListener('click',e=>{
   const lnk=e.target.closest('.kn-item');if(lnk){e.stopPropagation();activate(lnk.dataset.goto||'backlog');return;}
   const b=e.target.closest('button[data-move]');if(!b)return;const c=b.closest('.kan-card');if(!c)return;
@@ -4258,7 +4300,7 @@ function kanbanView(){const w=document.createElement('div');const bs=kanBoards()
    const dl=document.createElement('button');dl.className='btn danger';dl.textContent='🗑 Удалить доску';dl.onclick=()=>kanDeleteBoard(def);tools.appendChild(dl);
  }
  const hint=document.createElement('span');hint.style.cssText='font-size:12px;color:var(--muted)';
- hint.textContent=!PERM.canEdit?'Режим просмотра: перетаскивание недоступно.':kanIsCompose(def)?'Перетащите задачу в колонку релиза, чтобы включить её явно; «Без релиза» вернёт авто-привязку по спринту.':kanIsRelease(def)?'Перетащите релиз между колонками статуса.':'Перетащите карточку между колонками — статус синхронно обновится в «Бэклоге», «Дорожной карте», Ганте и аналитике.';
+ hint.textContent=!PERM.canEdit?'Режим просмотра: перетаскивание недоступно.':kanIsCompose(def)?'Перетащите задачу в колонку релиза, чтобы включить её явно; «Без релиза» вернёт авто-привязку по спринту.':kanIsRelease(def)?(PERM.canAdmin?'Перетащите релиз между колонками статуса; заголовок колонки — чтобы изменить порядок колонок.':'Перетащите релиз между колонками статуса.'):(PERM.canAdmin?'Перетащите карточку между колонками; заголовок колонки — чтобы изменить порядок колонок.':'Перетащите карточку между колонками — статус синхронно обновится в «Бэклоге», «Дорожной карте», Ганте и аналитике.');
  tools.appendChild(hint);w.appendChild(tools);
  // board
  const scroll=document.createElement('div');scroll.className='kan-scroll';
@@ -4273,8 +4315,11 @@ function kanbanView(){const w=document.createElement('div');const bs=kanBoards()
    const over=lim&&list.length>lim;
    const cnt=list.length+(lim?' / '+lim:'')+(sum!=null?' · '+fmt(sum,0)+' SP':'');
    const wipBadge=lim?'<span class="kc-wip'+(over?' over':'')+'" title="WIP-лимит колонки">WIP '+list.length+'/'+lim+'</span>':'';
-   const delBtn=(PERM.canAdmin&&(def.cols||[]).indexOf(st)>=0)?'<button class="kc-del" data-del="'+esc(st)+'" title="Удалить колонку">✕</button>':'';
-   let h='<div class="kc-head"><span class="kc-dot"></span><span class="kc-title">'+esc(kanColLabel(def,st))+'</span>'+wipBadge+'<span class="kc-count">'+cnt+'</span>'+delBtn+'</div><div class="kc-body">';
+   const configured=(def.cols||[]).indexOf(st)>=0;
+   const colDrag=PERM.canAdmin&&!kanIsCompose(def)&&configured;
+   const delBtn=(PERM.canAdmin&&configured)?'<button class="kc-del" data-del="'+esc(st)+'" title="Удалить колонку">✕</button>':'';
+   const grip=colDrag?'<span class="kc-grip" title="Перетащить колонку">⠿</span>':'';
+   let h='<div class="kc-head'+(colDrag?' kc-draggable':'')+'"'+(colDrag?' draggable="true"':'')+'>'+grip+'<span class="kc-dot"></span><span class="kc-title">'+esc(kanColLabel(def,st))+'</span>'+wipBadge+'<span class="kc-count">'+cnt+'</span>'+delBtn+'</div><div class="kc-body">';
    h+=list.length?list.map(cardFn).join(''):'<div class="kan-empty">Нет карточек</div>';
    h+='</div>';col.innerHTML=h;b.appendChild(col);});
  b.addEventListener('click',e=>{const d=e.target.closest('button[data-del]');if(d){e.stopPropagation();kanDelColumn(def,d.dataset.del);}});
@@ -6138,9 +6183,11 @@ const NAV=[
  {g:'Система',items:[['params','Параметры','⚙️'],['integrations','Интеграции','🔌'],['calendar','Календарь','📅'],['budget','Бюджет','💰'],['checks','Проверки данных','🧪'],['eda','EDA отчёт','🔬'],['audit','Журнал событий','🧾']]},
  {g:'Справка',items:[['faq','FAQ','❓'],['support','Support','🛟']]},
 ];
-const APP_VERSION='2.13.1';const APP_DATE='2026-10-30';
+const APP_VERSION='2.14.0';const APP_DATE='2026-11-27';
 const APP_ABOUT='Кросс-функциональная команда — это группа специалистов из разных областей (разработчиков, дизайнеров, маркетологов, аналитиков, менеджеров и других), которые объединяются для работы над одним конкретным проектом или задачей. Ключевая идея в том, чтобы собрать внутри команды всех необходимых экспертов, чтобы она могла самостоятельно пройти путь от идеи до результата, не передавая задачу последовательно из одного отдела в другой.';
 const CHANGELOG=[
+ {v:'2.14.0',date:'2026-11-27',items:[
+   'Kanban-доска: администратор может менять порядок колонок перетаскиванием заголовка — и у стандартных досок, и у новых колонок после «＋ Колонка»; порядок сохраняется в настройках доски.']},
  {v:'2.13.1',date:'2026-10-30',items:[
    'Гант по иерархии: исправлена строка инструментов — все кнопки, выбор масштаба и поиск одной высоты и в одном стиле; инструменты разделены на две группы (вид и поиск), и при нехватке ширины группа «поиск, фильтры, ⋯, легенда» целиком переходит на новую строку, а не отрывается «Легенда»; поле поиска сжимается по ширине.']},
  {v:'2.13.0',date:'2026-10-30',items:[
